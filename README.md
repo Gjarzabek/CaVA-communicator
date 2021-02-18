@@ -1,0 +1,1 @@
+simple communicator with Vuejs/Ts/node/Websockets
