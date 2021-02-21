@@ -1,30 +1,33 @@
 <template>
     <div>
-        <ChatsSection v-bind:activeChats="activeChats"/>
-        <UsersOnline v-bind:Users="filteredUsers" @search="changeSearch" @openChat="openNewChat"/>
+        <TopPanel />
+        <UsersOnline v-bind:Users="filteredUsers" @search="changeSearch"/>
     </div>
 </template>
 
 <script lang="ts">  
 import { Options, Vue } from "vue-class-component";
-import UsersOnline from "@/components/UsersOnline.vue";
-import ChatsSection from "@/components/ChatsSection.vue";
+import UsersOnline from "@/components/RightBar/UsersOnline.vue";
+import TopPanel from "@/components/TopPanel/Panel.vue";
 
 @Options({
   data() {
       return {
-          users: [{id:2, nick:"Bacha"}, {id:42, nick:"Jaca"}, {id:442, nick:"Sjergiej"}, {id:56, nick:"Daro"}, {id:75, nick:"Gocha"}],
-          activeChats: [{id:0, nick:"room"}],
+          chatUsers: [{id:2, nick:"Bacha", status:"online"},
+                      {id:42, nick:"Jaca",status:"online"},
+                      {id:56, nick:"Daro", status:"brb"},
+                      {id:442, nick:"Sjergiej", status:"offline"},
+                      {id:75, nick:"Gocha", status:"offline"}],
           search: ""
       }
   },
   components: {
     UsersOnline,
-    ChatsSection
+    TopPanel
   },
   computed: {
       filteredUsers: function(): any {
-          return this.users.filter((user: any) => {
+          return this.chatUsers.filter((user: any) => {
               return user.nick.match(this.search);
           });
       }
@@ -32,11 +35,6 @@ import ChatsSection from "@/components/ChatsSection.vue";
   methods: {
       changeSearch(newSearch: string) {
           this.search = newSearch;
-      },
-      openNewChat(user: any) {
-          if (this.activeChats.find((el: any, index: number, arr: any) => {return el.id === user.id}) === undefined) {
-              this.activeChats.push(user);
-          }
       }
   }
 })

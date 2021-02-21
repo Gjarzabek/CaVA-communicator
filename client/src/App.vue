@@ -9,16 +9,35 @@
 
 <style>
 
+@font-face {
+    font-family: NovaFlat;
+    src: url(assets/NovaFlat-Regular.ttf);
+}
+
+@font-face {
+    font-family: NovaCut;
+    src: url(assets/NovaCut-Regular.ttf);
+}
+
+@font-face {
+    font-family: NovaScript;
+    src: url(assets/NovaScript-Regular.ttf);
+}
+
+@font-face {
+    font-family: NovaSquare;
+    src: url(assets/NovaSquare-Regular.ttf);
+}
+
 body {
-    background-color: #1F2429;
+    background-color: #242222;
 }
 
 #app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
+  font-family: NovaFlat, NovaCut, NovaScript, NovaSquare;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
-  color: #2c3e50;
 }
 
 #nav {
