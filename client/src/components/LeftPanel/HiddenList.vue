@@ -1,8 +1,14 @@
 <template>
     <div>
-        <div id="listName" @click="toogleMenu">
-            <div :id="header" class="arrow right"></div>
-            {{header}}
+        <div class="menuItem">
+            <div id="listName" @click="toogleMenu">
+                <div :id="header" class="arrow right"></div>
+                {{header}}
+                <div v-if="isFriend" class="friendNumber">({{onlineUsersN}}/{{ItemList.length}})</div>
+            </div>
+            <div v-if="isPrivateRoom">
+                <img src="../../assets/addIcon.png" alt="..." id="addIcon">
+            </div>
         </div>
         <div v-if="!hidden" class="list">
             <div v-for="item in ItemList" v-bind:key="item.id" class="item">
@@ -58,6 +64,14 @@ export default defineComponent({
         },
         isPublicTalk: function(): boolean {
             return this.type === "publicTalk";
+        },
+        onlineUsersN: function(): number {
+            let counter = 0;
+            for (const item of this.ItemList) {
+                if (item.status === "dostępny")
+                    counter++;
+            }   
+            return counter; 
         }
   }
 })
@@ -90,40 +104,29 @@ export default defineComponent({
     transition: 1s;
 }
 
-.friend {
-    color: chocolate;
-}
-
-.privateRoom {
-    color: darkgoldenrod;
-}
-
-.publicTalk {
-    color:darkturquoise;
-}
-
 #listName {
     text-align: left;
     position: relative;
     color: #C6BDBD;
-    font: 2.2vh NovaScript;
-    margin-top: 5%;
+    font: 2.1vh NovaScript;
+    margin-top: 8%;
     margin-left: 5%;
     cursor:default;
+    width: 11vw;
 }
 
 .statusDot {
     position: relative;
     border-radius: 100%;
     margin-left: 2vw;
-    top: 0.3vh;
+    top: 1.3vh;
     width: 1.4vh;
     height: 1.4vh;
 }
 
 .name {
     position: absolute;
-    top: 0%;
+    top: 1vh;
     left: 3.4vw;
     color: #C6BDBD;
     font: 1.8vh NovaFlat;
@@ -131,9 +134,9 @@ export default defineComponent({
 
 .item {
     position: relative;
-    margin-top: 1.5vh;
+    margin-top: 0.5vh;
     width: 15vw;
-    height: 2.5vh;
+    height: 4vh;
 }
 
 .item:hover {
@@ -142,8 +145,34 @@ export default defineComponent({
 
 .infoIcon {
     position: absolute;
+    top: 0.7vh;
     left: 1.5vw;
     width: 2.6vh;
+}
+
+.friendNumber {
+    position: absolute;
+    top: 0.5vh;
+    left: 5.5vw;
+    font: 1.5vh NovaFlat;
+}
+
+#addIcon {
+    position: absolute;
+    top: 0;
+    right: 14%;
+    transform: scale(1);
+    transition: 0.2s;
+    height: 2.4vh;
+    cursor: pointer;
+}
+
+#addIcon:active {
+    transform: scale(0.9);
+}
+
+.menuItem {
+    position: relative;
 }
 
 </style>

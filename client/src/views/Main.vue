@@ -1,6 +1,6 @@
 <template>
     <div>
-        <TopPanel v-bind:user="chatUsers[0]"/>
+        <TopPanel v-bind:user="user" @statusChange="console.log('koko')"/>
         <UsersOnline v-bind:Users="filteredUsers" @search="changeSearch"/>
         <FriendsNRooms />
     </div>
@@ -16,12 +16,12 @@ import {getStatusPoint} from "@/DataTypes/User.ts";
 @Options({
   data() {
       return {
-          chatUsers: [{id:1, name:"Grzesiek", status:"online", desc:"Slawa Bracia!"},
-                      {id:2, name:"Bacha", status:"online", desc:"Slawa Bracia!"},
-                      {id:56, name:"Daro", status:"brb", desc:"Slawa Bracia!"},
-                      {id:442, name:"Sjergiej", status:"offline", desc:"Status.."},
-                      {id:42, name:"Jaca",status:"online", desc:"Slawa Bracia!"},
-                      {id:75, name:"Gocha", status:"offline", desc:"Status.."}].sort((a: any, b: any) => {
+          chatUsers: [{id:1, name:"Grzesiek", status:"dostępny", desc:"Slawa Bracia!"},
+                      {id:2, name:"Bacha", status:"dostępny", desc:"Slawa Bracia!"},
+                      {id:56, name:"Daro", status:"zaraz-wracam", desc:"Slawa Bracia!"},
+                      {id:442, name:"Sjergiej", status:"niedostępny", desc:"Status.."},
+                      {id:42, name:"Jaca",status:"dostępny", desc:"Slawa Bracia!"},
+                      {id:75, name:"Gocha", status:"zajęty", desc:"Status.."}].sort((a: any, b: any) => {
                 if (a === undefined)
                     return 1;
                 if (b === undefined)
@@ -31,7 +31,8 @@ import {getStatusPoint} from "@/DataTypes/User.ts";
                 else
                     return -1;
           }),
-          search: ""
+          search: "",
+          user: {id:1, name:"Grzesiek", status:"dostępny", desc:"Slawa Bracia!"}
       }
   },
   components: {
@@ -55,6 +56,9 @@ import {getStatusPoint} from "@/DataTypes/User.ts";
                     return -1;
           });
           this.search = newSearch;
+      },
+      changeStatus(newStatus: string): void {
+          this.user.status = newStatus;
       }
   }
 })

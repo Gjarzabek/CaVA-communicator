@@ -30,19 +30,23 @@
 }
 
 body {
-    background-color: #242222;
+  background-color: #242222;
 }
 
-.online {
-    background-color: #83DF5E;
+.dostępny {
+  background-color: #83DF5E;
 }
 
-.offline {
-    background-color: #D94444;
+.niedostępny {
+  background-color: #D94444;
 }
 
-.brb {
-    background-color: #E1A244;
+.zaraz-wracam {
+  background-color: #E1A244;
+}
+
+.zajęty {
+  background-color: #050505;
 }
 
 #app {

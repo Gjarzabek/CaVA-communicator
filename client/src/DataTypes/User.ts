@@ -7,12 +7,14 @@
 */
 export function getStatusPoint(status: string): number {
     switch(status) {
-        case 'online':
+        case 'dostępny':
             return 0;
-        case 'brb':
+        case 'zaraz-wracam':
             return 1;
-        case 'offline':
-            return 2;
+        case 'niedostępny':
+            return 3;
+        case 'zajęty':
+            return 2
         default:
             return -1;
     }

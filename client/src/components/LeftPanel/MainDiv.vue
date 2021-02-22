@@ -16,7 +16,7 @@ export default defineComponent({
   data() {
       return {
           ListParams: [
-            {header: "Znajomi", type:"friend", payload: [{id:442, name:"Sjergiej", status:"offline", desc:"Status.."}, {id:42, name:"Jaca",status:"online", desc:"Slawa Bracia!"}]},
+            {header: "Znajomi", type:"friend", payload: [{id:442, name:"Sjergiej", status:"niedostępny", desc:"Status.."}, {id:42, name:"Jaca",status:"dostępny", desc:"Slawa Bracia!"}]},
             {header: "Prywatne Pokoje", type: "privateRoom", payload: [{name:"Klub Szachowy", id:1}, {name:"Fight Club", id:2}]},
             {header: "Publiczne Dyskusje", type: "publicTalk", payload: [{name:"Białobrzegi", id:1}, {name:"KupieSprzedam", id:2}]}
           ]

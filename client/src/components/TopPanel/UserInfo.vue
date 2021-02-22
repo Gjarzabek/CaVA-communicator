@@ -5,9 +5,19 @@
         </div>
         <div id="userInfo">
             <div id="statusDot" :class="user.status"></div>
-            <div id="nick">{{user.name}}</div>
+            <div id="nick" @click="toogleStatusMenu">{{user.name}}</div>
             <div id="id">id:{{user.id}}</div>
             <div id="desc">{{user.desc}}</div>
+        </div>
+        <div v-if="showStatusPanel">
+            <div id="statusMenu">
+                <div v-for="status in possibleStatusList" v-bind:key="status.name">
+                    <div class="statusOption" @click="changeStatus(status.name)">
+                        <div class="MenuDot" :class="status.name"></div>
+                        <div class="statusName">{{status.name}}</div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </template>
@@ -17,7 +27,22 @@ import { defineComponent } from 'vue';
 
 export default defineComponent({
   props: ["user"],
-  components: {}
+  components: {},
+  data() {
+      return {
+          showStatusPanel: false,
+          possibleStatusList: [{name: "dostępny"}, {name:"zaraz-wracam"}, {name:"zajęty"}]
+      }
+  },
+  methods: {
+      toogleStatusMenu() {
+          this.showStatusPanel = !this.showStatusPanel;
+      },
+      changeStatus(newStatus: string): void {
+          this.$emit('statusChange', newStatus);
+          this.toogleStatusMenu();
+      }
+  }
 })
 </script>
 
@@ -30,7 +55,7 @@ export default defineComponent({
     left: 5%;
     width: 6.5vh;
     height: 6.5vh;
-    background-color: #f9f7f77e;
+    background-color: #ffffffa1;
 }
 
 #fsocietyIcon {
@@ -47,7 +72,7 @@ export default defineComponent({
     left: 0;
     width: 15%;
     height: 100%;
-    background-color: #8290909d;
+    background-color: #a7a7a7;
     border-right: ridge 3px #242222;
 }
 
@@ -62,10 +87,20 @@ export default defineComponent({
 }
 
 #nick {
-    font: 130% NovaSquare;
+    font: 2vh NovaSquare;
     position: absolute;
+    width: 9vw;
     top: 0%;
     left: 9%;
+    cursor: pointer;
+}
+
+#nick:hover {
+    background-color: #afafaf;
+}
+
+#nick:active {
+    background-color: #979797;
 }
 
 #status {   
@@ -74,8 +109,8 @@ export default defineComponent({
 
 #id {
     position: absolute;
-    top: 35%;
-    font: 95% Courier;
+    top: 36%;
+    font: 1.8vh Courier;
     color: rgb(47, 46, 46);
 }
 
@@ -94,6 +129,43 @@ export default defineComponent({
     border-radius: 100%;
     width: 1.2vh;
     height: 1.2vh;
+}
+
+#statusMenu {
+    position: relative;
+    background-color: #918C8C;
+    top: 3vh;
+    left: 4.5vw;
+    width: 10vw;
+    z-index: 10;
+    border: 1px dashed #3f3e3e;
+    border-radius: 2px;
+}
+
+.MenuDot {
+    position: relative;
+    left: 0.5vw;
+    top: 1vh;
+    border-radius: 100%;
+    width: 1.8vh;
+    height: 1.8vh;  
+}
+
+.statusOption {
+    position: relative;
+    height: 4vh;
+    width:10vw;
+}
+
+.statusOption:hover {
+    background-color: #4d4949;
+}
+
+.statusName {
+    position: absolute;
+    top: 0.7vh;
+    left: 2vw;
+    font: 2vh NovaSquare;
 }
 
 </style>

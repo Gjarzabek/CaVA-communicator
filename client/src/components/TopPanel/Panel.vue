@@ -1,6 +1,6 @@
 <template>
     <div id="topPanel">
-      <UserInfo v-bind:user="user"/>
+      <UserInfo v-bind:user="user" @statusChange="this.$emit($event)"/>
       <button id="addFriend">Dodaj Znajomego</button>
       <img src="../../assets/notify.png" alt="..." id="notification">
     </div>
@@ -12,7 +12,8 @@ import UserInfo from '@/components/TopPanel/UserInfo.vue';
 
 export default defineComponent({
   props: ["user"],
-  components: {UserInfo}
+  components: {UserInfo},
+  methods: {}
 })
 </script>
 
@@ -30,16 +31,22 @@ export default defineComponent({
   border: none;
   border-radius: 5px;
   color: #EAEAEA;
-  font: 2vh NovaCut;
+  font: 2vh NovaScript;
   outline: none;
+  transform: scale(1);
   cursor: pointer;
+  transition: 0.1s;
+}
+
+#addFriend:active {
+  transform: scale(0.98);
 }
 
 #notification {
   position: absolute;
   right: 3%;
-  top: 27%;
-  height: 46%;
+  top: 30%;
+  height: 40%;
 }
 
 #topPanel {
