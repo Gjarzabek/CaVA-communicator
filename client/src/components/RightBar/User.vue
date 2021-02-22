@@ -1,7 +1,7 @@
 <template>
     <div class="user" @click="$emit('openChat')">
         <div id='infodot' :class="user.status"></div>
-        <div class='userName'>{{user.nick}}</div>
+        <div class='userName'>{{user.name}}</div>
     </div>
 </template> 
 

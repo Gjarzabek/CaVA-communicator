@@ -4,8 +4,8 @@
             <img src="../../assets/fsociety.png" alt=".." id='fsocietyIcon'>
         </div>
         <div id="userInfo">
-            <div id="nick">{{user.nick}}</div>
             <div id="statusDot" :class="user.status"></div>
+            <div id="nick">{{user.name}}</div>
             <div id="id">id:{{user.id}}</div>
             <div id="desc">{{user.desc}}</div>
         </div>
@@ -65,9 +65,10 @@ export default defineComponent({
     font: 130% NovaSquare;
     position: absolute;
     top: 0%;
+    left: 9%;
 }
 
-#status {
+#status {   
     border: none;
 }
 
@@ -88,7 +89,7 @@ export default defineComponent({
 
 #statusDot {
     position: absolute;
-    right: 8%;
+    left: 0%;
     top: 8%;
     border-radius: 100%;
     width: 1.2vh;

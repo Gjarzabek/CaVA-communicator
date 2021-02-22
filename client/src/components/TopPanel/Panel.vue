@@ -1,6 +1,8 @@
 <template>
     <div id="topPanel">
       <UserInfo v-bind:user="user"/>
+      <button id="addFriend">Dodaj Znajomego</button>
+      <img src="../../assets/notify.png" alt="..." id="notification">
     </div>
 </template>
 
@@ -16,6 +18,29 @@ export default defineComponent({
 
 <style scoped>
 
+#addFriend {
+  text-align: center;
+  position: absolute;
+  width: 14%;
+  height: 46%;
+  top: 27%;
+  right: 9%;
+  box-sizing: border-box;
+  background-color: #242222;
+  border: none;
+  border-radius: 5px;
+  color: #EAEAEA;
+  font: 2vh NovaCut;
+  outline: none;
+  cursor: pointer;
+}
+
+#notification {
+  position: absolute;
+  right: 3%;
+  top: 27%;
+  height: 46%;
+}
 
 #topPanel {
     position: absolute;
@@ -25,4 +50,6 @@ export default defineComponent({
     height: 9%;
     background-color: #96C5CD;
 }
+
+
 </style>
