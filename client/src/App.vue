@@ -33,6 +33,18 @@ body {
     background-color: #242222;
 }
 
+.online {
+    background-color: #83DF5E;
+}
+
+.offline {
+    background-color: #D94444;
+}
+
+.brb {
+    background-color: #E1A244;
+}
+
 #app {
   font-family: NovaFlat, NovaCut, NovaScript, NovaSquare;
   -webkit-font-smoothing: antialiased;

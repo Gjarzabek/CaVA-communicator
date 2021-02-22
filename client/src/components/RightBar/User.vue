@@ -37,21 +37,10 @@ export default defineComponent({
 #infodot {
     position: absolute;
     left: 8%;
-    top: 6.2px;
+    top: 25%;
     border-radius: 100%;
-    width: 10px;
-    height: 10px;}
-
-.online {
-    background-color: #83DF5E;
-}
-
-.offline {
-    background-color: #D94444;
-}
-
-.brb {
-    background-color: #E1A244;
+    width: 1.2vh;
+    height: 1.2vh;
 }
 
 </style>

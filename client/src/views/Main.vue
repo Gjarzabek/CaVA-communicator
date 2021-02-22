@@ -1,6 +1,6 @@
 <template>
     <div>
-        <TopPanel />
+        <TopPanel v-bind:user="chatUsers[0]"/>
         <UsersOnline v-bind:Users="filteredUsers" @search="changeSearch"/>
     </div>
 </template>
@@ -14,11 +14,12 @@ import {getStatusPoint} from "@/DataTypes/User.ts";
 @Options({
   data() {
       return {
-          chatUsers: [{id:2, nick:"Bacha", status:"online"},
-                      {id:56, nick:"Daro", status:"brb"},
-                      {id:442, nick:"Sjergiej", status:"offline"},
-                      {id:42, nick:"Jaca",status:"online"},
-                      {id:75, nick:"Gocha", status:"offline"}].sort((a: any, b: any) => {
+          chatUsers: [{id:1, nick:"Grzesiek", status:"online", desc:"Slawa Bracia!"},
+                      {id:2, nick:"Bacha", status:"online", desc:"Slawa Bracia!"},
+                      {id:56, nick:"Daro", status:"brb", desc:"Slawa Bracia!"},
+                      {id:442, nick:"Sjergiej", status:"offline", desc:"Status.."},
+                      {id:42, nick:"Jaca",status:"online", desc:"Slawa Bracia!"},
+                      {id:75, nick:"Gocha", status:"offline", desc:"Status.."}].sort((a: any, b: any) => {
                 if (a === undefined)
                     return 1;
                 if (b === undefined)

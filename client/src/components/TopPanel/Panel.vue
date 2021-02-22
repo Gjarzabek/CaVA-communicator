@@ -1,15 +1,16 @@
 <template>
     <div id="topPanel">
-
+      <UserInfo v-bind:user="user"/>
     </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue' 
+import UserInfo from '@/components/TopPanel/UserInfo.vue';
 
 export default defineComponent({
-  props: [],
-  components: {}
+  props: ["user"],
+  components: {UserInfo}
 })
 </script>
 
