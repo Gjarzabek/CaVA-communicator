@@ -1,6 +1,6 @@
 <template>
     <div>
-        <TopPanel v-bind:user="user" @statusChange="console.log('koko')"/>
+        <TopPanel v-bind:user="user" v-bind:chats="chats" @statusChange="changeUserStatus"/>
         <UsersOnline v-bind:Users="filteredUsers" @search="changeSearch"/>
         <FriendsNRooms />
     </div>
@@ -32,7 +32,11 @@ import {getStatusPoint} from "@/DataTypes/User.ts";
                     return -1;
           }),
           search: "",
-          user: {id:1, name:"Grzesiek", status:"dostępny", desc:"Slawa Bracia!"}
+          user: {id:1, name:"Grzesiek", status:"dostępny", desc:"Slawa Bracia!"},
+          chats: [
+              {id:2, receiver: "Sjergiej", chatType: "SzyfrowanyHasłem", payload:[{who:"ty",timestamp:0.2, data:"hi"}, {who:"oni", timestamp:1, data:"okoFoko"}]},
+              {id:4, receiver: "Gocha", chatType: "Zwykły", payload:[{who:"ty",timestamp:1, data:"czesc"}, {who:"oni", timestamp:3, data:"hej"}]},
+          ]
       }
   },
   components: {
@@ -57,7 +61,7 @@ import {getStatusPoint} from "@/DataTypes/User.ts";
           });
           this.search = newSearch;
       },
-      changeStatus(newStatus: string): void {
+      changeUserStatus(newStatus: string): void {
           this.user.status = newStatus;
       }
   }

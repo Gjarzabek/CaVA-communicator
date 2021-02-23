@@ -1,37 +1,99 @@
 <template>
     <div id="topPanel">
-      <UserInfo v-bind:user="user" @statusChange="this.$emit($event)"/>
+      <UserInfo v-bind:user="user" @statusChange="statusChangeForward"/>
       <button id="addFriend">Dodaj Znajomego</button>
       <img src="../../assets/notify.png" alt="..." id="notification">
+      <img src="../../assets/chaticon.png" alt="..." id="chatIcon" @click="toogleChatMenu">
+      <div v-if="showChatMenu" class="chatMenu">
+        <div id="chatMenuTitle">Historia Rozmów</div>
+          <div v-for="chat in chats" v-bind:key="chat.id" class="chatsList">
+            <ChatItem v-bind:chatData="chat"/>
+          </div>
+        </div>
     </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue' 
 import UserInfo from '@/components/TopPanel/UserInfo.vue';
+import ChatItem from '@/components/TopPanel/ChatItem.vue';
 
 export default defineComponent({
-  props: ["user"],
-  components: {UserInfo},
-  methods: {}
+  props: ["user", "chats"],
+  components: {UserInfo, ChatItem},
+  data() {
+    return {
+      showChatMenu: false
+    }
+  },
+  methods: {
+    statusChangeForward(value: string) {
+      this.$emit('statusChange', value);
+    },
+    toogleChatMenu() {
+      console.log(this.showChatMenu);
+      this.showChatMenu = !this.showChatMenu;
+    }
+  }
 })
 </script>
 
 <style scoped>
 
+#chatMenuTitle {
+  position: relative;
+  margin-top: 2vh;
+  margin-bottom: 2vh;
+  margin-left: 2vh;
+  font: 2vh NovaScript;
+  color: black;
+  text-align: left;
+  text-indent: 1vh;
+  border-left: solid 5px black;
+}
+
+.chatList {
+  position: relative;
+}
+
+.chatMenu {
+  position: absolute;
+  top: 7vh;
+  right: 0;
+  width: 18vw;
+  height: 40vh;
+  background-color: #EBEBEB;
+  z-index: 11;
+  border-radius: 6px;
+  overflow-y: auto;
+}
+
+#chatIcon {
+  transform: scale(1);
+  position: absolute;
+  right: 7%;
+  top: 30%;
+  height: 40%;
+  cursor: pointer;
+}
+
+#chatIcon:active {
+  transform: scale(0.9);
+}
+
 #addFriend {
   text-align: center;
   position: absolute;
-  width: 14%;
-  height: 46%;
-  top: 27%;
-  right: 9%;
+  width: 13%;
+  height: 40%;
+  top: 30%;
+  right: 11%;
   box-sizing: border-box;
   background-color: #242222;
   border: none;
   border-radius: 5px;
   color: #EAEAEA;
-  font: 2vh NovaScript;
+  font: 1.9vh NovaScript;
   outline: none;
   transform: scale(1);
   cursor: pointer;
@@ -43,10 +105,16 @@ export default defineComponent({
 }
 
 #notification {
+  transform: scale(1);
   position: absolute;
   right: 3%;
   top: 30%;
+  cursor: pointer;
   height: 40%;
+}
+
+#notification:active {
+  transform: scale(0.9);
 }
 
 #topPanel {
@@ -57,6 +125,5 @@ export default defineComponent({
     height: 9%;
     background-color: #96C5CD;
 }
-
 
 </style>

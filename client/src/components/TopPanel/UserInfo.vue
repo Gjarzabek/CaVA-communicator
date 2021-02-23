@@ -133,13 +133,12 @@ export default defineComponent({
 
 #statusMenu {
     position: relative;
-    background-color: #918C8C;
-    top: 3vh;
+    background-color: #EBEBEB;
+    top: 3.5vh;
     left: 4.5vw;
     width: 10vw;
     z-index: 10;
-    border: 1px dashed #3f3e3e;
-    border-radius: 2px;
+    border-radius: 3px;
 }
 
 .MenuDot {
@@ -152,13 +151,15 @@ export default defineComponent({
 }
 
 .statusOption {
+    box-sizing: border-box;
     position: relative;
     height: 4vh;
     width:10vw;
+    cursor: pointer;
 }
 
 .statusOption:hover {
-    background-color: #4d4949;
+    background-color: #dbdbdb96;
 }
 
 .statusName {
