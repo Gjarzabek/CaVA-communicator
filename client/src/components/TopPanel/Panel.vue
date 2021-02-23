@@ -31,7 +31,6 @@ export default defineComponent({
       this.$emit('statusChange', value);
     },
     toogleChatMenu() {
-      console.log(this.showChatMenu);
       this.showChatMenu = !this.showChatMenu;
     }
   }

@@ -1,7 +1,8 @@
 <template>
     <div>
-        <TopPanel v-bind:user="user" v-bind:chats="chats" @statusChange="changeUserStatus"/>
+        <TopPanel v-bind:user="user" v-bind:chats="chatHistory" @statusChange="changeUserStatus"/>
         <UsersOnline v-bind:Users="filteredUsers" @search="changeSearch"/>
+        <ChatSection v-bind:openedChats="openedChats" @sendMessage="sendMessage"/>
         <FriendsNRooms />
     </div>
 </template>
@@ -11,6 +12,7 @@ import { Options, Vue } from "vue-class-component";
 import UsersOnline from "@/components/RightBar/UsersOnline.vue";
 import TopPanel from "@/components/TopPanel/Panel.vue";
 import FriendsNRooms from "@/components/LeftPanel/MainDiv.vue";
+import ChatSection from "@/components/ChatWindow/ChatSection.vue";
 import {getStatusPoint} from "@/DataTypes/User.ts";
 
 @Options({
@@ -33,16 +35,19 @@ import {getStatusPoint} from "@/DataTypes/User.ts";
           }),
           search: "",
           user: {id:1, name:"Grzesiek", status:"dostępny", desc:"Slawa Bracia!"},
-          chats: [
+          chatHistory: [
               {id:2, receiver: "Sjergiej", chatType: "SzyfrowanyHasłem", payload:[{who:"ty",timestamp:0.2, data:"hi"}, {who:"oni", timestamp:1, data:"okoFoko"}]},
               {id:4, receiver: "Gocha", chatType: "Zwykły", payload:[{who:"ty",timestamp:1, data:"czesc"}, {who:"oni", timestamp:3, data:"hej"}]},
-          ]
+          ],
+          openedChats: [{id:4, receiver: "Gocha", chatType: "Zwykły", payload:[{who:"ty",timestamp:1, data:"czesc"}, {who:"oni", timestamp:3, data:"hej"}]},
+                        {id:2, receiver: "Sjergiej", chatType: "SzyfrowanyHasłem", payload:[{who:"ty",timestamp:0.2, data:"hi"}, {who:"oni", timestamp:1, data:"okoFoko"}]}]
       }
   },
   components: {
     UsersOnline,
     TopPanel,
-    FriendsNRooms
+    FriendsNRooms,
+    ChatSection
   },
   computed: {
       filteredUsers: function(): any {
@@ -63,6 +68,10 @@ import {getStatusPoint} from "@/DataTypes/User.ts";
       },
       changeUserStatus(newStatus: string): void {
           this.user.status = newStatus;
+      },
+      sendMessage(message: string): void {
+          //websocket messagesend
+          console.log(message);
       }
   }
 })

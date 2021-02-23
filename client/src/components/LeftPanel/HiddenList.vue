@@ -112,7 +112,7 @@ export default defineComponent({
     margin-top: 8%;
     margin-left: 5%;
     cursor:default;
-    width: 11vw;
+    width: 11.5vw;
 }
 
 .statusDot {
