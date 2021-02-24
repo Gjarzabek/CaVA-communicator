@@ -34,19 +34,19 @@ body {
 }
 
 .dostępny {
-  background-color: #83DF5E;
+  background-color: #63dd33;
 }
 
 .niedostępny {
-  background-color: #D94444;
+  background-color: #050505;
 }
 
 .zaraz-wracam {
-  background-color: #E1A244;
+  background-color: #e69e32;
 }
 
 .zajęty {
-  background-color: #050505;
+  background-color: #e64444;
 }
 
 #app {

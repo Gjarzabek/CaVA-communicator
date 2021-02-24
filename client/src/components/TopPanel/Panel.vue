@@ -1,6 +1,5 @@
 <template>
     <div id="topPanel">
-      <UserInfo v-bind:user="user" @statusChange="statusChangeForward"/>
       <button id="addFriend">Dodaj Znajomego</button>
       <img src="../../assets/notify.png" alt="..." id="notification">
       <img src="../../assets/chaticon.png" alt="..." id="chatIcon" @click="toogleChatMenu">
@@ -15,21 +14,17 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue' 
-import UserInfo from '@/components/TopPanel/UserInfo.vue';
 import ChatItem from '@/components/TopPanel/ChatItem.vue';
 
 export default defineComponent({
-  props: ["user", "chats"],
-  components: {UserInfo, ChatItem},
+  props: ["chats"],
+  components: {ChatItem},
   data() {
     return {
       showChatMenu: false
     }
   },
   methods: {
-    statusChangeForward(value: string) {
-      this.$emit('statusChange', value);
-    },
     toogleChatMenu() {
       this.showChatMenu = !this.showChatMenu;
     }
@@ -83,9 +78,9 @@ export default defineComponent({
 #addFriend {
   text-align: center;
   position: absolute;
-  width: 13%;
-  height: 40%;
-  top: 30%;
+  width: 12%;
+  height: 44%;
+  top: 28%;
   right: 11%;
   box-sizing: border-box;
   background-color: #242222;
@@ -118,10 +113,10 @@ export default defineComponent({
 
 #topPanel {
     position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 9%;
+    top: 0%;
+    left: 15%;
+    width: 85%;
+    height: 6%;
     background-color: #96C5CD;
 }
 

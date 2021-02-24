@@ -34,9 +34,9 @@ export default defineComponent({
     box-sizing: border-box;
     position: absolute;
     right: 0;
-    top: 9%;
+    top: 6%;
     width: 15%;
-    height: 91%;
+    height: 94%;
     background-color: #3B3939;
 }
 

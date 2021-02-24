@@ -5,7 +5,7 @@
                 <ChatBar :chatInfo="chat" @signalActive="changeActiveChat"/>                
             </div>
         </div>
-        <Messages :messages="activeChat"/>
+        <Messages :messages="activeChatPayload"/>
         <MessageInput @sendMessage="SendMessageForward"/>
     </div>
 </template>
@@ -24,6 +24,13 @@ export default defineComponent({
             activeChat: this.openedChats[0]
         }
     },
+    computed: {
+        activeChatPayload: function(): any {
+            if (this.openedChats.length > 0)
+                return this.activeChat.payload;
+            else return undefined;
+        }
+    } ,
     methods: {
         SendMessageForward(eventData: any): void {
             this.$emit('sendMessage', eventData);

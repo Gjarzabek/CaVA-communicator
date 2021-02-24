@@ -11,18 +11,14 @@
             </div>
         </div>
         <div v-if="!hidden" class="list">
-            <div v-for="item in ItemList" v-bind:key="item.id" class="item">
-                <div v-if="isFriend" class="friend">
-                    <div class="statusDot" :class="item.status"></div>
-                </div>
+            <div v-for="item in ItemList" v-bind:key="item.id" :class="{ item : !isChat}">
+                <ChatItem v-if="isChat" :chat="item"/>
+                <FriendItem v-if="isFriend" :friend="item" @newChat="newChatRequest(item)"/>
                 <div v-if="isPrivateRoom" class="privateRoom">
                     <img src='../../assets/privateroom.png' alt="..." class="infoIcon">
                 </div>
                 <div v-if="isPublicTalk" class="publicTalk">
                     <img src='../../assets/publicroom.png' alt="..." class="infoIcon">
-                </div>
-                <div class='name'>
-                    {{item.name}}
                 </div>
             </div>
         </div>
@@ -30,11 +26,13 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue' 
+import { defineComponent } from 'vue';
+import FriendItem from '@/components/LeftPanel/FriendItem.vue';
+import ChatItem from '@/components/LeftPanel/ChatItem.vue';
 
 export default defineComponent({
   props: ["header", "ItemList", "type"],
-  components: {},
+  components: {FriendItem, ChatItem},
   data() {
       return {
           hidden: true
@@ -53,9 +51,15 @@ export default defineComponent({
 
           }
           this.hidden = !this.hidden;
+      },
+      newChatRequest(user: any) {
+        this.$emit('newChat', user)
       }
   },
   computed: {
+        isChat: function(): boolean {
+            return this.type === "chat";
+        },
         isFriend: function(): boolean {
             return this.type === "friend";
         },
@@ -100,7 +104,7 @@ export default defineComponent({
 }
 
 .list {
-    margin-top: 2.2vh;
+    margin-top: 1.8vh;
     transition: 1s;
 }
 
@@ -113,23 +117,6 @@ export default defineComponent({
     margin-left: 5%;
     cursor:default;
     width: 11.5vw;
-}
-
-.statusDot {
-    position: relative;
-    border-radius: 100%;
-    margin-left: 2vw;
-    top: 1.3vh;
-    width: 1.4vh;
-    height: 1.4vh;
-}
-
-.name {
-    position: absolute;
-    top: 1vh;
-    left: 3.4vw;
-    color: #C6BDBD;
-    font: 1.8vh NovaFlat;
 }
 
 .item {

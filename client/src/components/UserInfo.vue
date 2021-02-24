@@ -1,7 +1,7 @@
 <template>
     <div id="user">
         <div id="iconBg">
-            <img src="../../assets/fsociety.png" alt=".." id='fsocietyIcon'>
+            <img src="../assets/fsociety.png" alt=".." id='fsocietyIcon'>
         </div>
         <div id="userInfo">
             <div id="statusDot" :class="user.status"></div>
@@ -70,10 +70,10 @@ export default defineComponent({
     position: absolute;
     top: 0;
     left: 0;
-    width: 15%;
-    height: 100%;
-    background-color: #a7a7a7;
-    border-right: ridge 3px #242222;
+    width: 15vw;
+    height: 9vh;
+    background-color: #242222;
+    border-right: solid 0.2vw #3B3939;
 }
 
 #userInfo {
@@ -92,11 +92,12 @@ export default defineComponent({
     width: 9vw;
     top: 0%;
     left: 9%;
+    color: rgb(182, 182, 182);
     cursor: pointer;
 }
 
 #nick:hover {
-    background-color: #afafaf;
+    background-color: #353535;
 }
 
 #nick:active {
@@ -111,7 +112,7 @@ export default defineComponent({
     position: absolute;
     top: 36%;
     font: 1.8vh Courier;
-    color: rgb(47, 46, 46);
+    color: rgb(182, 182, 182);
 }
 
 #desc {
@@ -119,6 +120,7 @@ export default defineComponent({
     top: 65%;
     font: 95% NovaFlat;
     border: none;
+    color: rgb(182, 182, 182);
     width: 100%;
 }
 

@@ -7,7 +7,7 @@
             </div>
         </div>
         <div v-else>
-            <img src="../../assets/encryptedData.png" alt="..." class="chatIcon">
+            <img src="../../assets/lockedChat.png" alt="..." class="chatIcon">
             <img src="../../assets/locked.png" alt="..." class="lockedIcon">
             <div class="encrypted">
                 Zaszyfrowane

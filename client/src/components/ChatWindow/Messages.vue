@@ -1,7 +1,7 @@
 <template>
     <div>
         <div class="messages">
-            <div v-for="message in messages.payload" v-bind:key="message.timestamp" class="MessageBody">
+            <div v-for="message in messages" v-bind:key="message.timestamp" class="MessageBody">
                 <div class="bgEllipse"></div>
                 <div class="userName">{{message.who}}</div>
                 <div class="messageData">{{message.data}}</div>
