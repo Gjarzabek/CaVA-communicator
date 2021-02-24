@@ -12,7 +12,7 @@
         </div>
         <div v-if="!hidden" class="list">
             <div v-for="item in ItemList" v-bind:key="item.id" :class="{ item : !isChat}">
-                <ChatItem v-if="isChat" :chat="item"/>
+                <ChatItem v-if="isChat" :chat="item" @openChat="ForwardChatOpen"/>
                 <FriendItem v-if="isFriend" :friend="item" @newChat="newChatRequest(item)"/>
                 <div v-if="isPrivateRoom" class="privateRoom">
                     <img src='../../assets/privateroom.png' alt="..." class="infoIcon">
@@ -54,6 +54,9 @@ export default defineComponent({
       },
       newChatRequest(user: any) {
         this.$emit('newChat', user)
+      },
+      ForwardChatOpen(event: any): void {
+        this.$emit('openChat', event);
       }
   },
   computed: {

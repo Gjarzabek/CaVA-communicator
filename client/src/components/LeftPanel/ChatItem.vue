@@ -1,5 +1,5 @@
 <template>
-    <div class="chat">
+    <div class="chat" @click=mainClicked>
         <div v-if="isCommonChat">
             <img src="../../assets/commonChat.png" alt="..." class="chatIcon smaller">
         </div>
@@ -44,6 +44,11 @@ export default defineComponent({
         demoMess: function(): string {
             return this.chat.payload[0].data.substring(0, 20);
         }
+    },
+    methods: {
+        mainClicked(): void {
+            this.$emit('openChat', this.chat.id);
+        }
     }
 })
 </script>
@@ -64,7 +69,7 @@ export default defineComponent({
 
 .name {
     position: absolute;
-    top: 0.2vh;
+    top: 0.25vh;
     left: 20%;
     color: #C6BDBD;
     font: 1.7vh NovaFlat;
@@ -77,17 +82,16 @@ export default defineComponent({
     left: 0.5vh;
     width: 14.5vw;
     height: 5vh;
-    border: 1px solid rgba(81, 95, 138, 0.473);
     border-radius: 4px;
 }
 
 .chat:hover {
-    background-color: rgba(81, 95, 138, 0.205);
+    background-color: #262525;
 }
 
 .messData {
     position: absolute;
-    bottom: 0.2vh;
+    bottom: 0.55vh;
     left: 20%;
     color: #54aec5f3;
     font: 1.5vh NovaFlat;

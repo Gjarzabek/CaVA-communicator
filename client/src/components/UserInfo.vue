@@ -80,8 +80,8 @@ export default defineComponent({
     text-align: left;
     box-sizing: content-box;
     position: absolute;
-    top: 10%;
-    left: 30%;
+    top: 11%;
+    left: 34%;
     width: 65%;
     height: 80%;
 }
@@ -168,7 +168,7 @@ export default defineComponent({
     position: absolute;
     top: 0.7vh;
     left: 2vw;
-    font: 2vh NovaSquare;
+    font: 1.7vh NovaSquare;
 }
 
 </style>

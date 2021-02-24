@@ -1,8 +1,16 @@
 <template>
     <div class="ChatSection">
         <div class="openedChats">
-            <div v-for="chat in openedChats" v-bind:key="chat.id" class="chatBarItem" :class="{ 'active' : chat.id === this.activeChat.id}">
-                <ChatBar :chatInfo="chat" @signalActive="changeActiveChat"/>                
+            <div 
+            v-for="chat in openedChats" v-bind:key="chat.id"
+            class="chatBarItem" 
+            :class="{ 'active' : chat.id === activeChatId}"
+            >
+                <ChatBar 
+                :chatInfo="chat"
+                @signalActive="changeActiveChat"
+                @closeBar="forwardCloseEvent"
+                />                
             </div>
         </div>
         <Messages :messages="activeChatPayload"/>
@@ -17,17 +25,20 @@ import ChatBar from "@/components/ChatWindow/ChatBar.vue";
 import Messages from "@/components/ChatWindow/Messages.vue";
 
 export default defineComponent({
-    props: ["openedChats"],
+    props: ["openedChats", "activeChatId"],
     components: {MessageInput, ChatBar, Messages},
-    data() {
-        return {
-            activeChat: this.openedChats[0]
-        }
-    },
     computed: {
         activeChatPayload: function(): any {
-            if (this.openedChats.length > 0)
-                return this.activeChat.payload;
+            console.log('chsec this.activeChatId', this.activeChatId);
+            if (this.openedChats.length > 0) {
+                const idmatch = (chat:any) => {
+                    return chat.id === this.activeChatId;
+                };
+
+                const el = this.openedChats.find(idmatch);
+                
+                return el.payload;
+            }
             else return undefined;
         }
     } ,
@@ -35,8 +46,11 @@ export default defineComponent({
         SendMessageForward(eventData: any): void {
             this.$emit('sendMessage', eventData);
         },
-        changeActiveChat(chat: any): void {
-            this.activeChat = chat;
+        changeActiveChat(chatId: number): void {
+            this.$emit('changeActiveChat', chatId);
+        },
+        forwardCloseEvent(chatId: number): void {
+            this.$emit('closeBar', chatId);
         }
     }
 })
@@ -48,7 +62,7 @@ export default defineComponent({
     position: absolute;
     width: 100%;
     max-height: 5vh;
-    top: 0;
+    top: 1px;
     left: 0;
     display: flex;
     overflow-x: auto;
@@ -56,6 +70,8 @@ export default defineComponent({
 
 
 .openedChats .chatBarItem {
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
     box-sizing: border-box;
     border-right: 2px solid #242222;
     position: relative;
@@ -66,20 +82,24 @@ export default defineComponent({
     text-align: center;
 }
 
+.openedChats .chatBarItem:hover {
+    border-bottom: 2px solid #ddd;
+}
+
 .openedChats::-webkit-scrollbar {
     width: 0;
 }
 
 .ChatSection {
     position: absolute;
-    top: 9%;
+    top: 6%;
     left:15%;
-    height: 91%;
+    height: 94%;
     width: 70%;
 }
 
 .openedChats .active {
-    background-color: #ebebebe5;
+    background-color: #ddd;
 }
 
 </style>

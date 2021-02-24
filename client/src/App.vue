@@ -38,7 +38,7 @@ body {
 }
 
 .niedostępny {
-  background-color: #050505;
+  background-color: #0f0f0f;
 }
 
 .zaraz-wracam {

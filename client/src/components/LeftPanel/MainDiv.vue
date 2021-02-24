@@ -1,7 +1,7 @@
 <template>
     <div id="main">
         <div v-for="params in ListParams" v-bind:key="params.header">
-          <HiddenList :header="params.header" :ItemList="params.payload" :type="params.type" @newChat="ForwardNewChat"/>
+          <HiddenList :header="params.header" :ItemList="params.payload" :type="params.type" @newChat="ForwardNewChat" @openChat="ForwardChatOpen"/>
         </div>
     </div>
 </template>
@@ -26,6 +26,9 @@ export default defineComponent({
   methods: {
     ForwardNewChat(event: any): void {
       this.$emit('newChat', event);
+    },
+    ForwardChatOpen(event: any): void {
+      this.$emit('openChat', event);
     }
   }
 })

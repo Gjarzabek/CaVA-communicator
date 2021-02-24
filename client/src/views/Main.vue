@@ -3,8 +3,14 @@
         <UserInfo v-bind:user="user" @statusChange="changeUserStatus"/>
         <TopPanel v-bind:chats="chatHistory"/>
         <UsersOnline v-bind:Users="filteredUsers" @search="changeSearch"/>
-        <ChatSection v-bind:openedChats="openedChats" @sendMessage="sendMessage"/>
-        <FriendsNRooms :friends="sortedFriends" :chats="chats" @newChat="newChatRequest"/>
+        <ChatSection 
+        :openedChats="openedChats"
+        :activeChatId="activeChatId"
+        @sendMessage="sendMessage"
+        @changeActiveChat="changeActive"
+        @closeBar="closeBar"
+        />
+        <FriendsNRooms :friends="sortedFriends" :chats="chats" @newChat="newChatRequest" @openChat="openChatReq"/>
         <div v-if="chatSelect">
             <ChatSelect/>
         </div>
@@ -49,17 +55,15 @@ const statusOrder = (a: any, b: any) => {
                 {id:2, receiver: "Sjergiej", chatType: "SzyfrowanyHasłem", payload:[{who:"ty",timestamp:0.2, data:"hi"}, {who:"oni", timestamp:1, data:"okoFoko"}]},
                 {id:4, receiver: "Gocha", chatType: "Zwykły", payload:[{who:"ty",timestamp:1, data:"czesc"}, {who:"oni", timestamp:3, data:"hej"}]},
             ],
-            openedChats: [
-                /*{id:4, receiver: "Gocha", chatType: "Zwykły", payload:[{who:"ty",timestamp:1, data:"czesc"}, {who:"oni", timestamp:3, data:"hej"}]},
-                {id:2, receiver: "Sjergiej", chatType: "SzyfrowanyHasłem", payload:[{who:"ty",timestamp:0.2, data:"hi"}, {who:"oni", timestamp:1, data:"okoFoko"}]}*/
-            ],
+            openedChats: [],
             chats: [
                 {id:2, receiver: "Sjergiej", chatType: "SzyfrowanyHasłem", payload:[{who:"ty",timestamp:0.2, data:"hi"}, {who:"oni", timestamp:1, data:"okoFoko"}]},
                 {id:4, receiver: "Gocha", chatType: "Szyfrowany", payload:[{who:"ty",timestamp:1432, data:"Co tam mordzia"}, {who:"oni", timestamp:334, data:"lalalal"}]},
-                {id:4, receiver: "Gocha", chatType: "Zwykły", payload:[{who:"ty",timestamp:1, data:"czesc"}, {who:"oni", timestamp:3, data:"hej"}]}
+                {id:7, receiver: "Gocha", chatType: "Zwykły", payload:[{who:"ty",timestamp:1, data:"czesc"}, {who:"oni", timestamp:3, data:"hej"}]}
             ],
             chatSelect: false,
-            userSelected: undefined
+            userSelected: undefined,
+            activeChatId: undefined
       }
   },
   components: {
@@ -78,7 +82,7 @@ const statusOrder = (a: any, b: any) => {
     },
     sortedFriends: function(): any {
         return this.friends.sort(statusOrder);
-    }
+    },
   },
   methods: {
       changeSearch(newSearch: string) {
@@ -101,6 +105,37 @@ const statusOrder = (a: any, b: any) => {
           this.chatSelect = true;
           this.userSelected = user;
           console.log('UserSelected', this.userSelected);
+      },
+      openChatReq(chatId: number): void {
+        const id: number = this.openedChats.find((chat: any)=> chat.id === chatId);
+        if (id === undefined) {
+            const chat = this.chats.find((chat: any) => chat.id === chatId);
+            if (chat === undefined)
+                return;
+            this.openedChats.push(chat);
+        }
+        this.changeActive(chatId);
+      },
+      changeActive(chatId: number): void {
+          this.activeChatId = chatId;
+      },
+      closeBar(chatId: any): void {
+        console.log("DeleteId",chatId);
+        console.log("activ:", this.activeChatId);
+        console.log("openedChats", this.openedChats);
+        this.openedChats = this.openedChats.filter((el:any) => {
+            return el.id !== chatId;
+        });
+        if (chatId === this.activeChatId) {
+            if (this.openedChats.length === 0) {
+                this.activeChatId = undefined;
+            }
+            else {
+                this.activeChatId = this.openedChats[0].id;
+            }
+        }
+        console.log("activ:", this.activeChatId);
+        console.log("openedChats", this.openedChats);
       }
   }
 })
