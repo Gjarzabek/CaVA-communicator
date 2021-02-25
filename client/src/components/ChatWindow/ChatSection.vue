@@ -29,7 +29,6 @@ export default defineComponent({
     components: {MessageInput, ChatBar, Messages},
     computed: {
         activeChatPayload: function(): any {
-            console.log('chsec this.activeChatId', this.activeChatId);
             if (this.openedChats.length > 0) {
                 const idmatch = (chat:any) => {
                     return chat.id === this.activeChatId;
@@ -67,7 +66,6 @@ export default defineComponent({
     display: flex;
     overflow-x: auto;
 }
-
 
 .openedChats .chatBarItem {
     border-top-left-radius: 8px;

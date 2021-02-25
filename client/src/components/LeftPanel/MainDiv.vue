@@ -1,7 +1,14 @@
 <template>
     <div id="main">
         <div v-for="params in ListParams" v-bind:key="params.header">
-          <HiddenList :header="params.header" :ItemList="params.payload" :type="params.type" @newChat="ForwardNewChat" @openChat="ForwardChatOpen"/>
+          <HiddenList
+          :header="params.header"
+          :ItemList="params.payload"
+          :type="params.type"
+          @newChat="ForwardNewChat"
+          @openChat="ForwardChatOpen"
+          @userClicked="userClickHandler"
+          />
         </div>
     </div>
 </template>
@@ -24,12 +31,15 @@ export default defineComponent({
       }
   },
   methods: {
+    userClickHandler(event: any) :void {
+      this.$emit('userClick', event);
+    },
     ForwardNewChat(event: any): void {
       this.$emit('newChat', event);
     },
     ForwardChatOpen(event: any): void {
       this.$emit('openChat', event);
-    }
+    },
   }
 })
 </script>
@@ -37,13 +47,13 @@ export default defineComponent({
 <style scoped>
 
 #main {
-    position: absolute;
-    left: 0%;
-    top: 9%;
-    width: 15%;
-    height: 91%;
-    background-color: #3B3939;
-    overflow-y: auto;
+  position: absolute;
+  left: 0%;
+  top: 9%;
+  width: 15%;
+  height: 91%;
+  background-color: #3B3939;
+  overflow-y: auto;
 }
 
 </style>

@@ -33,4 +33,11 @@ export default defineComponent({
     color: #C6BDBD;
     font: 1.8vh NovaFlat;
 }
+
+.friend {
+    position: relative;
+    height: 4vh;
+    border-radius: 8px;
+}
+
 </style>

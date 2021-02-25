@@ -13,7 +13,7 @@
         <div v-if="!hidden" class="list">
             <div v-for="item in ItemList" v-bind:key="item.id" :class="{ item : !isChat}">
                 <ChatItem v-if="isChat" :chat="item" @openChat="ForwardChatOpen"/>
-                <FriendItem v-if="isFriend" :friend="item" @newChat="newChatRequest(item)"/>
+                <FriendItem v-if="isFriend" :friend="item" @click="userClicked($event, item)"/>
                 <div v-if="isPrivateRoom" class="privateRoom">
                     <img src='../../assets/privateroom.png' alt="..." class="infoIcon">
                 </div>
@@ -52,8 +52,8 @@ export default defineComponent({
           }
           this.hidden = !this.hidden;
       },
-      newChatRequest(user: any) {
-        this.$emit('newChat', user)
+      userClicked(event: any, item: any) {
+        this.$emit('userClicked', [event, item]);
       },
       ForwardChatOpen(event: any): void {
         this.$emit('openChat', event);
@@ -127,6 +127,7 @@ export default defineComponent({
     margin-top: 0.5vh;
     width: 15vw;
     height: 4vh;
+    border-radius: 10px;
 }
 
 .item:hover {

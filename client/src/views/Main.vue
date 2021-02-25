@@ -10,9 +10,20 @@
         @changeActiveChat="changeActive"
         @closeBar="closeBar"
         />
-        <FriendsNRooms :friends="sortedFriends" :chats="chats" @newChat="newChatRequest" @openChat="openChatReq"/>
+        <FriendsNRooms
+        :friends="sortedFriends"
+        :chats="chats"
+        @newChat="newChatRequest"
+        @openChat="openChatReq"
+        @userClick="userClickHandler"
+        />
         <div v-if="chatSelect">
             <ChatSelect/>
+        </div>
+        <div id="userMenu">
+            <UserMenu
+            :user="UserMenu.user"
+            @newChatRequest="newChatRequest"/>
         </div>
     </div>
 </template>
@@ -24,7 +35,9 @@ import UsersOnline from "@/components/RightBar/UsersOnline.vue";
 import TopPanel from "@/components/TopPanel/Panel.vue";
 import FriendsNRooms from "@/components/LeftPanel/MainDiv.vue";
 import ChatSection from "@/components/ChatWindow/ChatSection.vue";
-import ChatSelect from "@/components/ChatSelect.vue";
+import ChatSelect from "@/components/PopUps/ChatSelect.vue";
+import UserMenu from "@/components/PopUps/UserMenu.vue"
+
 import {getStatusPoint} from "@/DataTypes/User.ts";
 
 const statusOrder = (a: any, b: any) => {
@@ -63,7 +76,11 @@ const statusOrder = (a: any, b: any) => {
             ],
             chatSelect: false,
             userSelected: undefined,
-            activeChatId: undefined
+            activeChatId: undefined,
+            UserMenu: {
+                show: false,
+                user: undefined
+            }
       }
   },
   components: {
@@ -72,7 +89,8 @@ const statusOrder = (a: any, b: any) => {
     FriendsNRooms,
     ChatSection,
     ChatSelect,
-    UserInfo
+    UserInfo,
+    UserMenu
   },
   computed: {
     filteredUsers: function(): any {
@@ -85,59 +103,89 @@ const statusOrder = (a: any, b: any) => {
     },
   },
   methods: {
-      changeSearch(newSearch: string) {
-          this.chatUsers.sort((a: any, b: any) => {
-                if (getStatusPoint(a.status) > getStatusPoint(b.status))
-                    return 1;
-                else
-                    return -1;
-          });
-          this.search = newSearch;
-      },
-      changeUserStatus(newStatus: string): void {
-          this.user.status = newStatus;
-      },
-      sendMessage(message: string): void {
-          //websocket message send
-          console.log(message);
-      },
-      newChatRequest(user: any): void {
-          this.chatSelect = true;
-          this.userSelected = user;
-          console.log('UserSelected', this.userSelected);
-      },
-      openChatReq(chatId: number): void {
-        const id: number = this.openedChats.find((chat: any)=> chat.id === chatId);
-        if (id === undefined) {
-            const chat = this.chats.find((chat: any) => chat.id === chatId);
-            if (chat === undefined)
-                return;
-            this.openedChats.push(chat);
-        }
-        this.changeActive(chatId);
-      },
-      changeActive(chatId: number): void {
-          this.activeChatId = chatId;
-      },
-      closeBar(chatId: any): void {
-        console.log("DeleteId",chatId);
-        console.log("activ:", this.activeChatId);
-        console.log("openedChats", this.openedChats);
-        this.openedChats = this.openedChats.filter((el:any) => {
-            return el.id !== chatId;
-        });
-        if (chatId === this.activeChatId) {
-            if (this.openedChats.length === 0) {
-                this.activeChatId = undefined;
+        changeSearch(newSearch: string) {
+            this.chatUsers.sort((a: any, b: any) => {
+                    if (getStatusPoint(a.status) > getStatusPoint(b.status))
+                        return 1;
+                    else
+                        return -1;
+            });
+            this.search = newSearch;
+        },
+        changeUserStatus(newStatus: string): void {
+            this.user.status = newStatus;
+        },
+        sendMessage(message: string): void {
+            //websocket message send
+            console.log(message);
+        },
+        newChatRequest(event: any): void {
+            this.chatSelect = true;
+            this.userSelected = this.UserMenu.user;
+
+            const menuDiv = document.getElementById("userMenu");
+            menuDiv!.style.display = "none";
+            this.UserMenu.show = false;
+
+            console.log('UserSelected', this.userSelected);
+        },
+        openChatReq(chatId: number): void {
+            const id: number = this.openedChats.find((chat: any)=> chat.id === chatId);
+            if (id === undefined) {
+                const chat = this.chats.find((chat: any) => chat.id === chatId);
+                if (chat === undefined)
+                    return;
+                this.openedChats.push(chat);
+            }
+            this.changeActive(chatId);
+        },
+        changeActive(chatId: number): void {
+            this.activeChatId = chatId;
+        },
+        closeBar(chatId: any): void {
+            this.openedChats = this.openedChats.filter((el:any) => {
+                return el.id !== chatId;
+            });
+            if (chatId === this.activeChatId) {
+                if (this.openedChats.length === 0) {
+                    this.activeChatId = undefined;
+                }
+                else {
+                    this.activeChatId = this.openedChats[0].id;
+                }
+            }
+        },
+        userClickHandler(event: any): void {
+            const eventData = event[0];
+            const userData = event[1];
+            const menuDiv = document.getElementById("userMenu");
+            if (!this.UserMenu.show ) {
+                menuDiv!.style.display = "table";
+                menuDiv!.style.top = `${eventData.y}px`;
+                this.UserMenu.show = true;
+                this.UserMenu.user = userData;
+            }
+            else if (userData.id === this.UserMenu.user.id ){
+                menuDiv!.style.display = "none";
+                this.UserMenu.show = false;
             }
             else {
-                this.activeChatId = this.openedChats[0].id;
+                this.UserMenu.user = userData;
+                menuDiv!.style.top = `${eventData.y}px`;
             }
         }
-        console.log("activ:", this.activeChatId);
-        console.log("openedChats", this.openedChats);
-      }
   }
 })
 export default class Main extends Vue {}
 </script>
+
+<style scoped>
+
+#userMenu {
+  display: none;
+  position:absolute;
+  left: 12vw;
+  width: 10vw;
+}
+
+</style>
