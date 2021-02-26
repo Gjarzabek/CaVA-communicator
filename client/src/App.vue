@@ -9,16 +9,52 @@
 
 <style>
 
+@font-face {
+    font-family: NovaFlat;
+    src: url(assets/NovaFlat-Regular.ttf);
+}
+
+@font-face {
+    font-family: NovaCut;
+    src: url(assets/NovaCut-Regular.ttf);
+}
+
+@font-face {
+    font-family: NovaScript;
+    src: url(assets/NovaScript-Regular.ttf);
+}
+
+@font-face {
+    font-family: NovaSquare;
+    src: url(assets/NovaSquare-Regular.ttf);
+}
+
 body {
-    background-color: #1F2429;
+  background-color: #242222;
+}
+
+.dostępny {
+  background-color: #63dd33;
+}
+
+.niedostępny {
+  background-color: #0f0f0f;
+}
+
+.zaraz-wracam {
+  background-color: #e69e32;
+}
+
+.zajęty {
+  background-color: #e64444;
 }
 
 #app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
+  font-family: NovaFlat, NovaCut, NovaScript, NovaSquare;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
-  color: #2c3e50;
+  cursor:default;
 }
 
 #nav {
