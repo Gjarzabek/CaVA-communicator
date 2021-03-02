@@ -52,6 +52,7 @@ export default defineComponent({
     font: 2.2vh NovaFlat;
     color: #ffffffde;
     text-indent: 1vw;
+    transition: 0.5s;
 }
 
 </style>

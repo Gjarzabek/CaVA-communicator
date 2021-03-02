@@ -29,8 +29,38 @@
     src: url(assets/NovaSquare-Regular.ttf);
 }
 
+@font-face {
+    font-family: Sen;
+    src: url(assets/Sen-Regular.ttf);
+}
+
 body {
   background-color: #242222;
+}
+
+.arrow {
+  transition: 0.2s;
+  border: solid #C6BDBD;
+  border-width: 0 3px 3px 0;
+  display: inline-block;
+  padding: 3px;
+  margin-bottom: 1%;
+}
+
+.right {
+  transform: rotate(-45deg);
+  -webkit-transform: rotate(-45deg);
+}
+
+.down {
+  transform: rotate(45deg);
+  margin-bottom: 2%;
+  -webkit-transform: rotate(45deg);
+}
+  
+.up {
+  transform: rotate(-135deg);
+  -webkit-transform: rotate(-135deg);
 }
 
 .dostępny {

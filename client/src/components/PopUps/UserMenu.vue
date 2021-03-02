@@ -32,14 +32,14 @@ export default defineComponent({
     box-sizing: border-box;
     position: relative;
     height: 2.5vh;
-    background-color: #54aec5;
+    background-color: #dfdfdf;
     color: rgb(34, 34, 34);
     border-radius: 2px;
     border: 2px solid rgb(126, 126, 126);
 }
 
 .opcja:hover {
-    background-color: #54aec5d3;
+    background-color: #6ccde6;
 }
 
 </style>

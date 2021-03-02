@@ -1,7 +1,7 @@
 <template>
     <div>
-        <UserInfo v-bind:user="user" @statusChange="changeUserStatus"/>
-        <TopPanel v-bind:chats="chatHistory"/>
+        <UserInfo v-bind:user="user" @statusChange="changeUserStatus" @descChange="changeUserDesc" @iconChange="changeUserIcon"/>
+        <TopPanel v-bind:chats="chatHistory" :notifications="notifications"/>
         <UsersOnline v-bind:Users="filteredUsers" @search="changeSearch"/>
         <ChatSection 
         :openedChats="openedChats"
@@ -18,7 +18,7 @@
         @userClick="userClickHandler"
         />
         <div v-if="chatSelect">
-            <ChatSelect/>
+            <ChatSelect @signalClose="chatSelect=false"/>
         </div>
         <div id="userMenu">
             <UserMenu
@@ -56,7 +56,7 @@ const statusOrder = (a: any, b: any) => {
       return {
             chatUsers: [].sort(statusOrder),
             search: "",
-            user: {id:1, name:"Grzesiek", status:"dostępny", desc:"Slawa Bracia!"},
+            user: {id:1, name:"Grzesiek", status:"dostępny", desc:"Slawa Bracia!", icon:"bird"},
             friends: [
                 {id:2, name:"Bacha", status:"dostępny", desc:"Slawa Bracia!"},
                 {id:56, name:"Daro", status:"zaraz-wracam", desc:"Slawa Bracia!"},
@@ -80,7 +80,11 @@ const statusOrder = (a: any, b: any) => {
             UserMenu: {
                 show: false,
                 user: undefined
-            }
+            },
+            notifications: [
+                {id:1, info: "Tajna wiadomość", from:"Lidka", type:"secretMess"},
+                {id:2, info: "Zaproszenie do Unikalnego chatu od Sjergieja", from: "sjergiej", type:"uniqueMess"}
+            ]
       }
   },
   components: {
@@ -114,6 +118,12 @@ const statusOrder = (a: any, b: any) => {
         },
         changeUserStatus(newStatus: string): void {
             this.user.status = newStatus;
+        },
+        changeUserDesc(newDesc: string): void {
+            this.user.desc = newDesc;
+        },
+        changeUserIcon(newIconName: string): void {
+            this.user.icon = newIconName;
         },
         sendMessage(message: string): void {
             //websocket message send
