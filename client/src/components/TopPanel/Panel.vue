@@ -21,7 +21,7 @@ import { defineComponent } from 'vue'
 import Notification from '@/components/TopPanel/Notification.vue';
 
 export default defineComponent({
-  props: ["chats", "notifications"],
+  props: ["notifications"],
   components: {Notification},
   data() {
     return {
@@ -75,8 +75,11 @@ export default defineComponent({
   height: 50%;
   background-color: rgb(77, 77, 77);
   color: #62FFE7;
-  font-size: 1.4vh;
+  font: 1.4vh NovaFlat;
   text-align: center;
+  border:none;
+  outline: none;
+  border-radius: 2vh;
 }
 
 .FriendCodeInput {

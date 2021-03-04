@@ -1,7 +1,7 @@
 <template>
     <div>
         <UserInfo v-bind:user="user" @statusChange="changeUserStatus" @descChange="changeUserDesc" @iconChange="changeUserIcon"/>
-        <TopPanel v-bind:chats="chatHistory" :notifications="notifications"/>
+        <TopPanel :notifications="notifications"/>
         <UsersOnline v-bind:Users="filteredUsers" @search="changeSearch"/>
         <ChatSection 
         :openedChats="openedChats"
@@ -13,9 +13,13 @@
         <FriendsNRooms
         :friends="sortedFriends"
         :chats="chats"
+        :publicRooms="publicRooms"
+        :privateGroups="privateGroups"
         @newChat="newChatRequest"
         @openChat="openChatReq"
         @userClick="userClickHandler"
+        @joinPublic="joinPublicRoom"
+        @openPrivateTalk="openPrivateTalk"
         />
         <div v-if="chatSelect">
             <ChatSelect @signalClose="chatSelect=false"/>
@@ -40,7 +44,7 @@ import UserMenu from "@/components/PopUps/UserMenu.vue"
 
 import {getStatusPoint} from "@/DataTypes/User.ts";
 
-const statusOrder = (a: any, b: any) => {
+const statusOrder = (a: any, b: any): number => {
     if (a === undefined)
         return 1;
     if (b === undefined)
@@ -64,10 +68,6 @@ const statusOrder = (a: any, b: any) => {
                 {id:42, name:"Jaca",status:"dostępny", desc:"Slawa Bracia!"},
                 {id:75, name:"Gocha", status:"zajęty", desc:"Status.."}
             ],
-            chatHistory: [
-                {id:2, receiver: "Sjergiej", chatType: "SzyfrowanyHasłem", payload:[{who:"ty",timestamp:0.2, data:"hi"}, {who:"oni", timestamp:1, data:"okoFoko"}]},
-                {id:4, receiver: "Gocha", chatType: "Zwykły", payload:[{who:"ty",timestamp:1, data:"czesc"}, {who:"oni", timestamp:3, data:"hej"}]},
-            ],
             openedChats: [],
             chats: [
                 {id:2, receiver: "Sjergiej", chatType: "SzyfrowanyHasłem", payload:[{who:"ty",timestamp:0.2, data:"hi"}, {who:"oni", timestamp:1, data:"okoFoko"}]},
@@ -84,6 +84,17 @@ const statusOrder = (a: any, b: any) => {
             notifications: [
                 {id:1, info: "Tajna wiadomość", from:"Lidka", type:"secretMess"},
                 {id:2, info: "Zaproszenie do Unikalnego chatu od Sjergieja", from: "sjergiej", type:"uniqueMess"}
+            ],
+            privateGroups: [
+                {id:1, name:"Spotkania-Szachy", isSecret: false},
+                {id:2, name:"FightClub", isSecret: false},
+                {id:3, name:"GrupaZadaniowa", isSecret: true},
+            ],
+            publicRooms: [
+                {id:1, name:"Wiadomości", capacity: 500, currentPpl: 0},
+                {id:2, name:"Kupie-Sprzedam", capacity: 500, currentPpl: 0},
+                {id:3, name:"JednoczymySię", capacity: 250, currentPpl: 0},
+                {id:4, name:"Białobrzegi", capacity: 100, currentPpl: 0},
             ]
       }
   },
@@ -165,6 +176,9 @@ const statusOrder = (a: any, b: any) => {
                 }
             }
         },
+        addChatBar(): void {
+            return; // TODO refactor - add public/private rooms conversations to openChats
+        },
         userClickHandler(event: any): void {
             const eventData = event[0];
             const userData = event[1];
@@ -183,6 +197,22 @@ const statusOrder = (a: any, b: any) => {
                 this.UserMenu.user = userData;
                 menuDiv!.style.top = `${eventData.y}px`;
             }
+        },
+        joinPublicRoom(room: any): void {
+            console.log("Join public room:", room.name);
+        },
+        openPrivateTalk(room: any): void {
+            if (room.isSecret === true) {
+                console.log("Secret group:", room.name);
+                // TODO - input password to encrypt and then open chat window
+                return;
+            }
+            else {
+                // TODO - open chat window
+                console.log("Common group:", room.name);
+                return;
+            }
+
         }
   }
 })

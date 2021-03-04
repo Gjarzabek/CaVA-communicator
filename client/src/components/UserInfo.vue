@@ -101,7 +101,7 @@ export default defineComponent({
 
 .descInput {
     position: absolute;
-    top: 7vh;
+    top: 8vh;
     left: 5vw;
     z-index: 2;
     font: 1.8vh NovaFlat;
@@ -119,6 +119,11 @@ export default defineComponent({
     width: 6.5vh;
     height: 6.5vh;
     background-color: #ffffff1f;
+}
+
+#iconBg:hover {
+    background-color: #353535;
+    
 }
 
 #fsocietyIcon {
@@ -187,6 +192,10 @@ export default defineComponent({
     color: rgb(182, 182, 182);
     cursor: pointer;
     width: 100%;
+}
+
+#desc:hover {
+    background-color: #353535;
 }
 
 #statusDot {

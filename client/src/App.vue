@@ -72,7 +72,7 @@ body {
 }
 
 .zaraz-wracam {
-  background-color: #e69e32;
+  background-color: #ff9900;
 }
 
 .zajęty {
