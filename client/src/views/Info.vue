@@ -92,9 +92,8 @@ export default class Main extends Vue {}
 }
 
 .info p {
-    font: 2.4vh Courier;
+    font: 2.4vh Sen;
     margin: 8vh;
-    line-height: 5vh;
     margin-bottom: 15vh;
 }
 
@@ -109,9 +108,8 @@ export default class Main extends Vue {}
 }
 
 .plain {
-    font: 2.4vh Courier;
+    font: 2.4vh Sen;
     margin: 8vh;
-    line-height: 5vh;
     margin-bottom: 15vh; 
 }
 
