@@ -1,6 +1,5 @@
 <template>
     <div>
-        <Navi />
         <div class="info">
             <h2>Funkcje Aplikacji</h2>
             <div class="plain">

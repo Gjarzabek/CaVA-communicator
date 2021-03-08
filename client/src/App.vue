@@ -1,11 +1,37 @@
 <template>
-  <!--
-  <div id="nav">
-    <router-link to="/">Home</router-link> |
-    <router-link to="/main">Main</router-link>
-  </div>-->
-  <router-view />
+  <div>
+    <Navi v-if="!appOpened" @login="showLogin"/>
+    <router-view @login="showLogin"/>
+    <LoginPanel :show="loginVisable"/>
+  </div>
 </template>
+
+<script lang="ts">
+import { defineComponent } from 'vue';
+import LoginPanel from "@/components/LandingPage/LoginPanel.vue";
+import Navi from "@/components/LandingPage/Navi.vue";
+
+export default defineComponent({
+    props: [],
+    components: {Navi, LoginPanel},
+    data() {
+      return {
+        loginVisable:false
+      };
+    },
+    methods: {
+      showLogin() {
+        this.loginVisable = true;
+      }
+    },
+    computed: {
+      appOpened: function() : boolean {
+        console.log(this.$route.name);
+        return this.$route.name === "Main";
+      }
+    }
+})
+</script>
 
 <style>
 

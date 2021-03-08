@@ -5,7 +5,7 @@
         <div id="features" class="navilink" @click="goFeatures">Funkcje</div>
         <div id="how" class="navilink" @click="goInfo">Jak to działa ?</div>
         <div id="about" class="navilink" @click="goAbout">O nas</div>
-        <button id="openapp" class="openAppBtn" @click="goApp">Otwórz Chat</button>
+        <button id="openapp" class="openAppBtn" @click="openLogin">Zaloguj</button>
     </div>
 </template>
 
@@ -30,6 +30,9 @@ export default defineComponent({
         },
         goFeatures() {
             this.$router.push('/features');
+        },
+        openLogin() {
+            this.$emit('login', 'open');
         }
     }
 })

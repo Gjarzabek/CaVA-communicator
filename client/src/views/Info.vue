@@ -1,6 +1,5 @@
 <template>
     <div>
-        <Navi />
         <div class="info" id="infoDiv">
             <h3>Jak to działa ? Czyli bezpieczeństwo</h3>
             <div class="benefit">
@@ -54,10 +53,9 @@
 
 <script lang="ts">  
 import { Options, Vue } from "vue-class-component";
-import Navi from "@/components/LandingPage/Navi.vue";
 
 @Options({
-    components: {Navi},
+    components: {},
 })
 //font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 export default class Main extends Vue {}

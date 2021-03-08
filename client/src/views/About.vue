@@ -1,6 +1,5 @@
 <template>
     <div>
-        <Navi />
         <div class="info">
             <h2>Motywacja</h2>
             <p class="p">NiezależnyChat.pl powstal w odpowiedzi na postępujące ograniczanie prywatności ludzi w internecie.
@@ -22,10 +21,9 @@
 
 <script lang="ts">  
 import { Options, Vue } from "vue-class-component";
-import Navi from "@/components/LandingPage/Navi.vue";
 
 @Options({
-    components: {Navi},
+    components: {},
 })
 
 export default class Main extends Vue {}

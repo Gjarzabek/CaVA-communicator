@@ -1,25 +1,21 @@
 <template>
     <div>
-        <Navi />
         <div class="payload">
             <h1 id="hdr">Tutaj Twoja prywatność ma znaczenie</h1>
             <p id="opis">
             Jeśli masz dość ciągłego śledzenia w internecie, szukasz pewnego kanału komunikacji lub
             tak jak My poprostu chciałbyś odzyskać kontrolę nad swoją prywatnością.
             </p>
-            <button class="openAppBtn" @click="openLogin">Otwórz Aplikacje</button>
+            <button class="openAppBtn" @click="goApp">Otwórz Aplikacje</button>
         </div>
-        <LoginPanel :show="loginVisable"/>
     </div>
 </template>
 
 <script lang="ts">  
 import { Options, Vue } from "vue-class-component";
-import Navi from "@/components/LandingPage/Navi.vue";
-import LoginPanel from "@/components/LandingPage/LoginPanel.vue";
 
 @Options({
-    components: {Navi, LoginPanel},
+    components: {},
     data() {
         return {
             loginVisable: false
