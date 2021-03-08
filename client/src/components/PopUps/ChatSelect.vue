@@ -1,7 +1,7 @@
 <template>
     <div class="popUpBg">
         <div class="popUpWindow" :class="{big: expand}">
-            <h2 id="popUpHeader">Wybierz typ chatu</h2>
+            <div id="popUpHeader">Wybierz typ chatu</div>
             <ul class="typesList">
                 <li class="chatType" :class="{active: isActive(0)}" @click="activeId=0">
                     <img src="../../assets/lockShield.png" alt="..." class="chatIcon">
@@ -140,7 +140,7 @@ export default defineComponent({
 
 .desc ul {
     height: 21vh;
-    margin-top: 5vh;
+    margin-top: 3vh;
 }
 
 .descShow {
@@ -207,11 +207,12 @@ export default defineComponent({
 }
 
 #popUpHeader {
+    position: absolute;
     color: #444444;
     text-indent: 3vh;
-    font-size: 1.8vh;
-    margin-top: 2vh;
-    margin-bottom: 1vh;
+    font: 1.8vh Sen;
+    margin: 0;
+    top: 1vh;
 }
 
 .chatType {

@@ -36,6 +36,7 @@ export default defineComponent({
     color: rgb(34, 34, 34);
     border-radius: 2px;
     border: 2px solid rgb(126, 126, 126);
+    font-size: 1.8vh;
 }
 
 .opcja:hover {
