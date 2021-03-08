@@ -60,19 +60,19 @@ const statusOrder = (a: any, b: any): number => {
       return {
             chatUsers: [].sort(statusOrder),
             search: "",
-            user: {id:1, name:"Grzesiek", status:"dostępny", desc:"Slawa Bracia!", icon:"bird"},
+            user: {id:1, name:"Grzesiek", status:"dostępny", desc:"Hej Wszystkim!", icon:"bird"},
             friends: [
-                {id:2, name:"Bacha", status:"dostępny", desc:"Slawa Bracia!"},
-                {id:56, name:"Daro", status:"zaraz-wracam", desc:"Slawa Bracia!"},
-                {id:442, name:"Sjergiej", status:"niedostępny", desc:"Status.."},
-                {id:42, name:"Jaca",status:"dostępny", desc:"Slawa Bracia!"},
-                {id:75, name:"Gocha", status:"zajęty", desc:"Status.."}
+                {id:2, name:"Bob", status:"dostępny", desc:"Hejcia"},
+                {id:56, name:"Daro", status:"zaraz-wracam", desc:"Pozdrawiam!"},
+                {id:442, name:"Kacper", status:"niedostępny", desc:"Status.."},
+                {id:42, name:"Jaca",status:"dostępny", desc:"SiemankoOoo :)"},
+                {id:75, name:"Alice", status:"zajęty", desc:"Status.."}
             ],
             openedChats: [],
             chats: [
-                {id:2, receiver: "Sjergiej", chatType: "SzyfrowanyHasłem", payload:[{who:"ty",timestamp:0.2, data:"hi"}, {who:"oni", timestamp:1, data:"okoFoko"}]},
-                {id:4, receiver: "Gocha", chatType: "Szyfrowany", payload:[{who:"ty",timestamp:1432, data:"Co tam mordzia"}, {who:"oni", timestamp:334, data:"lalalal"}]},
-                {id:7, receiver: "Gocha", chatType: "Zwykły", payload:[{who:"ty",timestamp:1, data:"czesc"}, {who:"oni", timestamp:3, data:"hej"}]}
+                {id:2, receiver: "Kacper", chatType: "SzyfrowanyHasłem", payload:[{who:"ty",timestamp:0.2, data:"hi"}, {who:"oni", timestamp:1, data:"no Hej"}]},
+                {id:4, receiver: "Alice", chatType: "Szyfrowany", payload:[{who:"ty",timestamp:1432, data:"Co tam ?"}, {who:"oni", timestamp:334, data:"..."}]},
+                {id:7, receiver: "Alice", chatType: "Zwykły", payload:[{who:"ty",timestamp:1, data:"czesc"}, {who:"oni", timestamp:3, data:"hej"}]}
             ],
             chatSelect: false,
             userSelected: undefined,
@@ -82,19 +82,19 @@ const statusOrder = (a: any, b: any): number => {
                 user: undefined
             },
             notifications: [
-                {id:1, info: "Tajna wiadomość", from:"Lidka", type:"secretMess"},
-                {id:2, info: "Zaproszenie do Unikalnego chatu od Sjergieja", from: "sjergiej", type:"uniqueMess"}
+                {id:1, info: "Tajna wiadomość", from:"Bob", type:"secretMess"},
+                {id:2, info: "Zaproszenie do Unikalnego Chatu", from: "sjergiej", type:"uniqueMess"}
             ],
             privateGroups: [
                 {id:1, name:"Spotkania-Szachy", isSecret: false},
-                {id:2, name:"FightClub", isSecret: false},
+                {id:2, name:"Grupa3", isSecret: false},
                 {id:3, name:"GrupaZadaniowa", isSecret: true},
             ],
             publicRooms: [
                 {id:1, name:"Wiadomości", capacity: 500, currentPpl: 0},
                 {id:2, name:"Kupie-Sprzedam", capacity: 500, currentPpl: 0},
                 {id:3, name:"JednoczymySię", capacity: 250, currentPpl: 0},
-                {id:4, name:"Białobrzegi", capacity: 100, currentPpl: 0},
+                {id:4, name:"Lokalnie", capacity: 100, currentPpl: 0},
             ]
       }
   },

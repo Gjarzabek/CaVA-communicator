@@ -3,6 +3,8 @@ import Main from "../views/Main.vue";
 import Home from "../views/Home.vue";
 import About from "../views/About.vue";
 import Info from "../views/Info.vue";
+import Features from "../views/Features.vue";
+
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -24,6 +26,11 @@ const routes: Array<RouteRecordRaw> = [
     path: "/info",
     name: "Info",
     component: Info
+  },
+  {
+    path: "/features",
+    name: "Features",
+    component: Features
   }
 ];
 // which is lazy-loaded when the route is visited.

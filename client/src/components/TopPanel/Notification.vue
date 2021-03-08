@@ -1,6 +1,6 @@
 <template>
     <div class="notofication">
-        <h2>{{data.from}}</h2>
+        <h4>{{data.from}}</h4>
         <p>{{data.info}}</p>
     </div>
 </template>
@@ -19,12 +19,13 @@ export default defineComponent({
 .notofication {
     position: relative;
     margin: 0.5vh;
-    line-height: 5vh;
+    line-height: 1vh;
+    padding: 1vh;
     border-radius: 1vh;
     color: white;
     font-family: Sen;
     text-indent: 0vw;
-    text-align: center;
+    text-align: left;
 }
 
 .notofication:hover {

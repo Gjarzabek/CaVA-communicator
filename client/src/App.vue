@@ -35,7 +35,7 @@
 }
 
 body {
-  background-color: #242222;
+  background-color: #1d1d1d;
 }
 
 .arrow {

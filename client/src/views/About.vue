@@ -3,14 +3,18 @@
         <Navi />
         <div class="info">
             <h2>Motywacja</h2>
-            <p>NiezależnyChat.pl powstal w odpowiedzi na postępujące ograniczanie prywatności ludzi w internecie.
-                Chyba każdy z nas już zdążył się spotkać z reklamami które "czytają" nam w myślach ;).
-                Tym którzy nie chcą ułatwiać dostępu do swoich prywatnych wiadomości i
-                chatować w internecie bez obecności "osób trzecich ;)" oferujemy naszą aplikacje.
+            <p class="p">NiezależnyChat.pl powstal w odpowiedzi na postępujące ograniczanie prywatności ludzi w internecie.
+                Chyba każdy z nas już zdążył się spotkać z reklamami które "czytają" nam w myślach.
+                Naszym celem jest zapewnienie możliwości prywatnych rozmów w internecie w łatwy i przystępny sposób.
+                Jeśli chcesz chatować w internecie bez ryzyka wycieku treści rozmów oferujemy Ci naszą aplikacje.
                 Polecamy również korzystanie z przeglądarek dbających o prywatność takich jak
-                <a href="https://duckduckgo.com/">duckduckgo</a>
-                lub
                 <a href="https://brave.com/">brave</a>
+                lub
+                <a href="https://duckduckgo.com/">duckduckgo</a>
+                a dla wymagających
+                <a href="https://www.torproject.org/">TOR</a>
+                oraz
+                <a href="https://protonvpn.com/">VPN</a>
             </p>
         </div>
     </div>
@@ -28,15 +32,21 @@ export default class Main extends Vue {}
 </script>
 
 <style scoped>
+
+.p {
+    line-height: 4vh;
+    color: rgb(211, 211, 211);
+}
+
 .about {
     position: absolute;
     top: 10vh;
     margin: 5vh;
-    color: white;
     font: 2vh Sen;
 }
 
 .info a {
-    color:rgb(50, 156, 205)
+    color:rgb(50, 156, 205);
 }
+
 </style>

@@ -2,6 +2,7 @@
     <div>
         <img id="logoimg" src="../../assets/crow.png">
         <div id="logo" @click="goHome">NiezależnyChat.pl</div>
+        <div id="features" class="navilink" @click="goFeatures">Funkcje</div>
         <div id="how" class="navilink" @click="goInfo">Jak to działa ?</div>
         <div id="about" class="navilink" @click="goAbout">O nas</div>
         <button id="openapp" class="openAppBtn" @click="goApp">Otwórz Chat</button>
@@ -25,8 +26,10 @@ export default defineComponent({
             this.$router.push('/info');
         },
         goApp() {
-            console.log("go App");
-            //this.$router.push('/app');
+            this.$router.push('/app');
+        },
+        goFeatures() {
+            this.$router.push('/features');
         }
     }
 })
@@ -40,7 +43,7 @@ export default defineComponent({
 }
 
 #how {
-    left: 70vw;
+    left: 70.4vw;
 }
 
 .navilink {
@@ -71,6 +74,10 @@ export default defineComponent({
     top: 1.4vh;
 }
 
+#features {
+    left: 63vw;
+    width: 6vw;
+}
 
 #openapp {
     top: 2.8vh;
@@ -81,6 +88,30 @@ export default defineComponent({
     background-color: rgb(255, 255, 255);
     border: none;
     color: black;
+}
+
+.openAppBtn {
+    position: absolute;
+    height: 11vh;
+    width: 20vw;
+    left: 40vw;
+    bottom: 17vh;
+    border-radius: 20vh;
+    outline: none;
+    font: 3vh NovaFlat;
+    border: 2px solid white;
+    color: white;
+    background-color: #05C6C6;
+    transform: scale(1);
+    transition: 0.4s;
+}
+
+#openapp:hover {
+    cursor: pointer;
+    background-color: rgba(192, 56, 56, 0);
+    border: 2px solid #05C6C6;
+    transform: scale(1.05);
+    color: whitesmoke;
 }
 
 </style>

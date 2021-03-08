@@ -1,69 +1,52 @@
 <template>
     <div>
         <Navi />
-        <div class="info">
-            <h2>Funkcje Aplikacji</h2>
-            <div class="plain">
-                Istnieje możliwość komunikacji na 3 sposoby
-                <ol>
-                    <li>Chat ze znajomym</li>
-                        <ul>
-                            <li>
-                                <b>Tajny</b>
-                            </li>
-                            Ten typ zachowuje poufność chatu w 100%. Treści wiadomości nie są widoczne nawet dla nas.
-                            Przed wysłaniem do internetu treść twojej wiadomości jest szyfrowana za pomocą podanego hasła.
-                            Odbiorca następnie by odszyfrować chat musi wprowadzić to hasło.
-                            Hasło służy jedynie do szyfrowania i odszyfrowania wiadomości - nie jest nigdzie przez nas zapisywane.
-                            Istnieje możliwość przechowywania historii chatu na serwerach ale w postaci zaszyfrowanej
-                            zatem nie mamy dostępu do treści chatu.
-                            <li>
-                                <b>Unikalna Sesja</b>
-                            </li>
-                            Podobnie jak chat Tajny zachowuje poufność chatu w 100%. 
-                            Różnica polega na tym że wiadomości szyfrowane są z pomocą specjalnie wygenerowanych jednorazowych kluczy.
-                            Zatem nie musisz za każdym razem wpisywać hasła.
-                            Sesje można utworzyć jedynie ze znajomym który jest online(dostępny). Nie ma możliwości zapisania historii chatu.
-                            Sesja wygasa po rozłączeniu się jednego z użytkowników
-                            <li>
-                                <b>Zwykły</b>
-                            </li>
-                            Bez dodatkowego szyfrowania treści chatu. Tak jak w innych komunikatorach Facebook/discord itp.
-                            Z wyjątkiem że możesz ustawić czas po którym wiadomości będą usuwane z historii i bazy danych.
-                            W razie naruszenia prawa mamy możliwość wglądu w treść wiadomości grupy
-                        </ul>
-                    <li>Prywatne grupy</li>
-                    <div class="opistypu">
-                        Każdy zalogowany użytkownik może stworzyć grupę i zaprosić do niej innego użytkownika wpisując jego ID
-                        Wiadomości w grupie są widoczne tylko dla użytkowników do niej należących
-                        Prywatne Grupy dzielimy na:
-                        <ul>
-                            <li>
-                                <b>Tajne</b>
-                            </li>
-                            Ten typ zachowuje poufność chatu grupy w 100%. Treści wiadomości nie są widoczne nawet dla nas.
-                            Przed wysłaniem do internetu treść twojej wiadomości jest szyfrowana za pomocą podanego hasła.
-                            Hasło to musi być znane dla każdego uczestnika chatu i zawsze identyczne by odbiorca mógł odczytać wiadomość.
-                            Hasło służy jedynie do szyfrowania i odszyfrowania wiadomości - nie jest nigdzie przez nas zapisywane.
-                            Istnieje możliwość przechowywania historii chatu grupy na serwerach ale w postaci zaszyfrowanej za pomocą "waszego hasła" zatem nie mamy dostępu do treści chatu.
-                            Hasło radzimy ustalić w poufny sposób najlepiej poza internetem.
-                            <li>
-                                <b>Zwykłe</b>
-                            </li>
-                            Bez dodatkowego szyfrowania treści chatu. Tak jak w innych komunikatorach Facebook/discord itp.
-                            Z wyjątkiem że możesz ustawić czas po którym wiadomości będą usuwane z historii i bazy danych.
-                            W razie naruszenia prawa mamy możliwość wglądu w treść wiadomości grupy
-                        </ul>
-                    </div>
-                    <li>Kanały publiczne</li>
-                    <div class="opistypu">
-                        Są to publiczne pokoje z ograniczoną liczbą miejsc, do których
-                        może dołączyć każdy zalogowany użytkownik. Wiadomosci w kanałach publicznych nie są dodatkowo szyfrowane.
-                        Czyli tak jak w każdym innym komunikatorze serwer(czyli my :]) ma możliwość podejrzenia treści chatu.
-                        Wiadomości są usuwane z historii po 12 godzinach.
-                    </div>
-                </ol>
-                Gdy wybierzesz opcje "chatuj jako gość" uzyskasz dostęp tylko do Chatu ze znajomym
+        <div class="info" id="infoDiv">
+            <h3>Jak to działa ? Czyli bezpieczeństwo</h3>
+            <div class="benefit">
+                <img src="../assets/e2eInfo.png" class="InfoGraphic">
+                <div class="infoTextDiv">
+                    <h1>Szyfrowanie End to End</h1>
+                    <p>Wiadomości są zaszyfrowane przez cały czas.
+                        Wiadomości są przechowywane na serwerach NiezależnyChat w zaszyfrowanym formacie. Są one również przesyłane w zaszyfrowanej formie pomiędzy naszymi serwerami a urządzeniami użytkowników. Szyfrowanie to znacznie zmniejsza ryzyko przechwycenia wiadomości.</p>
+                </div>
+            </div>
+            <div class="benefit">
+                <img src="../assets/safe.png" class="InfoGraphic" id="safeIcon">
+                <div class="infoTextDiv">
+                    <h1>Brak dostępu do danych użytkownika</h1>
+                    <p>
+                        Twoje zaszyfrowane dane nie są dla nas dostępne.
+                        Architektura zerowego dostępu oznacza, że Twoje dane są zaszyfrowane w sposób, który czyni je dla nas niedostępnymi. Dane są szyfrowane po stronie klienta przy użyciu klucza szyfrowania, do którego nie mamy dostępu. Oznacza to, że nie mamy technicznej możliwości odszyfrowania Twoich wiadomości, a co za tym idzie, nie jesteśmy w stanie przekazać Twoich danych osobom trzecim.
+                        Z NiezaleznymChatem, prywatność nie jest tylko obietnicą, jest to matematycznie zapewnione.
+                        Z tego powodu nie jesteśmy również w stanie przeprowadzić odzyskiwania danych.
+                        Jeśli zapomną Państwo hasła, nie możemy odzyskać Państwa danych.
+                    </p>
+                </div>
+            </div>
+            <div class="benefit">
+                <img src="../assets/air.png" class="InfoGraphic small">
+                <div class="infoTextDiv">
+                    <h1>Wiadomości czasowe lub z autodestrukcją</h1>
+                    <p>
+                        NiezależnyChat daje Ci pełną kotnrolę nad swoimi wiadomościami i historią chatu.
+                        Możesz podjąć decyzje o niszczeniu swoich wiadomości odrazu po odczytaniu przez adresata, ustawić wiadomości czasowe lub prowadzić chat z pełną historią.
+                    </p>
+                </div>
+            </div>
+            <div class="benefit">
+                <img src="../assets/notrack.png" class="InfoGraphic small">
+                <div class="infoTextDiv">
+                    <h1>Brak mechanizmów śledzących Cię w internecie</h1>
+                    <p>
+                        Brak śledzenia lub rejestrowania informacji umożliwiających identyfikację osoby
+                        W przeciwieństwie do konkurencyjnych, popularnych usług, nie zapisujemy żadnych informacji śledzących.
+                        Domyślnie nie zapisujemy metadanych, takich jak adresy IP używane do logowania się na konta lub ciasteczka.
+                        Ponieważ nie mamy możliwości odczytywania zaszyfrowanych wiadomości chatów, nie obsługujemy ukierunkowanych działań reklamowych Aby chronić prywatność użytkowników, NiezależnyChat.pl nie wymaga żadnych danych osobowych do rejestracji.
+                        Ponadto udostępniamy możliwość korzystania z aplikacji użytkownikom niezarejestrowanym.
+
+                    </p>
+                </div>
             </div>
         </div>
     </div>
@@ -80,43 +63,52 @@ import Navi from "@/components/LandingPage/Navi.vue";
 export default class Main extends Vue {}
 </script>
 
-<style>
-.info {
+<style scoped>
+
+.InfoGraphic {
     position: absolute;
-    top: 9vh;
-    margin: 6vh;
-    width: 88vw;
-    text-align: left;
-    color: whitesmoke;
-    font-family: Sen;
+    height: 90%;
+    top: 5%;
+    right: 5%;
 }
 
-.info p {
-    font: 2.4vh Sen;
-    margin: 8vh;
+.small {
+    right: 10%;
+    top: 15%;
+    height: 70%;
+}
+#safeIcon {
+    top: 35%;
+    height: 40%;
+    right: 25%;
+}
+
+.infoTextDiv {
+    position: absolute;
+    width: 43%;
+    left: 2%;
+    text-align: left;
+}
+
+.infoTextDiv p {
+    font: 2.8vh Sen;
+    line-height: 3.5vh;
+    color: rgb(180, 180, 180);
+}
+
+.benefit {
+    position: relative;
+    width: 92vw;
+    height: 70vh;
+    margin: 1vh;
+    margin-top: 15vh;
     margin-bottom: 15vh;
 }
 
-.info h2 {
-    margin: 2vh;
-    margin-top: 10vh;
-    font-size: 3vh;
+#infoDiv {
+    margin-top: 6vh;
+    display: table;
+    color: rgb(212, 212, 212);
 }
-
-.opistypu {
-    margin-left: 3vh;
-}
-
-.plain {
-    font: 2.4vh Sen;
-    margin: 8vh;
-    margin-bottom: 15vh; 
-}
-
-li {
-    margin-top: 3vh;
-    margin-bottom: 3vh;
-}
-
 
 </style>
