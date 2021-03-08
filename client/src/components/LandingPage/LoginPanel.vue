@@ -1,16 +1,19 @@
 <template>
-    <div id="loginPanel" :style="{width: loginWidth, left: loginX}">
-        <div v-if="show">
-            <div class="menu loginbtn" :class="{active: isLogin}" @click="state='login'">Login</div>
-            <div class="menu registerbtn" :class="{active: isRegister}" @click="state='register'">Rejestracja</div>
-        </div>
-        <div v-if="isLogin && show">
-            <div class="inputdesc" id="nickText">Twoja Nazwa:</div>
-            <input type="text" class="nickname">
-            <div class="inputdesc" id="passText">Hasło:</div>
-            <input type="password" class="pass">
-        </div>
-        <div v-else-if="isRegister && show">
+    <div id="loginbg" :style="{width: bgWidth}">
+        <img v-if="show" src="../../assets/arrow.png" @click="hideLogin">
+        <div id="loginPanel" :style="{width: loginWidth, left: loginX}">
+            <div v-if="show">
+                <div class="menu loginbtn" :class="{active: isLogin}" @click="state='login'">Login</div>
+                <div class="menu registerbtn" :class="{active: isRegister}" @click="state='register'">Rejestracja</div>
+            </div>
+            <div v-if="isLogin && show">
+                <div class="inputdesc" id="nickText">Twoja Nazwa:</div>
+                <input type="text" class="nickname">
+                <div class="inputdesc" id="passText">Hasło:</div>
+                <input type="password" class="pass">
+            </div>
+            <div v-else-if="isRegister && show">
+            </div>
         </div>
     </div>
 </template>
@@ -22,6 +25,9 @@ export default defineComponent({
     props: ["show"],
     components: {},
     methods: {
+        hideLogin(): void {
+            this.$emit('hideLogin');
+        }
     },
     data() {
         return {
@@ -45,6 +51,15 @@ export default defineComponent({
                 return "0vw";
             }
         },
+        bgWidth: function(): string {
+            if (this.show) {
+                return "100vw";
+            }
+            else return "0vw";
+        },
+        bgHeight: function(): string {
+             return "100vh";
+        },
         isLogin: function(): boolean {
             return this.state === "login";
         },
@@ -56,6 +71,24 @@ export default defineComponent({
 </script>
 
 <style scoped>
+
+#loginbg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    margin: 0;
+    background-color: #111111;
+    transition: 0.45s;
+}
+
+#loginbg img {
+    position: absolute;
+    right: 5vh;
+    top: 2vh;
+    width: 3vw;
+}
 
 .menu {
     position: absolute;
@@ -111,11 +144,11 @@ input {
     border:none;
     outline:none;
     font: 1.8vh Sen;
-    border: 1px solid white;
+    border: 0.01vw solid white;
 }
 
 input:focus {
-    border: 1px solid rgb(65, 217, 255);
+    border: 0.01vw solid rgb(65, 217, 255);
 }
 
 #loginPanel {

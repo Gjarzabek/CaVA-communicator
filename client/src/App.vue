@@ -1,8 +1,8 @@
 <template>
   <div>
     <Navi v-if="!appOpened" @login="showLogin"/>
-    <router-view @login="showLogin"/>
-    <LoginPanel :show="loginVisable"/>
+    <router-view/>
+    <LoginPanel :show="loginVisable" @hideLogin="hideLogin"/>
   </div>
 </template>
 
@@ -22,6 +22,10 @@ export default defineComponent({
     methods: {
       showLogin() {
         this.loginVisable = true;
+      },
+      hideLogin() {
+        this.loginVisable = false;
+        console.log("Hide login:", this.loginVisable);
       }
     },
     computed: {
