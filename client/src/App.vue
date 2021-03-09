@@ -1,11 +1,41 @@
 <template>
-  <!--
-  <div id="nav">
-    <router-link to="/">Home</router-link> |
-    <router-link to="/main">Main</router-link>
-  </div>-->
-  <router-view />
+  <div>
+    <Navi v-if="!appOpened" @login="showLogin"/>
+    <router-view/>
+    <LoginPanel :show="loginVisable" @hideLogin="hideLogin"/>
+  </div>
 </template>
+
+<script lang="ts">
+import { defineComponent } from 'vue';
+import LoginPanel from "@/components/LandingPage/LoginPanel.vue";
+import Navi from "@/components/LandingPage/Navi.vue";
+
+export default defineComponent({
+    props: [],
+    components: {Navi, LoginPanel},
+    data() {
+      return {
+        loginVisable:false
+      };
+    },
+    methods: {
+      showLogin() {
+        this.loginVisable = true;
+      },
+      hideLogin() {
+        this.loginVisable = false;
+        console.log("Hide login:", this.loginVisable);
+      }
+    },
+    computed: {
+      appOpened: function() : boolean {
+        console.log(this.$route.name);
+        return this.$route.name === "Main";
+      }
+    }
+})
+</script>
 
 <style>
 
@@ -29,8 +59,38 @@
     src: url(assets/NovaSquare-Regular.ttf);
 }
 
+@font-face {
+    font-family: Sen;
+    src: url(assets/Sen-Regular.ttf);
+}
+
 body {
-  background-color: #242222;
+  background-color: #1d1d1d;
+}
+
+.arrow {
+  transition: 0.2s;
+  border: solid #C6BDBD;
+  border-width: 0 3px 3px 0;
+  display: inline-block;
+  padding: 3px;
+  margin-bottom: 1%;
+}
+
+.right {
+  transform: rotate(-45deg);
+  -webkit-transform: rotate(-45deg);
+}
+
+.down {
+  transform: rotate(45deg);
+  margin-bottom: 2%;
+  -webkit-transform: rotate(45deg);
+}
+  
+.up {
+  transform: rotate(-135deg);
+  -webkit-transform: rotate(-135deg);
 }
 
 .dostępny {
@@ -42,7 +102,7 @@ body {
 }
 
 .zaraz-wracam {
-  background-color: #e69e32;
+  background-color: #ff9900;
 }
 
 .zajęty {

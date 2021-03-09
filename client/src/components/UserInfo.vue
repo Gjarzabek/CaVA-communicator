@@ -1,13 +1,14 @@
 <template>
     <div id="user">
         <div id="iconBg">
-            <img src="../assets/fsociety.png" alt=".." id='fsocietyIcon'>
+            <img v-if="fsocietyChosen" src="../assets/fsociety.png" alt=".." id='fsocietyIcon' @click="changeIcon">
+            <img v-else src="../assets/freedomBird.png" alt=".." id='fsocietyIcon' @click="changeIcon">
         </div>
         <div id="userInfo">
             <div id="statusDot" :class="user.status"></div>
             <div id="nick" @click="toogleStatusMenu">{{user.name}}</div>
             <div id="id">id:{{user.id}}</div>
-            <div id="desc">{{user.desc}}</div>
+            <div id="desc" @click="changeDesc">{{descDemo}}</div>
         </div>
         <div v-if="showStatusPanel">
             <div id="statusMenu">
@@ -19,6 +20,11 @@
                 </div>
             </div>
         </div>
+        <div v-if="iconChoiceShow" id="IconChoice">
+            <img src="../assets/fsociety.png" alt=".." class="iconToChose" @click="signalIconChange('fsociety')">
+            <img src="../assets/freedomBird.png" alt=".." class="iconToChose" @click="signalIconChange('bird')">
+        </div>
+        <input v-if="showChangeDescDiv" v-model="descInputData" class="descInput" @keypress="submitDesc">
     </div>
 </template>
 
@@ -26,27 +32,84 @@
 import { defineComponent } from 'vue';
 
 export default defineComponent({
-  props: ["user"],
-  components: {},
-  data() {
-      return {
-          showStatusPanel: false,
-          possibleStatusList: [{name: "dostępny"}, {name:"zaraz-wracam"}, {name:"zajęty"}]
-      }
-  },
-  methods: {
-      toogleStatusMenu() {
-          this.showStatusPanel = !this.showStatusPanel;
-      },
-      changeStatus(newStatus: string): void {
-          this.$emit('statusChange', newStatus);
-          this.toogleStatusMenu();
-      }
-  }
+    props: ["user"],
+    components: {},
+    data() {
+        return {
+            showStatusPanel: false,
+            showChangeDescDiv: false,
+            iconChoiceShow: false,
+            descInputData: this.user.desc,
+            maxDescLen: 50,
+            maxDescShowLen: 11,
+            possibleStatusList: [{name: "dostępny"}, {name:"zaraz-wracam"}, {name:"zajęty"}],
+            currentIcon: this.user.icon
+        }
+    },
+    computed: {
+        descDemo: function(): string {
+            if (this.user.desc.length > this.maxDescShowLen) {
+                return this.user.desc.substr(0, this.maxDescShowLen) + "...";
+            }
+            else if (!this.user.desc)
+                return "..."
+            else return this.user.desc;
+        },
+        fsocietyChosen: function(): boolean {
+            return this.currentIcon === 'fsociety';
+        }
+    },
+    methods: {
+        toogleStatusMenu() {
+            this.showStatusPanel = !this.showStatusPanel;
+        },
+        changeStatus(newStatus: string): void {
+            this.$emit('statusChange', newStatus);
+            this.toogleStatusMenu();
+        },
+        changeDesc(): void {
+            if (this.showChangeDescDiv) {
+                this.$emit('descChange', this.descInputData);
+            }
+            this.showChangeDescDiv = !this.showChangeDescDiv;
+        },
+        submitDesc(event: any): void {
+            if (event.key === "Enter" && this.showChangeDescDiv) {
+                this.changeDesc();
+            }
+        },
+        changeIcon(): void {
+            this.iconChoiceShow = !this.iconChoiceShow;
+        },
+        signalIconChange(name:string): void {
+            this.currentIcon = name;
+            this.$emit('iconChange', name);
+            this.changeIcon();
+        }
+    },
+    watch: {
+        descInputData: function(): void {
+            if (this.descInputData.length > this.maxDescLen) {
+                this.descInputData = this.descInputData.substring(0, this.maxDescLen);
+            }
+        }
+    },
 })
 </script>
 
 <style scoped>
+
+.descInput {
+    position: absolute;
+    top: 8vh;
+    left: 5vw;
+    z-index: 2;
+    font: 1.8vh NovaFlat;
+    outline: none;
+    color: rgb(46, 46, 46);
+    height: 3vh;
+    width: 30vw;
+}
 
 #iconBg {
     position: absolute;
@@ -55,7 +118,12 @@ export default defineComponent({
     left: 5%;
     width: 6.5vh;
     height: 6.5vh;
-    background-color: #ffffffa1;
+    background-color: #ffffff1f;
+}
+
+#iconBg:hover {
+    background-color: #353535;
+    
 }
 
 #fsocietyIcon {
@@ -63,6 +131,7 @@ export default defineComponent({
     left: 10%;
     top: 10%;
     height: 80%;
+    cursor: pointer;
 }
 
 #user {
@@ -118,10 +187,15 @@ export default defineComponent({
 #desc {
     position: absolute;
     top: 65%;
-    font: 95% NovaFlat;
+    font: 1.8vh NovaFlat;
     border: none;
     color: rgb(182, 182, 182);
+    cursor: pointer;
     width: 100%;
+}
+
+#desc:hover {
+    background-color: #353535;
 }
 
 #statusDot {
@@ -169,6 +243,21 @@ export default defineComponent({
     top: 0.7vh;
     left: 2vw;
     font: 1.7vh NovaSquare;
+}
+
+#IconChoice {
+    position: absolute;
+    top: 2vh;
+    left: 5vw;
+    padding: 1vh;
+    background-color: rgb(93, 93, 93);
+    z-index: 2;
+    border-radius: 2vh;
+}
+
+.iconToChose {
+    margin: 1vh;
+    height: 6vh;
 }
 
 </style>

@@ -14,7 +14,7 @@
             </div>
         </div>
         <Messages :messages="activeChatPayload"/>
-        <MessageInput @sendMessage="SendMessageForward"/>
+        <MessageInput @sendMessage="SendMessageForward" :style="{width: `${inputWidth}%`, left: `${inputLeftPos}%`}"/>
     </div>
 </template>
 
@@ -39,6 +39,15 @@ export default defineComponent({
                 return el.payload;
             }
             else return undefined;
+        },
+        showInput: function(): boolean {
+            return this.openedChats.length > 0;
+        },
+        inputWidth: function(): number {
+            return this.showInput ? 95 : 0;
+        },
+        inputLeftPos: function(): number {
+            return this.showInput ? 2.5 : -0.5;
         }
     } ,
     methods: {

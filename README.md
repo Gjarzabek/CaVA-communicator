@@ -1,1 +1,1 @@
-simple communicator with Vuejs/Ts/node/Websockets
+End to end encrypted communicator

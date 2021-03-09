@@ -1,13 +1,15 @@
 <template>
     <div id="main">
-        <div v-for="params in ListParams" v-bind:key="params.header">
+        <div v-for="params in ListParams" v-bind:key="params.header" class="list">
           <HiddenList
           :header="params.header"
           :ItemList="params.payload"
           :type="params.type"
           @newChat="ForwardNewChat"
           @openChat="ForwardChatOpen"
+          @joinPublic="Forwardjoin"
           @userClicked="userClickHandler"
+          @openPrivateTalk="ForwardOpenPrivate"
           />
         </div>
     </div>
@@ -18,15 +20,15 @@ import { defineComponent } from 'vue';
 import HiddenList from "@/components/LeftPanel/HiddenList.vue";
 
 export default defineComponent({
-  props: ["friends", "chats"],
+  props: ["friends", "chats", "publicRooms", "privateGroups"],
   components: {HiddenList},
   data() {
       return {
           ListParams: [
             {header: "Rozmowy", type:"chat", payload: this.chats},
             {header: "Znajomi", type:"friend", payload: this.friends},
-            {header: "Prywatne Grupy", type: "privateRoom", payload: [{name:"Klub Szachowy", id:1}, {name:"Fight Club", id:2}]},
-            {header: "Publiczne Dyskusje", type: "publicTalk", payload: [{name:"Białobrzegi", id:1}, {name:"KupieSprzedam", id:2}]}
+            {header: "Prywatne Grupy", type: "privateRoom", payload: this.privateGroups},
+            {header: "Publiczne Dyskusje", type: "publicTalk", payload: this.publicRooms}
           ]
       }
   },
@@ -40,11 +42,21 @@ export default defineComponent({
     ForwardChatOpen(event: any): void {
       this.$emit('openChat', event);
     },
+    Forwardjoin(event: any): void {
+      this.$emit('joinPublic', event);
+    },
+    ForwardOpenPrivate(event: any): void {
+      this.$emit('openPrivateTalk', event);
+    }
   }
 })
 </script>
 
 <style scoped>
+
+.list {
+  width: 13vw;
+}
 
 #main {
   position: absolute;

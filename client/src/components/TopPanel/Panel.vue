@@ -1,32 +1,65 @@
 <template>
     <div id="topPanel">
-      <button id="addFriend">Dodaj Znajomego</button>
-      <img src="../../assets/notify.png" alt="..." id="notification">
-      <img src="../../assets/chaticon.png" alt="..." id="chatIcon" @click="toogleChatMenu">
-      <div v-if="showChatMenu" class="chatMenu">
-        <div id="chatMenuTitle">Historia Rozmów</div>
-          <div v-for="chat in chats" v-bind:key="chat.id" class="chatsList">
-            <ChatItem v-bind:chatData="chat"/>
-          </div>
+      <button v-if="!addFriendActive" id="addFriend" @click="addFriend">Dodaj Znajomego</button>
+      <div id="friendAddWindow" :style="{width: `${addDivWidth}vw`, height: `${addDivHeight}vh`}">
+        <div v-if="addFriendActive">
+          <div class="closeBtn" @click="closeAddDiv"></div>
+          <input type="text" class="FriendCodeInput" placeholder="ID Użytkownika" v-model="inputData">
+          <button @click="submitFriendCode" class="submitFriend">Dodaj</button>
         </div>
+      </div>
+      <img src="../../assets/notify.png" alt="..." id="notification" @click=toogleNotifications>
+      <div v-if="showNotifications" class="notificationMain">
+        <h2>Powiadomienia</h2>
+        <Notification v-for="notify in notifications" v-bind:key="notify.id" :data="notify" />
+      </div>
     </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue' 
-import ChatItem from '@/components/TopPanel/ChatItem.vue';
+import Notification from '@/components/TopPanel/Notification.vue';
 
 export default defineComponent({
-  props: ["chats"],
-  components: {ChatItem},
+  props: ["notifications"],
+  components: {Notification},
   data() {
     return {
-      showChatMenu: false
+      showNotifications: false,
+      addFriendActive: false,
+      inputData: "",
+      maxIDLength: 10
+    }
+  },
+  watch: {
+    inputData: function(): void {
+        if (this.inputData.length > this.maxIDLength) {
+            this.inputData = this.inputData.substring(0, this.maxIDLength);
+        }
     }
   },
   methods: {
-    toogleChatMenu() {
-      this.showChatMenu = !this.showChatMenu;
+    toogleNotifications() {
+      this.showNotifications = !this.showNotifications;
+    },
+    addFriend(): void {
+      this.addFriendActive = true;
+    },
+    closeAddDiv(): void {
+      this.addFriendActive = false;
+      this.inputData = "";
+    },
+    submitFriendCode(): void {
+      this.inputData = "Wysłano";
+      setTimeout(()=>{this.closeAddDiv();}, 200);
+    }
+  },
+  computed: {
+    addDivWidth: function(): number {
+      return this.addFriendActive ? 20 : 0;
+    },
+    addDivHeight: function(): number {
+      return this.addFriendActive ? 6 : 0;
     }
   }
 })
@@ -34,45 +67,52 @@ export default defineComponent({
 
 <style scoped>
 
-#chatMenuTitle {
-  position: relative;
-  margin-top: 2vh;
-  margin-bottom: 2vh;
-  margin-left: 2vh;
-  font: 2vh NovaScript;
+.submitFriend {
+  position: absolute;
+  top: 25%;
+  right: 13%;
+  width: 15%;
+  height: 50%;
+  background-color: rgb(77, 77, 77);
+  color: #62FFE7;
+  font: 1.4vh NovaFlat;
+  text-align: center;
+  border:none;
+  outline: none;
+  border-radius: 2vh;
+}
+
+.FriendCodeInput {
+  outline:none;
+  position: absolute;
+  top: 10%;
+  left: 1vw;
+  height: 70%;
+  width: 60%;
+  border-radius: 1vh;
+  border: none;
+  font: 2vh NovaFlat;
+  text-align: center;
   color: black;
-  text-align: left;
-  text-indent: 1vh;
-  border-left: solid 5px black;
 }
 
-.chatList {
-  position: relative;
+.FriendCodeInput::placeholder {
+  color: rgba(0, 0, 0, 0.507);
 }
 
-.chatMenu {
-  position: absolute;
-  top: 7vh;
-  right: 0;
-  width: 18vw;
-  height: 40vh;
-  background-color: #EBEBEB;
-  z-index: 11;
-  border-radius: 6px;
+.notificationMain {
+  position:absolute;
+  width: 23vw;
+  right: 1vh;
+  top: 5vh;
+  z-index: 2;
+  background-color: #1d1d1d;
+  max-height: 70vh;
   overflow-y: auto;
-}
-
-#chatIcon {
-  transform: scale(1);
-  position: absolute;
-  right: 7%;
-  top: 30%;
-  height: 40%;
-  cursor: pointer;
-}
-
-#chatIcon:active {
-  transform: scale(0.9);
+  border-radius: 2vh;
+  text-align: left;
+  text-indent: 2vw;
+  color: rgb(235, 235, 235);
 }
 
 #addFriend {
@@ -98,6 +138,15 @@ export default defineComponent({
   transform: scale(0.98);
 }
 
+#friendAddWindow {
+  position: absolute;
+  top: 0;
+  right: 11%;
+  background-color: #dadada;
+  z-index: 1;
+  transition: 0.4s;
+}
+
 #notification {
   transform: scale(1);
   position: absolute;
@@ -118,6 +167,22 @@ export default defineComponent({
     width: 85%;
     height: 6%;
     background-color: #96C5CD;
+}
+
+.closeBtn {
+  position:absolute;
+  right: 1vh;
+  top: 0.5vh;
+  height: 2vh;
+  width: 2vh;
+  background-color: rgb(27, 27, 27);
+  border-radius: 100%;
+  transform: scale(1);
+  transition: 20ms;
+}
+
+.closeBtn:hover {
+  transform: scale(1.1);
 }
 
 </style>

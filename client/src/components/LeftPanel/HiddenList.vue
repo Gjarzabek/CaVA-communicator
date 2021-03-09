@@ -13,13 +13,9 @@
         <div v-if="!hidden" class="list">
             <div v-for="item in ItemList" v-bind:key="item.id" :class="{ item : !isChat}">
                 <ChatItem v-if="isChat" :chat="item" @openChat="ForwardChatOpen"/>
-                <FriendItem v-if="isFriend" :friend="item" @click="userClicked($event, item)"/>
-                <div v-if="isPrivateRoom" class="privateRoom">
-                    <img src='../../assets/privateroom.png' alt="..." class="infoIcon">
-                </div>
-                <div v-if="isPublicTalk" class="publicTalk">
-                    <img src='../../assets/publicroom.png' alt="..." class="infoIcon">
-                </div>
+                <FriendItem v-else-if="isFriend" :friend="item" @click="userClicked($event, item)"/>
+                <PublicItem v-else-if="isPublicTalk" :room="item" @click="joinRequest(item)"/>
+                <PrivateItem v-else-if="isPrivateRoom" :group="item" @click="openPrivate(item)"/>
             </div>
         </div>
     </div>
@@ -29,10 +25,12 @@
 import { defineComponent } from 'vue';
 import FriendItem from '@/components/LeftPanel/FriendItem.vue';
 import ChatItem from '@/components/LeftPanel/ChatItem.vue';
+import PublicItem from '@/components/LeftPanel/PublicItem.vue';
+import PrivateItem from '@/components/LeftPanel/PrivateItem.vue';
 
 export default defineComponent({
   props: ["header", "ItemList", "type"],
-  components: {FriendItem, ChatItem},
+  components: {FriendItem, ChatItem, PublicItem, PrivateItem},
   data() {
       return {
           hidden: true
@@ -57,6 +55,12 @@ export default defineComponent({
       },
       ForwardChatOpen(event: any): void {
         this.$emit('openChat', event);
+      },
+      joinRequest(publicroom: any): void {
+          this.$emit('joinPublic', publicroom);
+      },
+      openPrivate(privatetalk: any): void {
+          this.$emit('openPrivateTalk', privatetalk);
       }
   },
   computed: {
@@ -86,26 +90,6 @@ export default defineComponent({
 
 <style scoped>
 
-.arrow {
-  transition: 0.2s;
-  border: solid #C6BDBD;
-  border-width: 0 3px 3px 0;
-  display: inline-block;
-  padding: 3px;
-  margin-bottom: 1%;
-}
-
-.right {
-  transform: rotate(-45deg);
-  -webkit-transform: rotate(-45deg);
-}
-
-.down {
-  transform: rotate(45deg);
-  margin-bottom: 2%;
-  -webkit-transform: rotate(45deg);
-}
-
 .list {
     margin-top: 1.8vh;
     transition: 1s;
@@ -115,7 +99,7 @@ export default defineComponent({
     text-align: left;
     position: relative;
     color: #C6BDBD;
-    font: 2.1vh NovaScript;
+    font: 2.1vh Sen;
     margin-top: 8%;
     margin-left: 5%;
     cursor:default;
