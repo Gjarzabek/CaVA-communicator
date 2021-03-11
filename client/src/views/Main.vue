@@ -40,9 +40,10 @@ import TopPanel from "@/components/TopPanel/Panel.vue";
 import FriendsNRooms from "@/components/LeftPanel/MainDiv.vue";
 import ChatSection from "@/components/ChatWindow/ChatSection.vue";
 import ChatSelect from "@/components/PopUps/ChatSelect.vue";
-import UserMenu from "@/components/PopUps/UserMenu.vue"
+import UserMenu from "@/components/PopUps/UserMenu.vue";
 
-import {getStatusPoint} from "@/DataTypes/User.ts";
+import {getStatusPoint} from "@/ts_classes/User.ts";
+import WsHandler from "@/ts_classes/WsClient.ts";
 
 const statusOrder = (a: any, b: any): number => {
     if (a === undefined)
@@ -56,23 +57,26 @@ const statusOrder = (a: any, b: any): number => {
 };
 
 @Options({
+  beforeUnmount() {
+    this.connection.close("appClosed");
+  },
   data() {
       return {
             chatUsers: [].sort(statusOrder),
             search: "",
-            user: {id:1, name:"Grzesiek", status:"dostępny", desc:"Hej Wszystkim!", icon:"bird"},
+            user: {id:'000000', name:"Grzesiek", status:"dostępny", desc:"Hej Wszystkim!", icon:"bird"},
             friends: [
-                {id:2, name:"Bob", status:"dostępny", desc:"Hejcia"},
-                {id:56, name:"Daro", status:"zaraz-wracam", desc:"Pozdrawiam!"},
-                {id:442, name:"Kacper", status:"niedostępny", desc:"Status.."},
-                {id:42, name:"Jaca",status:"dostępny", desc:"SiemankoOoo :)"},
-                {id:75, name:"Alice", status:"zajęty", desc:"Status.."}
+                {id:'234gsf', name:"Bob", status:"dostępny", desc:"Hejcia"},
+                {id:'sdh24g', name:"Daro", status:"zaraz-wracam", desc:"Pozdrawiam!"},
+                {id:'15D442', name:"Kacper", status:"niedostępny", desc:"Status.."},
+                {id:'g24GSF', name:"Jaca",status:"dostępny", desc:"SiemankoOoo :)"},
+                {id:'g09875', name:"Alice", status:"zajęty", desc:"Status.."}
             ],
             openedChats: [],
             chats: [
-                {id:2, receiver: "Kacper", chatType: "SzyfrowanyHasłem", payload:[{who:"ty",timestamp:0.2, data:"hi"}, {who:"oni", timestamp:1, data:"no Hej"}]},
-                {id:4, receiver: "Alice", chatType: "Szyfrowany", payload:[{who:"ty",timestamp:1432, data:"Co tam ?"}, {who:"oni", timestamp:334, data:"..."}]},
-                {id:7, receiver: "Alice", chatType: "Zwykły", payload:[{who:"ty",timestamp:1, data:"czesc"}, {who:"oni", timestamp:3, data:"hej"}]}
+                {id:'15D442', receiver: "Kacper", chatType: "SzyfrowanyHasłem", payload:[{who:"ty",timestamp:0.2, data:"hi"}, {who:"oni", timestamp:1, data:"no Hej"}]},
+                {id:'g09875', receiver: "Alice", chatType: "Szyfrowany", payload:[{who:"ty",timestamp:1432, data:"Co tam ?"}, {who:"oni", timestamp:334, data:"..."}]},
+                {id:'g09875', receiver: "Alice", chatType: "Zwykły", payload:[{who:"ty",timestamp:1, data:"czesc"}, {who:"oni", timestamp:3, data:"hej"}]}
             ],
             chatSelect: false,
             userSelected: undefined,
@@ -95,7 +99,8 @@ const statusOrder = (a: any, b: any): number => {
                 {id:2, name:"Kupie-Sprzedam", capacity: 500, currentPpl: 0},
                 {id:3, name:"JednoczymySię", capacity: 250, currentPpl: 0},
                 {id:4, name:"Lokalnie", capacity: 100, currentPpl: 0},
-            ]
+            ],
+            connection: undefined
       }
   },
   components: {
@@ -214,6 +219,9 @@ const statusOrder = (a: any, b: any): number => {
             }
 
         }
+  },
+  created: function() {
+      this.connection = new WsHandler(this.user.id, this.user.name);
   }
 })
 export default class Main extends Vue {}
