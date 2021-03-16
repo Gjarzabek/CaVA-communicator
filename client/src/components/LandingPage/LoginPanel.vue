@@ -1,32 +1,43 @@
 <template>
     <div id="loginbg" :style="{width: bgWidth}">
         <img v-if="show" src="../../assets/arrow.png" @click="hideLogin">
-        <div id="loginPanel" :style="{width: loginWidth, left: loginX}">
-            <div v-if="show">
-                <div class="menu loginbtn" :class="{active: isLogin}" @click="state='login'">Login</div>
-                <div class="menu registerbtn" :class="{active: isRegister}" @click="state='register'">Rejestracja</div>
+        <div id="loginPanel" :style="{width: loginWidth, left: loginX, height: loginHeigh}">
+            <div v-if="show" class="menu">
+                <div class="menubtn loginbtn" :class="{active: isLogin}" @click="state='login'">Login</div>
+                <div class="menubtn registerbtn" :class="{active: isRegister}" @click="state='register'">Rejestracja</div>
             </div>
             <div v-if="isLogin && show">
-                <div class="inputdesc" id="nickText">Twoja Nazwa:</div>
-                <input type="text" class="nickname">
-                <div class="inputdesc" id="passText">Hasło:</div>
-                <input type="password" class="pass">
+                <Input :isTextType="true" :info="'Email:'" :maxChars="30" :minChars="3" @valid="inputValid"/>
+                <Input :isTextType="false" :info="'Hasło:'" :maxChars="30" :minChars="3" @valid="inputValid"/>
+                <button class="openAppBtn" @click="login">Zaloguj</button>
             </div>
             <div v-else-if="isRegister && show">
+                <Input :isTextType="true" :info="'Nazwa:'" :maxChars="30" :minChars="3" @valid="inputValid"/>
+                <Input :isTextType="true" :info="'Email:'" :maxChars="30" :minChars="3" @valid="inputValid"/>
+                <Input :isTextType="false" :info="'Hasło:'" :maxChars="30" :minChars="3" @valid="inputValid"/>
+                <Input :isTextType="false" :info="'Powtórz Hasło:'" :maxChars="30" :minChars="3" @valid="inputValid"/>
+                <button class="openAppBtn" @click="register">Zarejestruj</button>
             </div>
         </div>
     </div>
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue' 
+import { defineComponent } from 'vue';
+import Input from "@/components/LandingPage/Input.vue";
 
 export default defineComponent({
     props: ["show"],
-    components: {},
+    components: {Input},
     methods: {
         hideLogin(): void {
             this.$emit('hideLogin');
+        },
+        login(): void {
+            console.log("login request");
+        },
+        register(): void {
+            console.log("register request");
         }
     },
     data() {
@@ -48,12 +59,12 @@ export default defineComponent({
                 return "40vw";
             }
             else {
-                return "0vw";
+                return "-1vw";
             }
         },
         bgWidth: function(): string {
             if (this.show) {
-                return "100vw";
+                return "99vw";
             }
             else return "0vw";
         },
@@ -65,21 +76,53 @@ export default defineComponent({
         },
         isRegister: function(): boolean {
             return this.state === "register";
+        },
+        loginHeigh: function(): string {
+            if (this.isLogin) {
+                return "50vh";
+            }
+            else return "70vh";
         }
-    }
+    },
 })
 </script>
 
 <style scoped>
+
+.nameinput {
+    top: 45vh;
+}
+
+.secondpass {
+    top: 35vh;
+}
+
+#passRepeat {
+    top: 31vh;
+}
+
+#name {
+    top: 41vh;
+}
+
+.border {
+    position: absolute;
+    left: 5%;
+    top: 55%;
+    width: 90%;
+    text-align: center;
+    border-bottom: 0.2vh solid black;
+    font-family: Courier;
+}
 
 #loginbg {
     position: absolute;
     top: 0;
     left: 0;
     width: 100vw;
-    height: 100vh;
+    height: 100vh;  
     margin: 0;
-    background-color: #111111;
+    background: linear-gradient(0, rgb(0, 0, 0), #000000);
     transition: 0.45s;
 }
 
@@ -91,9 +134,17 @@ export default defineComponent({
 }
 
 .menu {
+    position: relative;
+    font-size: 1.1vw;
+    width: 20vw;
+    height: 5vh;
+    margin-bottom: 3vh;
+}
+
+.menubtn {
     position: absolute;
     top: 1vh;
-    font-size: 2vh;
+    font-size: 1.1vw;
     color: rgb(37, 37, 37);
     text-align: center;
 }
@@ -107,23 +158,23 @@ export default defineComponent({
 }
 
 .active {
-    border-bottom: 4px solid #05C6C6;
+    border-bottom: 0.5vh solid #05C6C6;
 }
 
 #passText {
-    top:31vh;
+    top:21vh;
 }
 
 #nickText {
-    top: 21vh;
+    top: 11vh;
 }
 
 .nickname {
-    top: 25vh;
+    top: 15vh;
 }
 
 .pass {
-    top: 35vh;
+    top: 25vh;
 }
 
 .inputdesc {
@@ -144,21 +195,47 @@ input {
     border:none;
     outline:none;
     font: 1.8vh Sen;
-    border: 0.01vw solid white;
+    border: 0.1vw solid white;
+    background-color: rgb(231, 231, 231);
 }
 
 input:focus {
-    border: 0.01vw solid rgb(65, 217, 255);
+    background-color: rgba(231, 231, 231, 0);
+    border: 0.1vw solid rgb(65, 217, 255);
 }
 
 #loginPanel {
     position: absolute;
     top: 20vh;
-    height: 65vh;
-    background-color: rgb(207, 207, 207);
+    height: 50vh;
+    background-color: rgb(255, 255, 255);
     transition: 0.5s;
     border-radius: 4vh;
     display: table;
+}
+
+.openAppBtn {
+    position: absolute;
+    height: 4vh;
+    width: 50%;
+    left: 25%;
+    bottom: 10vh;
+    border-radius: 20vh;
+    outline: none;
+    font: 2vh NovaFlat;
+    border: 2px solid white;
+    color: white;
+    background-color: #05C6C6;
+    transform: scale(1);
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.openAppBtn:hover {
+    cursor: pointer;
+    border: 2px solid #05C6C6;
+    color: whitesmoke;
+    color: black;
 }
 
 </style>
