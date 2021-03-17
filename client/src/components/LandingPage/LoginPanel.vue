@@ -7,15 +7,16 @@
                 <div class="menubtn registerbtn" :class="{active: isRegister}" @click="state='register'">Rejestracja</div>
             </div>
             <div v-if="isLogin && show">
-                <Input :isTextType="true" :info="'Email:'" :maxChars="30" :minChars="3" @valid="inputValid"/>
-                <Input :isTextType="false" :info="'Hasło:'" :maxChars="30" :minChars="3" @valid="inputValid"/>
+                <Input :isTextType="true" :info="'Email:'" :maxChars="30" :minChars="3" @good="(event) => {loginInput(event, 'email')}" @bad="deleteLoginInput('email')"/>
+                <Input :isTextType="false" :info="'Hasło:'" :maxChars="30" :minChars="3" @good="(event) => {loginInput(event, 'pass')}" @bad="deleteLoginInput('pass')"/>
                 <button class="openAppBtn" @click="login">Zaloguj</button>
             </div>
             <div v-else-if="isRegister && show">
-                <Input :isTextType="true" :info="'Nazwa:'" :maxChars="30" :minChars="3" @valid="inputValid"/>
-                <Input :isTextType="true" :info="'Email:'" :maxChars="30" :minChars="3" @valid="inputValid"/>
-                <Input :isTextType="false" :info="'Hasło:'" :maxChars="30" :minChars="3" @valid="inputValid"/>
-                <Input :isTextType="false" :info="'Powtórz Hasło:'" :maxChars="30" :minChars="3" @valid="inputValid"/>
+                <Input :isTextType="true" :info="'Nazwa:'" :maxChars="30" :minChars="3" @good="(event) => {registerValid(event, 'nazwa')}" @bad="deleteRegisterInput('nazwa')"/>
+                <Input :isTextType="true" :info="'Email:'" :maxChars="30" :minChars="3" @good="(event) => {registerValid(event, 'email')}" @bad="deleteRegisterInput('email')"/>
+                <Input :isTextType="false" :info="'Hasło:'" :maxChars="30" :minChars="3" @good="(event) => {registerValid(event, 'pass')}" @bad="deleteRegisterInput('pass')"/>
+                <Input :isTextType="false" :info="'Powtórz Hasło:'" :maxChars="30" :minChars="3" @good="(event) => {registerValid(event, 'pass2')}" @bad="deleteRegisterInput('pass2')"/>
+                <div v-if="()=>{return this.message != ''}" class="alert">{{message}}</div>
                 <button class="openAppBtn" @click="register">Zarejestruj</button>
             </div>
         </div>
@@ -34,15 +35,61 @@ export default defineComponent({
             this.$emit('hideLogin');
         },
         login(): void {
-            console.log("login request");
+            if (this.isLoginAllowed) {
+                console.log("login request");
+                console.log(this.loginInputs);
+            }
+            else {
+                console.log("login not allowed");
+            }
         },
         register(): void {
-            console.log("register request");
+            if (this.isRegisterAllowed) {
+                console.log("register request");
+                console.log(this.registerInputs);
+            }
+            else {
+                console.log("register not allowed");
+            }
+        },
+        loginInput(event: any, inputId: string): void {
+            console.log(`Inputvalid(${event},${inputId})`);
+            this.loginInputs.set(inputId, event);
+        },
+        registerValid(event: any, inputId: string): void {
+            console.log(`Inputvalid(${event},${inputId})`);
+            this.registerInputs.set(inputId, event);
+        },
+        deleteLoginInput(id: string): void {
+            this.loginInputs.delete(id);
+        },
+        deleteRegisterInput(id: string): void {
+            this.registerInputs.delete(id);
+        },
+        passwordsMatch(): boolean {
+            console.log(this.registerInputs);
+            if (this.registerInputs.has('pass') && this.registerInputs.has('pass2')) {
+                const same = this.registerInputs.get('pass') === this.registerInputs.get('pass2');
+                if (same) {
+                    this.message = "";
+                    return true;
+                }
+                console.log('obasą');
+                this.message = "Hasła muszą być takie same";
+            }
+            else {
+                this.message = "Uzupełnij brakujące pola";
+            }
+            console.log('false');
+            return false;
         }
     },
     data() {
         return {
             state: "login",
+            loginInputs: new Map(),
+            registerInputs: new Map(),
+            message: "debug mess"
         }
     },
     computed: {
@@ -82,12 +129,22 @@ export default defineComponent({
                 return "50vh";
             }
             else return "70vh";
+        },
+        isRegisterAllowed: function(): boolean {
+            return this.isRegister && this.passwordsMatch() && this.registerInputs.size === 4;
+        },
+        isLoginAllowed: function(): boolean {
+            return this.isLogin && this.loginInputs.size === 2;
         }
     },
 })
 </script>
 
 <style scoped>
+
+.alert {
+    color:red;
+}
 
 .nameinput {
     top: 45vh;
