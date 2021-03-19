@@ -17,6 +17,8 @@
                 <Input :isTextType="false" :info="'Hasło:'" :maxChars="30" :minChars="3" @good="(event) => {registerValid(event, 'pass')}" @bad="deleteRegisterInput('pass')"/>
                 <Input :isTextType="false" :info="'Powtórz Hasło:'" :maxChars="30" :minChars="3" @good="(event) => {registerValid(event, 'pass2')}" @bad="deleteRegisterInput('pass2')"/>
                 <div v-if="()=>{return this.message != ''}" class="alert">{{message}}</div>
+                <div v-else-if="()=>{return this.errorMess != ''}" class="alert">{{errorMess}}</div>
+                <div :class="`${registerState}`"></div>
                 <button class="openAppBtn" @click="register">Zarejestruj</button>
             </div>
         </div>
@@ -36,17 +38,16 @@ export default defineComponent({
         },
         login(): void {
             if (this.isLoginAllowed) {
-                console.log("login request");
-                console.log(this.loginInputs);
+                this.$emit('login', this.loginInputs);
             }
             else {
                 console.log("login not allowed");
             }
         },
         register(): void {
+            this.registerState = "loading";
             if (this.isRegisterAllowed) {
-                console.log("register request");
-                console.log(this.registerInputs);
+                this.$emit('register', this.registerInputs);
             }
             else {
                 console.log("register not allowed");
@@ -67,14 +68,12 @@ export default defineComponent({
             this.registerInputs.delete(id);
         },
         passwordsMatch(): boolean {
-            console.log(this.registerInputs);
             if (this.registerInputs.has('pass') && this.registerInputs.has('pass2')) {
                 const same = this.registerInputs.get('pass') === this.registerInputs.get('pass2');
                 if (same) {
                     this.message = "";
                     return true;
                 }
-                console.log('obasą');
                 this.message = "Hasła muszą być takie same";
             }
             else {
@@ -89,7 +88,10 @@ export default defineComponent({
             state: "login",
             loginInputs: new Map(),
             registerInputs: new Map(),
-            message: "debug mess"
+            message: "",
+            errorMess: "",
+            registerState: "",
+            loginState: ""
         }
     },
     computed: {
@@ -141,6 +143,20 @@ export default defineComponent({
 </script>
 
 <style scoped>
+
+.loading {
+    position: absolute;
+    height: 2vw;
+    width: 2vw;
+    left: 9vw ;
+    bottom: 15vh;
+    border-radius: 50%;
+    background-color: rgb(11, 226, 241);
+    z-index: 2000;
+    animation: name duration timing-function delay iteration-count direction fill-mode;
+}
+
+
 
 .alert {
     color:red;

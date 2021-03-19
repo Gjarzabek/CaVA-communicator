@@ -1,8 +1,8 @@
 <template>
   <div>
     <Navi v-if="!appOpened" @login="showLogin"/>
-    <router-view/>
-    <LoginPanel :show="loginVisable" @hideLogin="hideLogin"/>
+    <router-view :user="user"/>
+    <LoginPanel v-if="!appOpened" :show="loginVisable" @hideLogin="hideLogin" @login="loginRequest" @register="registerRequest"/>
   </div>
 </template>
 
@@ -10,13 +10,16 @@
 import { defineComponent } from 'vue';
 import LoginPanel from "@/components/LandingPage/LoginPanel.vue";
 import Navi from "@/components/LandingPage/Navi.vue";
+import {HttpClient} from "@/ts_classes/HttpClient";
 
 export default defineComponent({
     props: [],
     components: {Navi, LoginPanel},
     data() {
       return {
-        loginVisable:false
+        loginVisable:false,
+        user: {id:'000000', name:"Grzesiek", status:"dostępny", desc:"Hej Wszystkim!", icon:"bird"},
+        httpClient: new HttpClient()
       };
     },
     methods: {
@@ -26,6 +29,12 @@ export default defineComponent({
       hideLogin() {
         this.loginVisable = false;
         console.log("Hide login:", this.loginVisable);
+      },
+      loginRequest(user: Map<string, string>) {
+        this.httpClient.login(user);
+      },
+      registerRequest(user: Map<string, string>) {
+        this.httpClient.register(user);
       }
     },
     computed: {

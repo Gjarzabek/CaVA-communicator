@@ -57,6 +57,7 @@ const statusOrder = (a: any, b: any): number => {
 };
 
 @Options({
+  props: ["user"],
   beforeUnmount() {
     this.connection.close("appClosed");
   },
@@ -64,7 +65,6 @@ const statusOrder = (a: any, b: any): number => {
       return {
             chatUsers: [].sort(statusOrder),
             search: "",
-            user: {id:'000000', name:"Grzesiek", status:"dostępny", desc:"Hej Wszystkim!", icon:"bird"},
             friends: [
                 {id:'234gsf', name:"Bob", status:"dostępny", desc:"Hejcia"},
                 {id:'sdh24g', name:"Daro", status:"zaraz-wracam", desc:"Pozdrawiam!"},
