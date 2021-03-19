@@ -2,7 +2,13 @@
   <div>
     <Navi v-if="!appOpened" @login="showLogin"/>
     <router-view :user="user"/>
-    <LoginPanel v-if="!appOpened" :show="loginVisable" @hideLogin="hideLogin" @login="loginRequest" @register="registerRequest"/>
+    <LoginPanel v-if="!appOpened"
+    :show="loginVisable"
+    :loginState="loginStatus"
+    :registerState="registerStatus"
+    @hideLogin="hideLogin"
+    @login="loginRequest"
+    @register="registerRequest"/>
   </div>
 </template>
 
@@ -19,7 +25,9 @@ export default defineComponent({
       return {
         loginVisable:false,
         user: {id:'000000', name:"Grzesiek", status:"dostępny", desc:"Hej Wszystkim!", icon:"bird"},
-        httpClient: new HttpClient()
+        httpClient: new HttpClient(),
+        loginStatus: 'out',
+        registerStatus: ''
       };
     },
     methods: {
@@ -34,7 +42,8 @@ export default defineComponent({
         this.httpClient.login(user);
       },
       registerRequest(user: Map<string, string>) {
-        this.httpClient.register(user);
+        this.registerStatus = "loading";
+        this.httpClient.register(user, ()=>{this.registerStatus="succeed"}, ()=>{this.registerStatus="failed"});
       }
     },
     computed: {

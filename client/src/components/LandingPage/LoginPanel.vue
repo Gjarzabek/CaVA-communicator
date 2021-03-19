@@ -17,8 +17,8 @@
                 <Input :isTextType="false" :info="'Hasło:'" :maxChars="30" :minChars="3" @good="(event) => {registerValid(event, 'pass')}" @bad="deleteRegisterInput('pass')"/>
                 <Input :isTextType="false" :info="'Powtórz Hasło:'" :maxChars="30" :minChars="3" @good="(event) => {registerValid(event, 'pass2')}" @bad="deleteRegisterInput('pass2')"/>
                 <div v-if="()=>{return this.message != ''}" class="alert">{{message}}</div>
-                <div v-else-if="()=>{return this.errorMess != ''}" class="alert">{{errorMess}}</div>
-                <div :class="`${registerState}`"></div>
+                <div v-if="()=>{return this.registerMessage != ''}" :class="{loaded: registerState === 'succeed', blue: registerState === '', alert: registerState === 'failed'}">{{registerMessage}}</div>
+                <div class="dot" :class="`${registerState}`"></div>
                 <button class="openAppBtn" @click="register">Zarejestruj</button>
             </div>
         </div>
@@ -30,7 +30,7 @@ import { defineComponent } from 'vue';
 import Input from "@/components/LandingPage/Input.vue";
 
 export default defineComponent({
-    props: ["show"],
+    props: ["show", "registerState", "loginState"],
     components: {Input},
     methods: {
         hideLogin(): void {
@@ -45,7 +45,6 @@ export default defineComponent({
             }
         },
         register(): void {
-            this.registerState = "loading";
             if (this.isRegisterAllowed) {
                 this.$emit('register', this.registerInputs);
             }
@@ -79,7 +78,6 @@ export default defineComponent({
             else {
                 this.message = "Uzupełnij brakujące pola";
             }
-            console.log('false');
             return false;
         }
     },
@@ -89,9 +87,6 @@ export default defineComponent({
             loginInputs: new Map(),
             registerInputs: new Map(),
             message: "",
-            errorMess: "",
-            registerState: "",
-            loginState: ""
         }
     },
     computed: {
@@ -137,29 +132,86 @@ export default defineComponent({
         },
         isLoginAllowed: function(): boolean {
             return this.isLogin && this.loginInputs.size === 2;
+        },
+        registerMessage: function(): string {
+            switch (this.registerState) {
+                case 'loading':
+                    return "Wysyłanie danych..";
+                case 'succeed':
+                    return "Zarejestrowano"
+                case 'failed':
+                    return "Email zajęty";
+                default:
+                    return '';
+            }
         }
     },
+    watch: {
+        registerState: function() {
+            if (this.registerState === "succeed") {
+                setTimeout(()=>{this.state="login"}, 1100);
+            }
+        }
+    }
 })
 </script>
 
 <style scoped>
 
-.loading {
+.dot {
     position: absolute;
     height: 2vw;
     width: 2vw;
-    left: 9vw ;
+    left: 9vw;
     bottom: 15vh;
     border-radius: 50%;
-    background-color: rgb(11, 226, 241);
+    background-color: rgba(11, 226, 241, 0.376);
     z-index: 2000;
-    animation: name duration timing-function delay iteration-count direction fill-mode;
+    transition: 1s;
+    transform: scale(0.7);
 }
 
-
+.blue {
+    color: rgb(21, 200, 255);
+}
 
 .alert {
     color:red;
+}
+
+.loading {
+    animation: pulse 2s;
+    animation-iteration-count: infinite;
+}
+
+.loading:hover {
+    left: 7vw;
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(0.1);
+    }
+    50% {
+        background-color: rgb(11, 226, 241);
+        transform: scale(1);
+    }
+    100% {
+        transform: scale(0.1);
+    }
+}
+
+.succeed {
+    background-color: rgb(37, 255, 55);
+    transition: 2s;
+}
+
+.loaded {
+    color: greenyellow;
+}
+
+.failed {
+    background-color: red;
 }
 
 .nameinput {

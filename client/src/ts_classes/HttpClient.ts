@@ -42,11 +42,11 @@ export class HttpClient {
         })
         .then((reponse) => {
             console.log("reponse:", reponse);
-            registerSucceed(reponse.status);
+            registerSucceed();
         })
         .catch((reason) => {
             console.error("error reason", reason);
-            registerFailed(reason);
+            registerFailed();
         })
     }
 
