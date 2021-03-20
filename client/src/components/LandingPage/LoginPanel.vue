@@ -9,6 +9,7 @@
             <div v-if="isLogin && show">
                 <Input :isTextType="true" :info="'Email:'" :maxChars="30" :minChars="3" @good="(event) => {loginInput(event, 'email')}" @bad="deleteLoginInput('email')"/>
                 <Input :isTextType="false" :info="'Hasło:'" :maxChars="30" :minChars="3" @good="(event) => {loginInput(event, 'pass')}" @bad="deleteLoginInput('pass')"/>
+                <p class="failed">{{loginMess}}</p>
                 <button class="openAppBtn" @click="login">Zaloguj</button>
             </div>
             <div v-else-if="isRegister && show">
@@ -87,6 +88,7 @@ export default defineComponent({
             loginInputs: new Map(),
             registerInputs: new Map(),
             message: "",
+            loginMess: ""
         }
     },
     computed: {
@@ -150,6 +152,11 @@ export default defineComponent({
         registerState: function() {
             if (this.registerState === "succeed") {
                 setTimeout(()=>{this.state="login"}, 1100);
+            }
+        },
+        loginState: function() {
+            if (this.loginState.status === "error") {
+                this.loginMess = this.loginState.message;
             }
         }
     }

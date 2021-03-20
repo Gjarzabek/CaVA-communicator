@@ -11,6 +11,15 @@ export interface RegisterData {
     pass: string
 }
 
+export interface UserData {
+    _id: string, 
+    name: string,
+    email: {
+        type: string,
+        unique: true
+    }
+}
+
 export class HttpClient {
 
     private serverUrl: string;
@@ -19,17 +28,19 @@ export class HttpClient {
         this.serverUrl = "http://localhost:5000";
     }
 
-    login(data: Map<string, string>) {
+    login(data: Map<string, string>, loginSucceed: any, loginFailed: any) {
         console.log("login: ",data);
         axios.post(this.serverUrl+"/api/login", {
             email: data.get("email"),
             pass: data.get("pass")
         })
-        .then((reponse) => {
-            console.log("reponse:", reponse);
+        .then((reponse: any) => {
+            reponse.data.user.id = reponse.data.user._id;
+            loginSucceed(reponse.data);
         })
         .catch((reason: any) => {
-            console.error("error reason", reason);
+            console.log(reason);
+            loginFailed(reason);
         })
     }
 

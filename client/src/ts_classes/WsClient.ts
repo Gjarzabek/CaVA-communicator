@@ -3,13 +3,11 @@ import msgType from './Message';
 export default  class WsClient {
     static port: number;
     private ws: WebSocket;
-    private userId: number;
 
-    constructor(userId: number, userNick: string) {
+    constructor(userCredits: any) {
         WsClient.port = 8999;
-        this.userId = userId;
 
-        this.ws = new WebSocket(`ws://localhost:${WsClient.port}/${userId}:${userNick}`);
+        this.ws = new WebSocket(`ws://localhost:${WsClient.port}/${userCredits.token}`);
 
         this.ws.onopen = () => {
             console.log("websocket connected");

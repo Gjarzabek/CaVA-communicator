@@ -1,7 +1,7 @@
 <template>
   <div>
     <Navi v-if="!appOpened" @login="showLogin"/>
-    <router-view :user="user"/>
+    <router-view :userCredits="user"/>
     <LoginPanel v-if="!appOpened"
     :show="loginVisable"
     :loginState="loginStatus"
@@ -24,10 +24,10 @@ export default defineComponent({
     data() {
       return {
         loginVisable:false,
-        user: {id:'000000', name:"Grzesiek", status:"dostępny", desc:"Hej Wszystkim!", icon:"bird"},
+        user: {id:'000000', name:"Grzesiek", email:"email@me.pl", authToken: '', refresh: ''},
         httpClient: new HttpClient(),
-        loginStatus: 'out',
-        registerStatus: ''
+        loginStatus: {status: 'out', message: ''},
+        registerStatus: '',
       };
     },
     methods: {
@@ -39,7 +39,18 @@ export default defineComponent({
         console.log("Hide login:", this.loginVisable);
       },
       loginRequest(user: Map<string, string>) {
-        this.httpClient.login(user);
+        this.httpClient.login(user,
+        (data:any) => {
+          this.loginStatus = {status: 'in', message:""};
+          this.user = data.user;
+          this.$router.push('app');
+        },
+        (reponse:any)=>{
+          this.loginStatus = {
+            status: "error",
+            message: "Niepoprawne dane"
+          }
+        });
       },
       registerRequest(user: Map<string, string>) {
         this.registerStatus = "loading";

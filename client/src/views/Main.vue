@@ -57,13 +57,14 @@ const statusOrder = (a: any, b: any): number => {
 };
 
 @Options({
-  props: ["user"],
+  props: ["userCredits"],
   beforeUnmount() {
     this.connection.close("appClosed");
   },
   data() {
       return {
             chatUsers: [].sort(statusOrder),
+            user: {id:"", name:"", status:"", desc:"", icon:""},
             search: "",
             friends: [
                 {id:'234gsf', name:"Bob", status:"dostępny", desc:"Hejcia"},
@@ -221,7 +222,7 @@ const statusOrder = (a: any, b: any): number => {
         }
   },
   created: function() {
-      this.connection = new WsHandler(this.user.id, this.user.name);
+      this.connection = new WsHandler(this.userCredits);
   }
 })
 export default class Main extends Vue {}
