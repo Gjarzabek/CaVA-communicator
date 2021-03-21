@@ -24,7 +24,7 @@ export default defineComponent({
     data() {
       return {
         loginVisable:false,
-        user: {id:'000000', name:"Grzesiek", email:"email@me.pl", authToken: '', refresh: ''},
+        user: {id:'', name:'', email:'', authToken: '', refresh: ''},
         httpClient: new HttpClient(),
         loginStatus: {status: 'out', message: ''},
         registerStatus: '',

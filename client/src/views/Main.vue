@@ -1,6 +1,12 @@
 <template>
     <div>
-        <UserInfo v-bind:user="user" @statusChange="changeUserStatus" @descChange="changeUserDesc" @iconChange="changeUserIcon"/>
+        <UserInfo
+        :userCredits="{id: userCredits.id, name: userCredits.name}"
+        v-bind:user="user"
+        @statusChange="changeUserStatus"
+        @descChange="changeUserDesc"
+        @iconChange="changeUserIcon"
+        />
         <TopPanel :notifications="notifications"/>
         <UsersOnline v-bind:Users="filteredUsers" @search="changeSearch"/>
         <ChatSection 

@@ -6,8 +6,8 @@
         </div>
         <div id="userInfo">
             <div id="statusDot" :class="user.status"></div>
-            <div id="nick" @click="toogleStatusMenu">{{user.name}}</div>
-            <div id="id">id:{{user.id}}</div>
+            <div id="nick" @click="toogleStatusMenu">{{userCredits.name}}</div>
+            <div id="id">id:{{userCredits.id}}</div>
             <div id="desc" @click="changeDesc">{{descDemo}}</div>
         </div>
         <div v-if="showStatusPanel">
@@ -32,7 +32,7 @@
 import { defineComponent } from 'vue';
 
 export default defineComponent({
-    props: ["user"],
+    props: ["userCredits", "user"],
     components: {},
     data() {
         return {

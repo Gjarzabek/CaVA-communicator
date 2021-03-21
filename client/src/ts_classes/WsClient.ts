@@ -28,6 +28,10 @@ export default  class WsClient {
             const msgData: msgType = message.data;
 
             switch(msgData.method) {
+                case 'loginPayload':
+                    console.log("user info from server: ", msgData.payload);
+                    break;
+
                 default:
                     console.log('got some message', msgData);
                     break;

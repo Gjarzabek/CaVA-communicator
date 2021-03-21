@@ -35,7 +35,7 @@ export class HttpClient {
             pass: data.get("pass")
         })
         .then((reponse: any) => {
-            reponse.data.user.id = reponse.data.user._id;
+            console.log("reponse.data.user", reponse.data.user);
             loginSucceed(reponse.data);
         })
         .catch((reason: any) => {
