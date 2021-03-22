@@ -7,7 +7,7 @@
         @descChange="changeUserDesc"
         @iconChange="changeUserIcon"
         />
-        <TopPanel :notifications="notifications"/>
+        <TopPanel :notifications="notifications" @addFriend="inviteFriend"/>
         <UsersOnline v-bind:Users="filteredUsers" @search="changeSearch"/>
         <ChatSection 
         :openedChats="openedChats"
@@ -65,26 +65,16 @@ const statusOrder = (a: any, b: any): number => {
 @Options({
   props: ["userCredits"],
   beforeUnmount() {
-    this.connection.close("appClosed");
+    this.connection.close("appClosed", this.userCredits.id);
   },
   data() {
       return {
             chatUsers: [].sort(statusOrder),
-            user: {id:"", name:"", status:"", desc:"", icon:""},
+            user: {id:"", name:"", status:"", desc:"", icon:"", joinTime: ""},
             search: "",
-            friends: [
-                {id:'234gsf', name:"Bob", status:"dostępny", desc:"Hejcia"},
-                {id:'sdh24g', name:"Daro", status:"zaraz-wracam", desc:"Pozdrawiam!"},
-                {id:'15D442', name:"Kacper", status:"niedostępny", desc:"Status.."},
-                {id:'g24GSF', name:"Jaca",status:"dostępny", desc:"SiemankoOoo :)"},
-                {id:'g09875', name:"Alice", status:"zajęty", desc:"Status.."}
-            ],
+            friends: [],
             openedChats: [],
-            chats: [
-                {id:'15D442', receiver: "Kacper", chatType: "SzyfrowanyHasłem", payload:[{who:"ty",timestamp:0.2, data:"hi"}, {who:"oni", timestamp:1, data:"no Hej"}]},
-                {id:'g09875', receiver: "Alice", chatType: "Szyfrowany", payload:[{who:"ty",timestamp:1432, data:"Co tam ?"}, {who:"oni", timestamp:334, data:"..."}]},
-                {id:'g09875', receiver: "Alice", chatType: "Zwykły", payload:[{who:"ty",timestamp:1, data:"czesc"}, {who:"oni", timestamp:3, data:"hej"}]}
-            ],
+            chats: [],
             chatSelect: false,
             userSelected: undefined,
             activeChatId: undefined,
@@ -92,21 +82,9 @@ const statusOrder = (a: any, b: any): number => {
                 show: false,
                 user: undefined
             },
-            notifications: [
-                {id:1, info: "Tajna wiadomość", from:"Bob", type:"secretMess"},
-                {id:2, info: "Zaproszenie do Unikalnego Chatu", from: "sjergiej", type:"uniqueMess"}
-            ],
-            privateGroups: [
-                {id:1, name:"Spotkania-Szachy", isSecret: false},
-                {id:2, name:"Grupa3", isSecret: false},
-                {id:3, name:"GrupaZadaniowa", isSecret: true},
-            ],
-            publicRooms: [
-                {id:1, name:"Wiadomości", capacity: 500, currentPpl: 0},
-                {id:2, name:"Kupie-Sprzedam", capacity: 500, currentPpl: 0},
-                {id:3, name:"JednoczymySię", capacity: 250, currentPpl: 0},
-                {id:4, name:"Lokalnie", capacity: 100, currentPpl: 0},
-            ],
+            notifications: [],
+            privateGroups: [],
+            publicRooms: [],
             connection: undefined
       }
   },
@@ -127,9 +105,20 @@ const statusOrder = (a: any, b: any): number => {
     },
     sortedFriends: function(): any {
         return this.friends.sort(statusOrder);
-    },
+    }
   },
   methods: {
+        inviteFriend(friendId: string) {
+            if (friendId === this.userCredits.id) return;
+
+            this.connection.send({
+                method: 'friendInvite',
+                fromName: this.user.name,
+                fromId: this.userCredits.id,
+                toId: friendId,
+                timestamp: (new Date()).getMilliseconds()
+            });
+        },
         changeSearch(newSearch: string) {
             this.chatUsers.sort((a: any, b: any) => {
                     if (getStatusPoint(a.status) > getStatusPoint(b.status))
@@ -225,10 +214,26 @@ const statusOrder = (a: any, b: any): number => {
                 return;
             }
 
+        },
+        userSetup(userPayload: any) {
+            console.log(userPayload);
+            this.user.desc = userPayload.desc;
+            this.friends = userPayload.friends;
+            this.privateGroups = userPayload.groups;
+            this.chats = userPayload.chats;
+            this.notifications = userPayload.notifications;
+            this.user.icon = userPayload.icon;
+            this.user.joinTime = userPayload.joinTime;
+            this.user.name = userPayload.name;
+            this.user.status = userPayload.status;
         }
   },
   created: function() {
-      this.connection = new WsHandler(this.userCredits);
+      this.connection = new WsHandler(
+          this.userCredits,
+          this.userSetup,
+          (Alert: any) => {this.notifications.push(Alert)}
+          );
   }
 })
 export default class Main extends Vue {}

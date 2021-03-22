@@ -29,13 +29,11 @@ export class HttpClient {
     }
 
     login(data: Map<string, string>, loginSucceed: any, loginFailed: any) {
-        console.log("login: ",data);
         axios.post(this.serverUrl+"/api/login", {
             email: data.get("email"),
             pass: data.get("pass")
         })
         .then((reponse: any) => {
-            console.log("reponse.data.user", reponse.data.user);
             loginSucceed(reponse.data);
         })
         .catch((reason: any) => {
@@ -45,14 +43,12 @@ export class HttpClient {
     }
 
     register(data: Map<string, string>, registerSucceed: any, registerFailed: any) {
-        console.log("register: ", data);
         axios.post(this.serverUrl+"/api/register", {
             email: data.get("email"),
             name: data.get("nazwa"),
             pass: data.get("pass")
         })
         .then((reponse) => {
-            console.log("reponse:", reponse);
             registerSucceed();
         })
         .catch((reason) => {

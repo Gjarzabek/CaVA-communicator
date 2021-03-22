@@ -50,6 +50,7 @@ export default defineComponent({
       this.inputData = "";
     },
     submitFriendCode(): void {
+      this.$emit('addFriend', this.inputData);
       this.inputData = "Wysłano";
       setTimeout(()=>{this.closeAddDiv();}, 200);
     }
@@ -107,6 +108,7 @@ export default defineComponent({
   top: 5vh;
   z-index: 2;
   background-color: #1d1d1d;
+  border: 0.1px skyblue solid;
   max-height: 70vh;
   overflow-y: auto;
   border-radius: 2vh;

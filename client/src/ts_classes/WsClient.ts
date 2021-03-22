@@ -2,9 +2,13 @@ import msgType from './Message';
 
 export default  class WsClient {
     static port: number;
+    static userData: any;
     private ws: WebSocket;
 
-    constructor(userCredits: any) {
+    constructor(userCredits: any,
+        userSetupCallback: any,
+        newAlert: any
+        ) {
         WsClient.port = 8999;
 
         this.ws = new WebSocket(`ws://localhost:${WsClient.port}/${userCredits.token}`);
@@ -25,11 +29,15 @@ export default  class WsClient {
         }
 
         this.ws.onmessage = (message: any) => {
-            const msgData: msgType = message.data;
-
+            const msgData: any = JSON.parse(message.data);
+            console.log("msg.method=",msgData.method);
             switch(msgData.method) {
                 case 'loginPayload':
-                    console.log("user info from server: ", msgData.payload);
+                    userSetupCallback(msgData.payload);
+                    break;
+
+                case 'Alert':
+                    newAlert(msgData.payload);
                     break;
 
                 default:
@@ -40,7 +48,13 @@ export default  class WsClient {
         };
     }
 
-    close(info: string): void {
+    close(info: string, userId: any): void {
+        const payload = {method:'close', id: userId};
+        this.ws.send(JSON.stringify(payload));
         this.ws.close(1000, info);
+    }
+
+    send(payload: any) {
+        this.ws.send(JSON.stringify(payload));
     }
 }
