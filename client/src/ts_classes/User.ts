@@ -11,10 +11,10 @@ export function getStatusPoint(status: string): number {
             return 0;
         case 'zaraz-wracam':
             return 1;
+            case 'zajęty':
+                return 2
         case 'niedostępny':
             return 3;
-        case 'zajęty':
-            return 2
         default:
             return -1;
     }

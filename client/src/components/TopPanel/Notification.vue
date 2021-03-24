@@ -78,13 +78,14 @@ button {
 }
 
 .accept {
-    background-color: lightgreen;
+    background-color: rgb(101, 240, 101);
     bottom: 0.2vh;
     right: 4vw;
 }
 
 .reject {
-    background-color: lightcoral;
+    background-color: rgb(0, 0, 0);
+    color:white;
     bottom: 0.2vh;
     right: 1vw;
 }

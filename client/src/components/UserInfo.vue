@@ -7,7 +7,7 @@
         <div id="userInfo">
             <div id="statusDot" :class="user.status"></div>
             <div id="nick" @click="toogleStatusMenu">{{userCredits.name}}</div>
-            <div id="id">id:{{userCredits.id}}</div>
+            <div id="id">id: {{userCredits.id}}</div>
             <div id="desc" @click="changeDesc">{{descDemo}}</div>
         </div>
         <div v-if="showStatusPanel">
@@ -52,7 +52,7 @@ export default defineComponent({
                 return this.user.desc.substr(0, this.maxDescShowLen) + "...";
             }
             else if (!this.user.desc)
-                return "..."
+                return "Twój komunikat..."
             else return this.user.desc;
         },
         fsocietyChosen: function(): boolean {
@@ -186,8 +186,8 @@ export default defineComponent({
 
 #desc {
     position: absolute;
-    top: 65%;
-    font: 1.8vh NovaFlat;
+    top: 68%;
+    font: 1.6vh NovaFlat;
     border: none;
     color: rgb(182, 182, 182);
     cursor: pointer;

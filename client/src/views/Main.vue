@@ -28,20 +28,12 @@
         :chats="chats"
         :publicRooms="publicRooms"
         :privateGroups="privateGroups"
-        @newChat="newChatRequest"
         @openChat="openChatReq"
         @userClick="userClickHandler"
         @joinPublic="joinPublicRoom"
         @openPrivateTalk="openPrivateTalk"
         />
-        <div v-if="chatSelect">
-            <ChatSelect @signalClose="chatSelect=false"/>
-        </div>
-        <div id="userMenu">
-            <UserMenu
-            :user="UserMenu.user"
-            @newChatRequest="newChatRequest"/>
-        </div>
+        <FriendMenu v-if="FriendMenuPayload.show" :position="FriendMenuPayload.position" :friend="FriendMenuPayload.user"/>
     </div>
 </template>
 
@@ -51,9 +43,8 @@ import UserInfo from '@/components/UserInfo.vue';
 import UsersOnline from "@/components/RightBar/UsersOnline.vue";
 import TopPanel from "@/components/TopPanel/Panel.vue";
 import FriendsNRooms from "@/components/LeftPanel/MainDiv.vue";
+import FriendMenu from "@/components/LeftPanel/FriendMenu.vue";
 import ChatSection from "@/components/ChatWindow/ChatSection.vue";
-import ChatSelect from "@/components/PopUps/ChatSelect.vue";
-import UserMenu from "@/components/PopUps/UserMenu.vue";
 
 import {getStatusPoint} from "@/ts_classes/User.ts";
 import WsHandler from "@/ts_classes/WsClient.ts";
@@ -77,6 +68,7 @@ const statusOrder = (a: any, b: any): number => {
   data() {
       return {
             chatUsers: [].sort(statusOrder),
+            newChatRequest: undefined,
             user: {id:"", name:"", status:"", desc:"", icon:"", joinTime: ""},
             search: "",
             friends: [],
@@ -85,9 +77,10 @@ const statusOrder = (a: any, b: any): number => {
             chatSelect: false,
             userSelected: undefined,
             activeChatId: undefined,
-            UserMenu: {
+            FriendMenuPayload: {
                 show: false,
-                user: undefined
+                user: undefined,
+                position: undefined
             },
             notifications: [],
             privateGroups: [],
@@ -100,9 +93,8 @@ const statusOrder = (a: any, b: any): number => {
     TopPanel,
     FriendsNRooms,
     ChatSection,
-    ChatSelect,
-    UserInfo,
-    UserMenu
+    FriendMenu,
+    UserInfo
   },
   computed: {
     filteredUsers: function(): any {
@@ -184,16 +176,6 @@ const statusOrder = (a: any, b: any): number => {
             //websocket message send
             console.log(message);
         },
-        newChatRequest(event: any): void {
-            this.chatSelect = true;
-            this.userSelected = this.UserMenu.user;
-
-            const menuDiv = document.getElementById("userMenu");
-            menuDiv!.style.display = "none";
-            this.UserMenu.show = false;
-
-            console.log('UserSelected', this.userSelected);
-        },
         openChatReq(chatId: number): void {
             const id: number = this.openedChats.find((chat: any)=> chat.id === chatId);
             if (id === undefined) {
@@ -224,22 +206,18 @@ const statusOrder = (a: any, b: any): number => {
             return; // TODO refactor - add public/private rooms conversations to openChats
         },
         userClickHandler(event: any): void {
-            const eventData = event[0];
-            const userData = event[1];
-            const menuDiv = document.getElementById("userMenu");
-            if (!this.UserMenu.show ) {
-                menuDiv!.style.display = "table";
-                menuDiv!.style.top = `${eventData.y}px`;
-                this.UserMenu.show = true;
-                this.UserMenu.user = userData;
+            if (this.FriendMenuPayload.show && this.FriendMenuPayload.user && this.FriendMenuPayload.user._id === event[1]._id) {
+                this.FriendMenuPayload.show = false;
             }
-            else if (userData.id === this.UserMenu.user.id ){
-                menuDiv!.style.display = "none";
-                this.UserMenu.show = false;
+            else if (this.FriendMenuPayload.show) {
+                this.FriendMenuPayload.position = event[0].y;
+                this.FriendMenuPayload.user = event[1];
             }
             else {
-                this.UserMenu.user = userData;
-                menuDiv!.style.top = `${eventData.y}px`;
+                console.log("userClick:", event);
+                this.FriendMenuPayload.user = event[1];
+                this.FriendMenuPayload.show = true; 
+                this.FriendMenuPayload.position = event[0].y;
             }
         },
         joinPublicRoom(room: any): void {
@@ -273,8 +251,24 @@ const statusOrder = (a: any, b: any): number => {
   },
   created: function() {
         this.connection = new WsHandler(this.userCredits, {
+            // callbacks for Ws events
                 setupUser: this.userSetup,
-                newAlert: (Alert: any) => {this.notifications.push(Alert); this.newAlert=true;}
+                newAlert: (Alert: any) => {this.notifications.push(Alert); this.newAlert=true;},
+                newFriend: (FriendData: any) => {
+                    this.friends.push(FriendData);
+                    console.log("FriendData:", FriendData);
+                    console.log("this.friends:", this.friends);
+                },
+                friendStatusUpdate: (friendInfo: any) => {
+                    console.log("freindStatusUpdate:", friendInfo);
+                    this.friends = this.friends.map((el: any) => {
+                        if (el._id === friendInfo.id) {
+                            el.status = friendInfo.status;    
+                        }
+                        return el;
+                    });
+                    console.log("after change:", this.friends);
+                }
             }
         );
   }
@@ -283,12 +277,5 @@ export default class Main extends Vue {}
 </script>
 
 <style scoped>
-
-#userMenu {
-  display: none;
-  position:absolute;
-  left: 12vw;
-  width: 10vw;
-}
 
 </style>

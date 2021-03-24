@@ -22,15 +22,15 @@ import HiddenList from "@/components/LeftPanel/HiddenList.vue";
 export default defineComponent({
   props: ["friends", "chats", "publicRooms", "privateGroups"],
   components: {HiddenList},
-  data() {
-      return {
-          ListParams: [
-            {header: "Rozmowy", type:"chat", payload: this.chats},
-            {header: "Znajomi", type:"friend", payload: this.friends},
-            {header: "Prywatne Grupy", type: "privateRoom", payload: this.privateGroups},
-            {header: "Publiczne Dyskusje", type: "publicTalk", payload: this.publicRooms}
-          ]
-      }
+  computed: {
+    ListParams: function(): any { 
+        return [
+          {header: "Rozmowy", type:"chat", payload: this.chats},
+          {header: "Znajomi", type:"friend", payload: this.friends},
+          {header: "Prywatne Grupy", type: "privateRoom", payload: this.privateGroups},
+          {header: "Publiczne Dyskusje", type: "publicTalk", payload: this.publicRooms}
+        ];
+    }
   },
   methods: {
     userClickHandler(event: any) :void {

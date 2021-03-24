@@ -24,6 +24,7 @@ export default  class WsClient {
             if (msgData.method === "ERROR") {
                 console.log('Ws connection closed, ERROR:', msgData.info);
             }
+            //TODO - send 'close' uri to set status on server to niedostpeny
         }
 
         this.ws.onmessage = (message: any) => {
@@ -36,6 +37,14 @@ export default  class WsClient {
 
                 case 'Alert':
                     Callbacks.newAlert(msgData.payload);
+                    break;
+
+                case 'newFriend':
+                    Callbacks.newFriend(msgData.payload);
+                    break;
+
+                case 'friendStatusUpdate':
+                    Callbacks.friendStatusUpdate(msgData.payload);
                     break;
 
                 default:

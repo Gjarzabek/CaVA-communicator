@@ -97,12 +97,12 @@ export default defineComponent({
 
 .alertCount {
   position: absolute;
-  top: 1vh;
-  right: 2vw;
-  width: 1vw;
-  height: 1vw;
+  top: 1.2vh;
+  right: 2.2vw;
+  width: 0.8vw;
+  height: 0.8vw;
   border-radius: 50%;
-  background-color: lightcoral;
+  background-color: rgb(212, 24, 24);
   color: whitesmoke;
 }
 
