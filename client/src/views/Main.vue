@@ -7,7 +7,14 @@
         @descChange="changeUserDesc"
         @iconChange="changeUserIcon"
         />
-        <TopPanel :notifications="notifications" @addFriend="inviteFriend"/>
+        <TopPanel
+        :notifications="reversedNotifications"
+        @checkedAlerts="markAlertsOld"
+        @addFriend="inviteFriend"
+        @acceptFriend="acceptFriend"
+        @rejectFriend="rejectFriend"
+        @deleteAlert="deleteAlert"
+        />
         <UsersOnline v-bind:Users="filteredUsers" @search="changeSearch"/>
         <ChatSection 
         :openedChats="openedChats"
@@ -85,7 +92,7 @@ const statusOrder = (a: any, b: any): number => {
             notifications: [],
             privateGroups: [],
             publicRooms: [],
-            connection: undefined
+            connection: undefined,
       }
   },
   components: {
@@ -105,9 +112,46 @@ const statusOrder = (a: any, b: any): number => {
     },
     sortedFriends: function(): any {
         return this.friends.sort(statusOrder);
+    },
+    reversedNotifications: function(): any {
+        if (!this.notifications || this.notifications.length <= 0) return [];
+        return this.notifications.reverse();
     }
   },
   methods: {
+        deleteAlert(alertId: string) {
+            this.connection.send({method:'deleteAlert', userId: this.userCredits.id, alertId:alertId});
+            this.notifications = this.notifications.filter((element:any)=>{return element.id != alertId});
+        },
+        markAlertsOld(alertsIds: any) {
+            setTimeout(() => {
+                for (const alertId of alertsIds) {
+                    for (const p of this.notifications) {
+                        if (p.id === alertId)   p.new = false;
+                    }
+                }
+            }, 5000);
+            this.connection.send({
+                method: 'markAlertsOld',
+                who: this.userCredits.id,
+                alerts: alertsIds
+            })
+        },
+        acceptFriend(info: any) {
+            if (info === undefined) return;
+
+            this.deleteAlert(info.alertId);
+
+            this.connection.send({
+                method: 'acceptFriend',
+                who: this.userCredits.id,
+                fromId: info.fromId
+            });
+        },
+        rejectFriend(info: any) {
+            if (info === undefined) return;
+            this.deleteAlert(info.alertId);
+        },
         inviteFriend(friendId: string) {
             if (friendId === this.userCredits.id) return;
 
@@ -115,8 +159,7 @@ const statusOrder = (a: any, b: any): number => {
                 method: 'friendInvite',
                 fromName: this.user.name,
                 fromId: this.userCredits.id,
-                toId: friendId,
-                timestamp: (new Date()).getMilliseconds()
+                toId: friendId
             });
         },
         changeSearch(newSearch: string) {
@@ -229,11 +272,11 @@ const statusOrder = (a: any, b: any): number => {
         }
   },
   created: function() {
-      this.connection = new WsHandler(
-          this.userCredits,
-          this.userSetup,
-          (Alert: any) => {this.notifications.push(Alert)}
-          );
+        this.connection = new WsHandler(this.userCredits, {
+                setupUser: this.userSetup,
+                newAlert: (Alert: any) => {this.notifications.push(Alert); this.newAlert=true;}
+            }
+        );
   }
 })
 export default class Main extends Vue {}

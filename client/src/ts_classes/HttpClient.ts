@@ -57,4 +57,10 @@ export class HttpClient {
         })
     }
 
+    logout(token: string) {
+        axios.post(this.serverUrl+"/api/logout", {
+            auth: `Bearer ${token}`
+        })
+    }
+
 }

@@ -1,7 +1,7 @@
 <template>
   <div>
     <Navi v-if="!appOpened" @login="showLogin"/>
-    <router-view :userCredits="user"/>
+    <router-view :userCredits="user" @logout="logout"/>
     <LoginPanel v-if="!appOpened"
     :show="loginVisable"
     :loginState="loginStatus"
@@ -55,6 +55,9 @@ export default defineComponent({
       registerRequest(user: Map<string, string>) {
         this.registerStatus = "loading";
         this.httpClient.register(user, ()=>{this.registerStatus="succeed"}, ()=>{this.registerStatus="failed"});
+      },
+      logout() {
+        this.httpClient.logout(this.user.authToken);
       }
     },
     computed: {

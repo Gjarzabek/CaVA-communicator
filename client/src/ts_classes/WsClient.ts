@@ -5,10 +5,8 @@ export default  class WsClient {
     static userData: any;
     private ws: WebSocket;
 
-    constructor(userCredits: any,
-        userSetupCallback: any,
-        newAlert: any
-        ) {
+    constructor(userCredits: any, Callbacks: any) {
+
         WsClient.port = 8999;
 
         this.ws = new WebSocket(`ws://localhost:${WsClient.port}/${userCredits.token}`);
@@ -30,14 +28,14 @@ export default  class WsClient {
 
         this.ws.onmessage = (message: any) => {
             const msgData: any = JSON.parse(message.data);
-            console.log("msg.method=",msgData.method);
+            console.log("msg.method =",msgData.method);
             switch(msgData.method) {
                 case 'loginPayload':
-                    userSetupCallback(msgData.payload);
+                    Callbacks.setupUser(msgData.payload);
                     break;
 
                 case 'Alert':
-                    newAlert(msgData.payload);
+                    Callbacks.newAlert(msgData.payload);
                     break;
 
                 default:

@@ -9,9 +9,16 @@
         </div>
       </div>
       <img src="../../assets/notify.png" alt="..." id="notification" @click=toogleNotifications>
+      <div v-if="isAnyNewAlert" class="alertCount"></div>
       <div v-if="showNotifications" class="notificationMain">
         <h2>Powiadomienia</h2>
-        <Notification v-for="notify in notifications" v-bind:key="notify.id" :data="notify" />
+        <Notification v-for="notify in notifications"
+        v-bind:key="notify.id"
+        :data="notify"
+        @acceptFriend="(event)=>{$emit('acceptFriend', event)}"
+        @rejectFriend="(event)=>{$emit('rejectFriend', event)}"
+        @deleteAlert="$emit('deleteAlert', notify.id)"
+        />
       </div>
     </div>
 </template>
@@ -28,7 +35,8 @@ export default defineComponent({
       showNotifications: false,
       addFriendActive: false,
       inputData: "",
-      maxIDLength: 10
+      maxIDLength: 10,
+      seen: true
     }
   },
   watch: {
@@ -40,7 +48,19 @@ export default defineComponent({
   },
   methods: {
     toogleNotifications() {
+      if (!this.showNotifications && this.isAnyNewAlert)
+        this.checkNewAlerts();
       this.showNotifications = !this.showNotifications;
+    },
+    checkNewAlerts(): void {
+      const checkedAlerts = [];
+      for (const alert of this.notifications) {
+        if (alert.new)
+          checkedAlerts.push(alert.id);
+      }
+      if (checkedAlerts.length === 0)
+        return;
+      this.$emit('checkedAlerts', checkedAlerts);
     },
     addFriend(): void {
       this.addFriendActive = true;
@@ -61,12 +81,30 @@ export default defineComponent({
     },
     addDivHeight: function(): number {
       return this.addFriendActive ? 6 : 0;
+    },
+    isAnyNewAlert: function(): boolean {
+      for (const alert of this.notifications) {
+        if (!alert) continue;
+        else if (alert.new) return true;
+      }
+      return false;
     }
   }
 })
 </script>
 
 <style scoped>
+
+.alertCount {
+  position: absolute;
+  top: 1vh;
+  right: 2vw;
+  width: 1vw;
+  height: 1vw;
+  border-radius: 50%;
+  background-color: lightcoral;
+  color: whitesmoke;
+}
 
 .submitFriend {
   position: absolute;
@@ -108,7 +146,7 @@ export default defineComponent({
   top: 5vh;
   z-index: 2;
   background-color: #1d1d1d;
-  border: 0.1px skyblue solid;
+  border: 0.1px rgb(236, 236, 236) dotted;
   max-height: 70vh;
   overflow-y: auto;
   border-radius: 2vh;
