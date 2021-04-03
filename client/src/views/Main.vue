@@ -46,8 +46,8 @@ import FriendsNRooms from "@/components/LeftPanel/MainDiv.vue";
 import FriendMenu from "@/components/LeftPanel/FriendMenu.vue";
 import ChatSection from "@/components/ChatWindow/ChatSection.vue";
 
-import {getStatusPoint} from "@/ts_classes/User.ts";
-import WsHandler from "@/ts_classes/WsClient.ts";
+import {getStatusPoint} from "@/ts_classes/User";
+import WsHandler from "@/ts_classes/WsClient";
 
 const statusOrder = (a: any, b: any): number => {
     if (a === undefined)

@@ -37,13 +37,14 @@ export default defineComponent({
             }
         },
         InputData: function(): void {
-            const charTyped = this.InputData.slice(-1);
-            if (this.notAllowedChars.includes(charTyped)) {
-                this.message = `Napis nie może zawierać ${charTyped}`;
-                this.InputData = this.InputData.substring(0, this.InputData.length-1);
-                this.changed = true;
+            for (const badChar of this.notAllowedChars) {
+                if (this.InputData.includes(badChar)) {
+                    this.InputData = this.InputData.replace(badChar, '');
+                    this.message = `Napis nie może zawierać ${badChar}`;
+                    this.changed = true;
+                }
             }
-            else if (this.InputData.length > this.maxChars) {
+            if (this.InputData.length > this.maxChars) {
                 this.InputData = this.InputData.substring(0, this.maxChars);
                 this.message = `Maksymalnie ${this.maxChars} znaków`;
                 this.changed = true;

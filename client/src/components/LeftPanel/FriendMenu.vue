@@ -5,17 +5,19 @@
             <img v-else src="../../assets/fsociety.png" alt=".." class='profileIcon'>
         </div>
         <b class="info nick">{{friend.name}}</b>
-        <div class="info id">{{Desc}}</div>
+        <div class="info date">dołączył {{friend.joinTime}}</div>
         <div class="dot" :class="friend.status"></div>
-        <div class="info notePayload">Twoja notatka..</div>
-        <button class="chatBtn">Napisz Wiadomość</button>
-        <button class="cypherChatBtn">Czat podwójnie szyfrowany hasłem</button>
+        <div class="info desc">{{Desc}}</div>
+        <p class="info notePara">Notatka</p>
+        <textarea placeholder="Twoja Notatka.." class="info notePayload" maxlength="40" spellcheck="false" v-model="note"></textarea>
     </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue' 
 /*
+        <button class="chatBtn">Napisz Wiadomość</button>
+        <button class="cypherChatBtn">Czat podwójnie szyfrowany hasłem</button>
 Friend Menu:
 {
 "status": "niedostępny",
@@ -29,6 +31,18 @@ Friend Menu:
 export default defineComponent({
   props: ["friend", "position"],
   components: {},
+  data() {
+        return {
+            note: ""
+        }
+  },
+  watch: {
+        note: function(): void {
+            if (this.note.includes('\n'))
+                this.note = this.note.replace('\n', '');
+            console.log(this.note);
+        }
+  },
   computed: {
       isBird(): boolean {
           return this.friend.icon === "bird";
@@ -64,6 +78,15 @@ button:hover {
 
 }
 
+.notePara {
+    position: absolute;
+    left: 6%;
+    top: 35%;
+    width: 88%;
+    font-size: 1.25vh;
+    color: rgb(97, 97, 97);
+}
+
 .chatBtn {
     position: absolute;
     bottom: 7vh;
@@ -80,16 +103,23 @@ button:hover {
 
 .notePayload {
     position: absolute;
-    top: 33%;
+    top: 40%;
     left: 5%;
     width: 90%;
     height: 15%;
-    background-color: rgb(51, 51, 51);
-    padding: 0.2vh;
     text-align: left;
     border-radius: 0.6vh;
-    font: 1.5vh Sen;
-    color: rgba(255, 255, 255, 0.315);
+    font: 1.6vh Sen;
+    color: rgb(149, 149, 149);
+    resize: none;
+    outline: none;
+    border: none;
+    margin: 0;
+    background-color: transparent;
+}
+
+.notePayload:focus {
+    background-color: rgb(46, 46, 46);
 }
 
 .dot {
@@ -111,18 +141,20 @@ button:hover {
 
 .nick {
     position: absolute;
-    left: 25%;
-    top: 4%;
+    left: 26%;
+    top: 1vh;
     width: 10vw;
+    color: rgb(58, 186, 190);
     font: 2vh NovaSquare;
 }
 
-.id {
+.date {
     position:absolute;
     width: 10vw;
-    left: 25%;
-    top: 13%;
-    font: 1.4vh Courier;
+    left: 26%;
+    top: 4vh;
+    font: 1.3vh NovaFlat;
+    color: rgb(111, 137, 138);
 }
 
 .profileIcon {
@@ -142,12 +174,21 @@ button:hover {
     background-color: #ffffff1f;
 }
 
+.desc {
+    position:absolute;
+    width: 12.5vw;
+    left: 5%;
+    top: 21%;
+    font: 1.3vh Courier;
+    color: rgb(58, 186, 190);
+}
+
 #FriendMenu {
     position:absolute;
     left: 15vw;
     z-index: 3;
-    width: 15vw;
-    height: 30vh;
+    width: 14vw;
+    height: 35vh;
     background-color: rgb(31, 31, 31);
     border: 0.1vh solid rgb(66, 66, 66);
     border-radius: 0.6vh;

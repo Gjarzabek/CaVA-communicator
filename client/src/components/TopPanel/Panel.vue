@@ -35,7 +35,7 @@ export default defineComponent({
       showNotifications: false,
       addFriendActive: false,
       inputData: "",
-      maxIDLength: 10,
+      maxIDLength: 6,
       seen: true
     }
   },
@@ -70,8 +70,13 @@ export default defineComponent({
       this.inputData = "";
     },
     submitFriendCode(): void {
-      this.$emit('addFriend', this.inputData);
-      this.inputData = "Wysłano";
+      if (this.inputData.length === this.maxIDLength) {
+        this.$emit('addFriend', this.inputData);
+        this.inputData = "Wysłano";
+      }
+      else {
+        this.inputData = "Błąd";
+      }
       setTimeout(()=>{this.closeAddDiv();}, 200);
     }
   },
