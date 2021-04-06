@@ -52,7 +52,7 @@ export default defineComponent({
                 return this.user.desc.substr(0, this.maxDescShowLen) + "...";
             }
             else if (!this.user.desc)
-                return "Twój komunikat..."
+                return "mini post...";
             else return this.user.desc;
         },
         fsocietyChosen: function(): boolean {

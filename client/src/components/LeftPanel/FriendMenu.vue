@@ -9,15 +9,15 @@
         <div class="dot" :class="friend.status"></div>
         <div class="info desc">{{Desc}}</div>
         <p class="info notePara">Notatka</p>
-        <textarea placeholder="Twoja Notatka.." class="info notePayload" maxlength="40" spellcheck="false" v-model="note"></textarea>
+        <textarea placeholder="..." class="info notePayload" maxlength="40" spellcheck="false" v-model="note"></textarea>
+        <button class="chatBtn">Napisz Wiadomość</button>
     </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue' 
 /*
-        <button class="chatBtn">Napisz Wiadomość</button>
-        <button class="cypherChatBtn">Czat podwójnie szyfrowany hasłem</button>
+<button class="cypherChatBtn">Czat podwójnie szyfrowany hasłem</button>
 Friend Menu:
 {
 "status": "niedostępny",
@@ -33,7 +33,7 @@ export default defineComponent({
   components: {},
   data() {
         return {
-            note: ""
+            note: this.friend.note
         }
   },
   watch: {
@@ -41,6 +41,7 @@ export default defineComponent({
             if (this.note.includes('\n'))
                 this.note = this.note.replace('\n', '');
             console.log(this.note);
+            this.$emit('noteChange', this.note)
         }
   },
   computed: {
@@ -49,10 +50,12 @@ export default defineComponent({
       },
       Desc(): string {
             if (this.friend.desc === "")
-                return "To jest przykładowy komunikat użytkownika (opis)";
+                return "...";
             else
                 return this.friend.desc;
       }
+  },
+  methods: {
   }
 })
 </script>
@@ -89,9 +92,17 @@ button:hover {
 
 .chatBtn {
     position: absolute;
-    bottom: 7vh;
-    width: 90%;
+    bottom: 2vh;
     left: 5%;
+    width: 90%;
+    height: 4vh;
+    background-color: rgba(255, 255, 255, 0.116);
+    border: 2px solid rgba(128, 128, 128, 0.521);
+}
+
+.chatBtn:hover {
+    background-color: transparent;
+    border: 2px solid grey;
 }
 
 .cypherChatBtn {
@@ -159,8 +170,8 @@ button:hover {
 
 .profileIcon {
     position: absolute;
-    top: 10%;
-    left: 12%;
+    top: 12%;
+    left: 15%;
     width: 70%;
 }
 

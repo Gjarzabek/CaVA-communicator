@@ -47,6 +47,15 @@ export default  class WsClient {
                     Callbacks.friendStatusUpdate(msgData.payload);
                     break;
 
+                case 'friendInfoUpdate':
+                    if (msgData.payload.status) {
+                        Callbacks.friendStatusUpdate(msgData.payload);
+                    }
+                    else {
+                        Callbacks.friendInfoUpdate(msgData.payload);
+                    }
+                    break;
+
                 default:
                     console.log('got some message', msgData);
                     break;

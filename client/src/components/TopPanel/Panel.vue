@@ -211,7 +211,7 @@ export default defineComponent({
     left: 15%;
     width: 85%;
     height: 6%;
-    background-color: #96C5CD;
+    background: linear-gradient(90deg, rgb(177, 177, 177), rgba(107, 194, 197, 0.692));
 }
 
 .closeBtn {

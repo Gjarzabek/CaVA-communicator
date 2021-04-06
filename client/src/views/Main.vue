@@ -33,7 +33,7 @@
         @joinPublic="joinPublicRoom"
         @openPrivateTalk="openPrivateTalk"
         />
-        <FriendMenu v-if="FriendMenuPayload.show" :position="FriendMenuPayload.position" :friend="FriendMenuPayload.user"/>
+        <FriendMenu v-if="FriendMenuPayload.show" :position="FriendMenuPayload.position" :friend="FriendMenuPayload.user" @noteChange="updateNote"/>
     </div>
 </template>
 
@@ -63,6 +63,11 @@ const statusOrder = (a: any, b: any): number => {
 @Options({
   props: ["userCredits"],
   beforeUnmount() {
+    this.connection.send({
+        method: 'notesChange',
+        id: this.userCredits.id,
+        newNotes: Array.from(this.newNotes.entries()),
+    });
     this.connection.close("appClosed", this.userCredits.id);
   },
   data() {
@@ -86,6 +91,7 @@ const statusOrder = (a: any, b: any): number => {
             privateGroups: [],
             publicRooms: [],
             connection: undefined,
+            newNotes: new Map()
       }
   },
   components: {
@@ -111,6 +117,15 @@ const statusOrder = (a: any, b: any): number => {
     }
   },
   methods: {
+        updateNote(note: string) {
+            for (const friend of this.friends) {
+                if (friend._id === this.FriendMenuPayload.user._id) {
+                    friend.note = note;
+                }
+            }
+            this.newNotes.set(this.FriendMenuPayload.user._id, note);
+            console.log(this.newNotes);
+        },
         deleteAlert(alertId: string) {
             this.connection.send({method:'deleteAlert', userId: this.userCredits.id, alertId:alertId});
             this.notifications = this.notifications.filter((element:any)=>{return element.id != alertId});
@@ -164,12 +179,30 @@ const statusOrder = (a: any, b: any): number => {
             this.search = newSearch;
         },
         changeUserStatus(newStatus: string): void {
+            if (this.user.status != newStatus)
+                this.connection.send({
+                    method: 'userChange',
+                    id: this.userCredits.id,
+                    status: newStatus
+                });
             this.user.status = newStatus;
         },
         changeUserDesc(newDesc: string): void {
+            if (this.user.desc != newDesc)
+                this.connection.send({
+                    method: 'userChange',
+                    id: this.userCredits.id,
+                    desc: newDesc
+                });
             this.user.desc = newDesc;
         },
         changeUserIcon(newIconName: string): void {
+            if (this.user.icon != newIconName)
+                this.connection.send({
+                    method: 'userChange',
+                    id: this.userCredits.id,
+                    icon: newIconName
+                });
             this.user.icon = newIconName;
         },
         sendMessage(message: string): void {
@@ -268,6 +301,16 @@ const statusOrder = (a: any, b: any): number => {
                         return el;
                     });
                     console.log("after change:", this.friends);
+                },
+                friendInfoUpdate: (friendInfo: any) => {
+                    this.friends = this.friends.map((el: any) => {
+                        if (el._id === friendInfo.id) {
+                            if (friendInfo.status) el.status = friendInfo.status;    
+                            if (friendInfo.desc) el.desc = friendInfo.desc;    
+                            if (friendInfo.icon) el.icon = friendInfo.icon;    
+                        }
+                        return el;
+                    });
                 }
             }
         );
