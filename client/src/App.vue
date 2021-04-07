@@ -17,6 +17,10 @@ import { defineComponent } from 'vue';
 import LoginPanel from "@/components/LandingPage/LoginPanel.vue";
 import Navi from "@/components/LandingPage/Navi.vue";
 import {HttpClient} from "@/ts_classes/HttpClient";
+import {SHA3} from 'sha3';
+import {pbkdf2} from 'pbkdf2';
+import {CTREncryptor, CTRDecryptor, Counter} from 'aes-ts';
+import NodeRSA from 'node-rsa';
 
 export default defineComponent({
     props: [],
@@ -24,7 +28,7 @@ export default defineComponent({
     data() {
       return {
         loginVisable:false,
-        user: {id:'', name:'', email:'', authToken: '', refresh: ''},
+        user: {id:'', name:'', email:'', authToken: '', refresh: '', publicKey: '', privateKey: ''},
         httpClient: new HttpClient(),
         loginStatus: {status: 'out', message: ''},
         registerStatus: '',
@@ -46,6 +50,7 @@ export default defineComponent({
           this.$router.push('app');
         },
         (reponse:any)=>{
+          console.warn(reponse);
           this.loginStatus = {
             status: "error",
             message: "Niepoprawne dane"
@@ -53,11 +58,41 @@ export default defineComponent({
         });
       },
       registerRequest(user: Map<string, string>) {
-        this.registerStatus = "loading";
-        this.httpClient.register(user, ()=>{this.registerStatus="succeed"}, ()=>{this.registerStatus="failed"});
+        this.registerStatus = "computing";
+        setTimeout(()=>this.genRegisterCredits(user), 30);
       },
       logout() {
         this.httpClient.logout(this.user.authToken);
+      },
+      async genRegisterCredits(user: Map<string, string>): Promise<void> {
+        const pass: any = user.get('pass');
+        const hash: SHA3<512> = new SHA3();
+        hash.update(pass);
+        const nodersa = new NodeRSA({b:2048});
+        user.set('pass', hash.digest({format: 'hex'}))
+        console.log("hashedPass", user.get('pass'));
+        user.set('public', nodersa.exportKey('public'));
+        user.set('private', nodersa.exportKey('private'));
+        console.log(user.get('public'));
+        console.log([...Buffer.from(nodersa.exportKey('private'))]);
+        pbkdf2(pass, `${user.get('nazwa')}${user.get('email')}be4896cfa0f8pd2109141c41197`, 200000, 256 / 8, (err, derivedKey) => {
+          if (err)
+            console.warn(err);
+          else {
+            const AesKey = derivedKey;
+            console.log('AesKey:', AesKey.toString('hex'));
+            const encryptor = new CTREncryptor(AesKey, new Counter(5));
+            const decryptor = new CTRDecryptor(AesKey, new Counter(5));
+
+            let encryptedPrivateKey = encryptor.encrypt([...Buffer.from(nodersa.exportKey('private'))]);
+            console.log("encrypted:", encryptedPrivateKey);
+            encryptedPrivateKey = decryptor.decrypt(encryptedPrivateKey);
+            console.log("decrypted:", encryptedPrivateKey);
+            
+            this.registerStatus = "loading";
+            this.httpClient.register(user, ()=>{this.registerStatus="succeed"}, ()=>{this.registerStatus="failed"});
+          }
+        });
       }
     },
     computed: {

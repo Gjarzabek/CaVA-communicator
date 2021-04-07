@@ -137,6 +137,8 @@ export default defineComponent({
         },
         registerMessage: function(): string {
             switch (this.registerState) {
+                case 'computing':
+                    return 'Szyfrowanie danych..'
                 case 'loading':
                     return "Wysyłanie danych..";
                 case 'succeed':
@@ -184,6 +186,11 @@ export default defineComponent({
 
 .alert {
     color:red;
+}
+
+.computing {
+    animation: pulse 1s;
+    animation-iteration-count: infinite;
 }
 
 .loading {

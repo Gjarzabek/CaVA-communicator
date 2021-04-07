@@ -46,7 +46,9 @@ export class HttpClient {
         axios.post(this.serverUrl+"/api/register", {
             email: data.get("email"),
             name: data.get("nazwa"),
-            pass: data.get("pass")
+            pass: data.get("pass"),
+            public: "public key",
+            private: "private key"
         })
         .then((reponse) => {
             registerSucceed();

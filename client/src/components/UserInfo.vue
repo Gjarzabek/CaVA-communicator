@@ -52,11 +52,11 @@ export default defineComponent({
                 return this.user.desc.substr(0, this.maxDescShowLen) + "...";
             }
             else if (!this.user.desc)
-                return "mini post...";
+                return "opis";
             else return this.user.desc;
         },
         fsocietyChosen: function(): boolean {
-            return this.currentIcon === 'fsociety';
+            return this.user.icon === 'fsociety';
         }
     },
     methods: {

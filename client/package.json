@@ -8,13 +8,20 @@
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
+    "@types/node": "^14.14.37",
+    "@types/pbkdf2": "^3.1.0",
+    "aes-ts": "*",
     "axios": "^0.21.1",
     "core-js": "^3.6.5",
+    "node-rsa": "^1.1.1",
+    "pbkdf2": "^3.1.1",
+    "sha3": "^2.1.4",
     "vue": "^3.0.0",
     "vue-class-component": "^8.0.0-0",
     "vue-router": "^4.0.0-0"
   },
   "devDependencies": {
+    "@types/node-rsa": "^1.1.0",
     "@typescript-eslint/eslint-plugin": "^2.33.0",
     "@typescript-eslint/parser": "^2.33.0",
     "@vue/cli-plugin-babel": "~4.5.0",

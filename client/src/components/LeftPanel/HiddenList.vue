@@ -79,7 +79,7 @@ export default defineComponent({
         onlineUsersN: function(): number {
             let counter = 0;
             for (const item of this.ItemList) {
-                if (item.status === "dostępny")
+                if (item.status !== "niedostępny")
                     counter++;
             }   
             return counter; 
