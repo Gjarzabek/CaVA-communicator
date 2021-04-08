@@ -71,6 +71,9 @@ export default defineComponent({
             if (this.showChangeDescDiv) {
                 this.$emit('descChange', this.descInputData);
             }
+            else {
+                this.descInputData = this.user.desc;
+            }
             this.showChangeDescDiv = !this.showChangeDescDiv;
         },
         submitDesc(event: any): void {

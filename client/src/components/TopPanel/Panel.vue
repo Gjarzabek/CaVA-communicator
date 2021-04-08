@@ -11,7 +11,7 @@
       <img src="../../assets/notify.png" alt="..." id="notification" @click=toogleNotifications>
       <div v-if="isAnyNewAlert" class="alertCount"></div>
       <div v-if="showNotifications" class="notificationMain">
-        <h2>Powiadomienia</h2>
+        <h3>Powiadomienia</h3>
         <Notification v-for="notify in notifications"
         v-bind:key="notify.id"
         :data="notify"
@@ -19,6 +19,7 @@
         @rejectFriend="(event)=>{$emit('rejectFriend', event)}"
         @deleteAlert="$emit('deleteAlert', notify.id)"
         />
+        <p v-if="notificationsEmpty">Pusto!</p>
       </div>
     </div>
 </template>
@@ -93,6 +94,9 @@ export default defineComponent({
         else if (alert.new) return true;
       }
       return false;
+    },
+    notificationsEmpty: function(): boolean {
+      return this.notifications.length === 0;
     }
   }
 })
@@ -151,7 +155,7 @@ export default defineComponent({
   top: 5vh;
   z-index: 2;
   background-color: #1d1d1d;
-  border: 0.1px rgb(236, 236, 236) dotted;
+  border: 0.1px #464646 solid;
   max-height: 70vh;
   overflow-y: auto;
   border-radius: 2vh;

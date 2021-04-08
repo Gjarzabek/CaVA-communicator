@@ -145,6 +145,8 @@ export default defineComponent({
                     return "Zarejestrowano"
                 case 'failed':
                     return "Email zajęty";
+                case 'fatal':
+                    return "Błąd";
                 default:
                     return '';
             }
@@ -222,6 +224,10 @@ export default defineComponent({
 
 .loaded {
     color: greenyellow;
+}
+
+.fatal {
+    background-color: red;
 }
 
 .failed {

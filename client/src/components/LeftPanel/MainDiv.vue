@@ -27,8 +27,8 @@ export default defineComponent({
         return [
           {header: "Rozmowy", type:"chat", payload: this.chats},
           {header: "Znajomi", type:"friend", payload: this.friends},
-          {header: "Prywatne Grupy", type: "privateRoom", payload: this.privateGroups},
-          {header: "Publiczne Dyskusje", type: "publicTalk", payload: this.publicRooms}
+          //{header: "Prywatne Grupy", type: "privateRoom", payload: this.privateGroups},
+          //{header: "Publiczne Dyskusje", type: "publicTalk", payload: this.publicRooms}
         ];
     }
   },

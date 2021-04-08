@@ -28,12 +28,11 @@
         :chats="chats"
         :publicRooms="publicRooms"
         :privateGroups="privateGroups"
-        @openChat="openChatReq"
         @userClick="userClickHandler"
         @joinPublic="joinPublicRoom"
         @openPrivateTalk="openPrivateTalk"
         />
-        <FriendMenu v-if="FriendMenuPayload.show" :position="FriendMenuPayload.position" :friend="FriendMenuPayload.user" @noteChange="updateNote"/>
+        <FriendMenu v-if="FriendMenuPayload.show" :position="FriendMenuPayload.position" :friend="FriendMenuPayload.user" @openChat="openChatWithFriend" @noteChange="updateNote"/>
     </div>
 </template>
 
@@ -48,6 +47,7 @@ import ChatSection from "@/components/ChatWindow/ChatSection.vue";
 
 import {getStatusPoint} from "@/ts_classes/User";
 import WsHandler from "@/ts_classes/WsClient";
+import NodeRSA from "node-rsa";
 
 const statusOrder = (a: any, b: any): number => {
     if (a === undefined)
@@ -77,7 +77,7 @@ const statusOrder = (a: any, b: any): number => {
             user: {id:"", name:"", status:"", desc:"", icon:"", joinTime: ""},
             search: "",
             friends: [],
-            openedChats: [],
+            openedChatsIds: [], // TODO change this array to only contain chat ids and filter chats array in computed 
             chats: [],
             chatSelect: false,
             userSelected: undefined,
@@ -91,7 +91,8 @@ const statusOrder = (a: any, b: any): number => {
             privateGroups: [],
             publicRooms: [],
             connection: undefined,
-            newNotes: new Map()
+            newNotes: new Map(),
+            secretReader: new NodeRSA()
       }
   },
   components: {
@@ -114,9 +115,46 @@ const statusOrder = (a: any, b: any): number => {
     reversedNotifications: function(): any {
         if (!this.notifications || this.notifications.length <= 0) return [];
         return this.notifications.reverse();
+    },
+    openedChats: function(): any {
+        const resultList = [];
+        for (const chat of this.chats) {
+            for (const openedId of this.openedChatsIds) {
+                if (chat.id === openedId) {
+                    resultList.push(chat);
+                }
+            }
+        }
+        return resultList;
     }
   },
   methods: {
+        openChatWithFriend(event: any) {
+            const friendId: string = event;
+            for(const chatObj of this.chats) {
+                if (chatObj.find((user: string) => {return user === friendId})) {
+                    this.openExistingChat(chatObj.id);
+                    return;
+                }
+            }
+            this.createNewChat(friendId);
+        },
+        createNewChat(friendId: string): void {
+            this.connection.send({
+                method: 'friendChatCreate',
+                userId: this.userCredits.id,
+                friendId: friendId,
+            });
+            return;
+        },
+        decryptMessage(mess: string): string {
+            return this.secretReader.decrypt(mess, 'utf8');
+        },
+        encryptMessage(mess: string, key: string): string {
+            const encryptor = new NodeRSA();
+            encryptor.importKey(key, 'public');
+            return encryptor.encrypt(mess, 'base64');
+        },
         updateNote(note: string) {
             for (const friend of this.friends) {
                 if (friend._id === this.FriendMenuPayload.user._id) {
@@ -209,13 +247,13 @@ const statusOrder = (a: any, b: any): number => {
             //websocket message send
             console.log(message);
         },
-        openChatReq(chatId: number): void {
-            const id: number = this.openedChats.find((chat: any)=> chat.id === chatId);
+        openExistingChat(chatId: number): void {
+            const id: number = this.openedChatsIds.find((chat: any)=> chat.id === chatId);
             if (id === undefined) {
                 const chat = this.chats.find((chat: any) => chat.id === chatId);
                 if (chat === undefined)
                     return;
-                this.openedChats.push(chat);
+                this.openedChatsIds.push(chatId);
             }
             this.changeActive(chatId);
         },
@@ -223,15 +261,15 @@ const statusOrder = (a: any, b: any): number => {
             this.activeChatId = chatId;
         },
         closeBar(chatId: any): void {
-            this.openedChats = this.openedChats.filter((el:any) => {
-                return el.id !== chatId;
+            this.openedChatsIds = this.openedChatsIds.filter((el:any) => {
+                return el !== chatId;
             });
             if (chatId === this.activeChatId) {
-                if (this.openedChats.length === 0) {
+                if (this.openedChatsIds.length === 0) {
                     this.activeChatId = undefined;
                 }
                 else {
-                    this.activeChatId = this.openedChats[0].id;
+                    this.activeChatId = this.openedChatsIds[0];
                 }
             }
         },
@@ -270,7 +308,6 @@ const statusOrder = (a: any, b: any): number => {
 
         },
         userSetup(userPayload: any) {
-            console.log(userPayload);
             this.user.desc = userPayload.desc;
             this.friends = userPayload.friends;
             this.privateGroups = userPayload.groups;
@@ -283,6 +320,7 @@ const statusOrder = (a: any, b: any): number => {
         }
   },
   created: function() {
+        this.secretReader.importKey(this.userCredits.secret, 'private');
         this.connection = new WsHandler(this.userCredits, {
             // callbacks for Ws events
                 setupUser: this.userSetup,

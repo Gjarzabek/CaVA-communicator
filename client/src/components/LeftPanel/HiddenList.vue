@@ -109,7 +109,8 @@ export default defineComponent({
 .item {
     position: relative;
     margin-top: 0.5vh;
-    width: 15vw;
+    margin-left: 1vh;
+    width: 13.3vw;
     height: 4vh;
     border-radius: 10px;
 }
@@ -134,8 +135,8 @@ export default defineComponent({
 
 #addIcon {
     position: absolute;
-    top: 0;
-    right: 14%;
+    top: 0.2vh;
+    right: 0vh;
     transform: scale(1);
     transition: 0.2s;
     height: 2.4vh;

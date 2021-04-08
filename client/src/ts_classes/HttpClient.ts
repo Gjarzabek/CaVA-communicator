@@ -47,8 +47,8 @@ export class HttpClient {
             email: data.get("email"),
             name: data.get("nazwa"),
             pass: data.get("pass"),
-            public: "public key",
-            private: "private key"
+            public: data.get("public"),
+            private: data.get("private"),
         })
         .then((reponse) => {
             registerSucceed();

@@ -37,6 +37,7 @@ export default defineComponent({
 .friend {
     position: relative;
     height: 4vh;
+    width: 13vw;
     border-radius: 8px;
 }
 

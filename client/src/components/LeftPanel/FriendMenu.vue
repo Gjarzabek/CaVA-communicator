@@ -10,7 +10,7 @@
         <div class="info desc">{{Desc}}</div>
         <p class="info notePara">Notatka</p>
         <textarea placeholder="..." class="info notePayload" maxlength="40" spellcheck="false" v-model="note"></textarea>
-        <button class="chatBtn">Napisz Wiadomość</button>
+        <button class="chatBtn" @click="writeMessage">Napisz Wiadomość</button>
     </div>
 </template>
 
@@ -56,6 +56,9 @@ export default defineComponent({
       }
   },
   methods: {
+      writeMessage: function(): void {
+          this.$emit('openChat', this.friend._id);
+      }
   }
 })
 </script>
@@ -190,7 +193,7 @@ button:hover {
     width: 12.5vw;
     left: 5%;
     top: 21%;
-    font: 1.3vh Courier;
+    font: 1.5vh Courier;
     color: rgb(58, 186, 190);
 }
 

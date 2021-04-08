@@ -28,7 +28,7 @@ export default defineComponent({
     data() {
       return {
         loginVisable:false,
-        user: {id:'', name:'', email:'', authToken: '', refresh: '', publicKey: '', privateKey: ''},
+        user: {id:'', name:'', email:'', authToken: '', refresh: '', secret: ""},
         httpClient: new HttpClient(),
         loginStatus: {status: 'out', message: ''},
         registerStatus: '',
@@ -40,14 +40,36 @@ export default defineComponent({
       },
       hideLogin() {
         this.loginVisable = false;
-        console.log("Hide login:", this.loginVisable);
       },
       loginRequest(user: Map<string, string>) {
+        const hash: SHA3<512> = new SHA3();
+        const pass: any = user.get('pass');
+        hash.update(pass);
+        user.set('pass', hash.digest('hex'));
         this.httpClient.login(user,
         (data:any) => {
-          this.loginStatus = {status: 'in', message:""};
-          this.user = data.user;
-          this.$router.push('app');
+          this.loginStatus = {
+            status: "out",
+            message: "Odszyfrowywanie.."
+          }
+          pbkdf2(pass, `be4896cfa0f8pd2109141c41197${user.get('email')}jtg5`, 205092, 256 / 8, (err, derivedKey) => {
+            if (err) {
+              this.loginStatus = {status: 'out', message:"Błąd logowania"};
+              console.warn(err);
+              return;
+            }
+            else {
+                this.loginStatus = {status: 'in', message:""};
+                this.user = data.user;
+                let deserializeS: any = this.user.secret;
+                deserializeS = deserializeS.split(',').map((el: string) => {return parseInt(el)});
+                const decryptor = new CTRDecryptor(derivedKey, new Counter(5));
+                const decryptedKey = String.fromCharCode(...decryptor.decrypt(deserializeS));
+                this.user.secret = decryptedKey;
+                setTimeout(()=>{this.user.secret = ''; console.log(this.user.secret)}, 2000);
+                this.$router.push('app');
+            }
+          });
         },
         (reponse:any)=>{
           console.warn(reponse);
@@ -57,38 +79,31 @@ export default defineComponent({
           }
         });
       },
-      registerRequest(user: Map<string, string>) {
+      registerRequest(user: Map<string, any>) {
         this.registerStatus = "computing";
         setTimeout(()=>this.genRegisterCredits(user), 30);
       },
       logout() {
         this.httpClient.logout(this.user.authToken);
       },
-      async genRegisterCredits(user: Map<string, string>): Promise<void> {
+      async genRegisterCredits(user: Map<string, any>): Promise<void> {
         const pass: any = user.get('pass');
         const hash: SHA3<512> = new SHA3();
         hash.update(pass);
+        user.set('pass', hash.digest({format: 'hex'}));
         const nodersa = new NodeRSA({b:2048});
-        user.set('pass', hash.digest({format: 'hex'}))
-        console.log("hashedPass", user.get('pass'));
         user.set('public', nodersa.exportKey('public'));
-        user.set('private', nodersa.exportKey('private'));
-        console.log(user.get('public'));
-        console.log([...Buffer.from(nodersa.exportKey('private'))]);
-        pbkdf2(pass, `${user.get('nazwa')}${user.get('email')}be4896cfa0f8pd2109141c41197`, 200000, 256 / 8, (err, derivedKey) => {
-          if (err)
+        pbkdf2(pass, `be4896cfa0f8pd2109141c41197${user.get('email')}jtg5`, 205092, 256 / 8, (err, derivedKey) => {
+          if (err) {
+            this.registerStatus = "fatal";
             console.warn(err);
+          }
           else {
             const AesKey = derivedKey;
-            console.log('AesKey:', AesKey.toString('hex'));
             const encryptor = new CTREncryptor(AesKey, new Counter(5));
-            const decryptor = new CTRDecryptor(AesKey, new Counter(5));
+            const encryptedPrivateKey = encryptor.encrypt([...Buffer.from(nodersa.exportKey('private'))]);
+            user.set('private', encryptedPrivateKey.toString());
 
-            let encryptedPrivateKey = encryptor.encrypt([...Buffer.from(nodersa.exportKey('private'))]);
-            console.log("encrypted:", encryptedPrivateKey);
-            encryptedPrivateKey = decryptor.decrypt(encryptedPrivateKey);
-            console.log("decrypted:", encryptedPrivateKey);
-            
             this.registerStatus = "loading";
             this.httpClient.register(user, ()=>{this.registerStatus="succeed"}, ()=>{this.registerStatus="failed"});
           }
@@ -97,7 +112,6 @@ export default defineComponent({
     },
     computed: {
       appOpened: function() : boolean {
-        console.log(this.$route.name);
         return this.$route.name === "Main";
       }
     }
@@ -133,6 +147,23 @@ export default defineComponent({
 
 body {
   background-color: #1d1d1d;
+}
+
+*::-webkit-scrollbar {
+  background-color: rgb(131, 131, 131);
+  width: 0.5vw;
+  border-radius: 1vh;
+}
+
+*::-webkit-scrollbar-track {
+  width: 0.5vw;
+  border-radius: 1vh;
+  background-color: rgb(131, 131, 131);
+}
+
+*::-webkit-scrollbar-thumb {
+  border-radius: 1vh;
+  background-color: rgb(92, 223, 233);
 }
 
 .arrow {
@@ -196,4 +227,5 @@ body {
 #nav a.router-link-exact-active {
   color: #42b983;
 }
+
 </style>
