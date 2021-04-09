@@ -104,12 +104,6 @@ const statusOrder = (a: any, b: any): number => {
     UserInfo
   },
   computed: {
-    friendMenuWidth: function(): any {
-        if (this.FriendMenuPayload.show) {
-            return '14vw';
-        }
-        else return '0vw';
-    },
     filteredUsers: function(): any {
         return this.chatUsers.filter((user: any) => {
             return user.name.match(this.search);
@@ -126,7 +120,7 @@ const statusOrder = (a: any, b: any): number => {
         const resultList = [];
         for (const chat of this.chats) {
             for (const openedId of this.openedChatsIds) {
-                if (chat.id === openedId) {
+                if (chat._id === openedId) {
                     resultList.push(chat);
                 }
             }
@@ -137,19 +131,20 @@ const statusOrder = (a: any, b: any): number => {
   methods: {
         openChatWithFriend(event: any) {
             const friendId: string = event;
+            console.log("fid", friendId);
             for(const chatObj of this.chats) {
-                if (chatObj.find((user: string) => {return user === friendId})) {
-                    this.openExistingChat(chatObj.id);
+                if (chatObj.users.find((user: string) => {return user === friendId})) {
+                    this.openExistingChat(chatObj._id);
                     return;
                 }
             }
             this.createNewChat(friendId);
         },
-        createNewChat(friendId: string): void {
+        createNewChat(fId: string): void {
             this.connection.send({
                 method: 'friendChatCreate',
                 userId: this.userCredits.id,
-                friendId: friendId,
+                friendId: fId,
             });
             return;
         },
@@ -254,9 +249,9 @@ const statusOrder = (a: any, b: any): number => {
             console.log(message);
         },
         openExistingChat(chatId: number): void {
-            const id: number = this.openedChatsIds.find((chat: any)=> chat.id === chatId);
+            const id: number = this.openedChatsIds.find((chat: any)=> chat._id === chatId);
             if (id === undefined) {
-                const chat = this.chats.find((chat: any) => chat.id === chatId);
+                const chat = this.chats.find((chat: any) => chat._id === chatId);
                 if (chat === undefined)
                     return;
                 this.openedChatsIds.push(chatId);
@@ -355,6 +350,16 @@ const statusOrder = (a: any, b: any): number => {
                         }
                         return el;
                     });
+                },
+                newChat: (chatDoc: any) => {
+                    console.log('new chat Doc body', chatDoc);
+                    for (const chat of this.chats) {
+                        if (chat._id === chatDoc._id)
+                            return;
+                    }
+
+                    this.chats.push(chatDoc);
+                    this.openExistingChat(chatDoc._id);
                 }
             }
         );

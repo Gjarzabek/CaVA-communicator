@@ -1,5 +1,3 @@
-import msgType from './Message';
-
 export default  class WsClient {
     static port: number;
     static userData: any;
@@ -8,6 +6,12 @@ export default  class WsClient {
     constructor(userCredits: any, Callbacks: any) {
 
         WsClient.port = 8999;
+        interface ServerEvent {
+            method: string,
+            payload: any,
+            info?: string
+        };
+
 
         this.ws = new WebSocket(`ws://localhost:${WsClient.port}/${userCredits.token}`);
 
@@ -20,7 +24,7 @@ export default  class WsClient {
                 console.log("Ws connection closed");
                 return;
             }
-            const msgData: msgType = JSON.parse(ev.reason);
+            const msgData: ServerEvent = JSON.parse(ev.reason);
             if (msgData.method === "ERROR") {
                 console.log('Ws connection closed, ERROR:', msgData.info);
             }
@@ -28,8 +32,8 @@ export default  class WsClient {
         }
 
         this.ws.onmessage = (message: any) => {
-            const msgData: any = JSON.parse(message.data);
-            console.log("msg.method =",msgData.method);
+            const msgData: ServerEvent = JSON.parse(message.data);
+            console.log("msg", msgData);
             switch(msgData.method) {
                 case 'loginPayload':
                     Callbacks.setupUser(msgData.payload);
@@ -54,6 +58,10 @@ export default  class WsClient {
                     else {
                         Callbacks.friendInfoUpdate(msgData.payload);
                     }
+                    break;
+                
+                case 'newChat':
+                    Callbacks.newChat(msgData.payload);
                     break;
 
                 default:

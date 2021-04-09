@@ -31,12 +31,12 @@ export default defineComponent({
         activeChatPayload: function(): any {
             if (this.openedChats.length > 0) {
                 const idmatch = (chat:any) => {
-                    return chat.id === this.activeChatId;
+                    return chat._id === this.activeChatId;
                 };
 
                 const el = this.openedChats.find(idmatch);
                 
-                return el.payload;
+                return el.messages;
             }
             else return undefined;
         },

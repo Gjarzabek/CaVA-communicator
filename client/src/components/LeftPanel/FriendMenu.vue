@@ -215,6 +215,6 @@ button:hover {
     width: 14vw;
     background-color: rgb(31,31,31);
     border-radius: 0.6vh;
-    transition: width 20ms;
+    transition: width 40ms;
 }
 </style>
