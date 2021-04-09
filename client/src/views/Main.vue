@@ -32,7 +32,7 @@
         @joinPublic="joinPublicRoom"
         @openPrivateTalk="openPrivateTalk"
         />
-        <FriendMenu v-if="FriendMenuPayload.show" :position="FriendMenuPayload.position" :friend="FriendMenuPayload.user" @openChat="openChatWithFriend" @noteChange="updateNote"/>
+        <FriendMenu :isShown="FriendMenuPayload.show" :position="FriendMenuPayload.position" :friend="FriendMenuPayload.user" @openChat="openChatWithFriend" @noteChange="updateNote"/>
     </div>
 </template>
 
@@ -104,6 +104,12 @@ const statusOrder = (a: any, b: any): number => {
     UserInfo
   },
   computed: {
+    friendMenuWidth: function(): any {
+        if (this.FriendMenuPayload.show) {
+            return '14vw';
+        }
+        else return '0vw';
+    },
     filteredUsers: function(): any {
         return this.chatUsers.filter((user: any) => {
             return user.name.match(this.search);

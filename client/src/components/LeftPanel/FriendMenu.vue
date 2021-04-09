@@ -1,16 +1,16 @@
 <template>
-    <div id="FriendMenu" :style="{top: `${position}px`}">
-        <div class="iconBg">
+    <div id="FriendMenu" :style="{top: `${position}px`, width: `${currentSize.w}`, height: `${currentSize.h}`, border: `${currentBorder}`}">
+        <div v-if="isShown" class="iconBg">
             <img v-if="isBird" src="../../assets/freedomBird.png" alt=".." class='profileIcon'>
             <img v-else src="../../assets/fsociety.png" alt=".." class='profileIcon'>
         </div>
-        <b class="info nick">{{friend.name}}</b>
-        <div class="info date">dołączył {{friend.joinTime}}</div>
-        <div class="dot" :class="friend.status"></div>
-        <div class="info desc">{{Desc}}</div>
-        <p class="info notePara">Notatka</p>
-        <textarea placeholder="..." class="info notePayload" maxlength="40" spellcheck="false" v-model="note"></textarea>
-        <button class="chatBtn" @click="writeMessage">Napisz Wiadomość</button>
+        <b v-if="isShown" class="info nick">{{friend.name}}</b>
+        <div v-if="isShown" class="info date">dołączył {{friend.joinTime}}</div>
+        <div v-if="isShown" class="dot" :class="friend.status"></div>
+        <div v-if="isShown" class="info desc">{{Desc}}</div>
+        <p v-if="isShown" class="info notePara">Notatka</p>
+        <textarea v-if="isShown" placeholder="..." class="info notePayload" maxlength="40" spellcheck="false" v-model="note"></textarea>
+        <button v-if="isShown" class="chatBtn" @click="writeMessage">Napisz Wiadomość</button>
     </div>
 </template>
 
@@ -29,11 +29,12 @@ Friend Menu:
 }
 */
 export default defineComponent({
-  props: ["friend", "position"],
+  props: ["friend", "position", "isShown"],
   components: {},
   data() {
         return {
-            note: this.friend.note
+            note: this.friend != undefined ? this.friend.note : '',
+            width: '0vw'
         }
   },
   watch: {
@@ -53,6 +54,15 @@ export default defineComponent({
                 return "...";
             else
                 return this.friend.desc;
+      },
+      currentSize(): {h: string, w: string} {
+          if (this.isShown) {
+              return {h: '35vh', w: '14vw'};
+          }
+          else return {h: '35vh', w: '0vw'};
+      },
+      currentBorder(): string {
+            return this.isShown ? '0.1vh solid rgb(65, 65, 65)' : 'transparent';
       }
   },
   methods: {
@@ -201,10 +211,10 @@ button:hover {
     position:absolute;
     left: 15vw;
     z-index: 3;
-    width: 14vw;
     height: 35vh;
-    background-color: rgb(31, 31, 31);
-    border: 0.1vh solid rgb(66, 66, 66);
+    width: 14vw;
+    background-color: rgb(31,31,31);
     border-radius: 0.6vh;
+    transition: width 20ms;
 }
 </style>
