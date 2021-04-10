@@ -68,7 +68,7 @@ export default defineComponent({
   methods: {
       writeMessage: function(): void {
           console.log('openchatEmit', this.friend);
-          this.$emit('openChat', this.friend.id ? this.friend.id : this.friend._id);
+          this.$emit('openChat', this.friend);
       }
   }
 })

@@ -1,9 +1,6 @@
 <template>
     <div @click="signalActive">
-        {{chatInfo}}
-        <div v-if="isCommonChat">
-            <img src="../../assets/commonChat.png" alt="..." class="chatIcon smaller">
-        </div>
+        <img src="../../assets/commonChat.png" alt="..." class="chatIcon smaller">
         <!--
         <div v-if="isLockedChat" alt="..." class="chatIcon">
             <img src="../../assets/lockedChat.png" alt="..." class="chatIcon">
@@ -12,7 +9,7 @@
             <img src="../../assets/dataTransfer.png" alt="..." class="chatIcon">
         </div>
         -->
-        <div class="username">{{chatInfo.receiver}}</div>
+        <div class="username">{{inChatFriend.name}}</div>
         <div class="closeBtn" @click="Close">x</div>
     </div>
 </template>
@@ -21,7 +18,7 @@
 import { defineComponent } from 'vue';
 
 export default defineComponent({
-    props: ["chatInfo"],
+    props: ["chatInfo", "friend"],
     components: {},
     methods: {
         signalActive(): void {
@@ -60,8 +57,12 @@ export default defineComponent({
         return {
             closeBtnVisable: false,
             closed: false,
-            overChild: true
+            overChild: true,
+            inChatFriend: undefined
         };
+    },
+    created() {
+        this.inChatFriend = this.friend;
     }
 })
 </script>
@@ -102,7 +103,7 @@ export default defineComponent({
 }
 
 .closeBtn:hover {
-    background-color: rgb(212, 34, 34);
+    background-color: rgba(32, 161, 155, 0.733);
 }
 
 </style>

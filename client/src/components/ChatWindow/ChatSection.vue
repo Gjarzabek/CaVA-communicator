@@ -8,6 +8,7 @@
             >
                 <ChatBar 
                 :chatInfo="chat"
+                :friend="inChatFriend"
                 @signalActive="changeActiveChat"
                 @closeBar="forwardCloseEvent"
                 />                
@@ -23,9 +24,10 @@ import { defineComponent } from 'vue';
 import MessageInput from "@/components/ChatWindow/MessageInput.vue";
 import ChatBar from "@/components/ChatWindow/ChatBar.vue";
 import Messages from "@/components/ChatWindow/Messages.vue";
+import NodeRSA from 'node-rsa';
 
 export default defineComponent({
-    props: ["openedChats", "activeChatId"],
+    props: ["openedChats", "activeChatId", "inChatFriend"],
     components: {MessageInput, ChatBar, Messages},
     computed: {
         activeChatPayload: function(): any {
@@ -51,8 +53,14 @@ export default defineComponent({
         }
     } ,
     methods: {
-        SendMessageForward(eventData: any): void {
-            this.$emit('sendMessage', eventData);
+        SendMessageForward(messageData: any): void {
+            const rsaCrypto = new NodeRSA();
+            // TODO: encrypt message with own public key also to further history read
+            rsaCrypto.importKey(this.inChatFriend.public, 'public');
+            this.$emit('sendMessage', {
+                data: rsaCrypto.encrypt(messageData, 'base64'),
+                chatId: this.activeChatId
+            });
         },
         changeActiveChat(chatId: string): void {
             this.$emit('changeActiveChat', chatId);
@@ -87,6 +95,7 @@ export default defineComponent({
     height: 3vh;
     line-height: 3vh;
     text-align: center;
+    border-bottom: 2px solid rgba(221, 221, 221, 0);
 }
 
 .openedChats .chatBarItem:hover {

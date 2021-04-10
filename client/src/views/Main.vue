@@ -19,6 +19,7 @@
         <ChatSection 
         :openedChats="openedChats"
         :activeChatId="activeChatId"
+        :inChatFriend="userSelected"
         @sendMessage="sendMessage"
         @changeActiveChat="changeActive"
         @closeBar="closeBar"
@@ -130,8 +131,8 @@ const statusOrder = (a: any, b: any): number => {
   },
   methods: {
         openChatWithFriend(event: any) {
-            const friendId: string = event;
-            console.log("fid", friendId);
+            this.userSelected = event;
+            const friendId: string = event.id ? event.id : event._id;
             for(const chatObj of this.chats) {
                 if (chatObj.users[0] === friendId || chatObj.users[1] === friendId) {
                     this.openExistingChat(chatObj._id);
@@ -244,9 +245,17 @@ const statusOrder = (a: any, b: any): number => {
                 });
             this.user.icon = newIconName;
         },
-        sendMessage(message: string): void {
+        sendMessage(messInfo: any): void {
             //websocket message send
-            console.log(message);
+            this.connection({
+                method: 'message',
+                userId: this.userCredits.id,
+                chatId: messInfo.chatId,
+                payload: messInfo.data,
+                day: (new Date()).toISOString().substring(0, 10),
+                hour: (new Date()).toISOString().substring(11, 19)
+            });
+            console.log(messInfo);
         },
         openExistingChat(chatId: number): void {
             const id: number = this.openedChatsIds.find((id: any)=> {return id === chatId});
@@ -335,7 +344,7 @@ const statusOrder = (a: any, b: any): number => {
                 friendStatusUpdate: (friendInfo: any) => {
                     console.log("freindStatusUpdate:", friendInfo);
                     this.friends = this.friends.map((el: any) => {
-                        if (el._id === friendInfo.id) {
+                        if (el._id === friendInfo.id || el.id === friendInfo.id) {
                             el.status = friendInfo.status;    
                         }
                         return el;
@@ -344,7 +353,7 @@ const statusOrder = (a: any, b: any): number => {
                 },
                 friendInfoUpdate: (friendInfo: any) => {
                     this.friends = this.friends.map((el: any) => {
-                        if (el._id === friendInfo.id) {
+                        if (el._id === friendInfo.id || el.id === friendInfo.id) {
                             if (friendInfo.status) el.status = friendInfo.status;    
                             if (friendInfo.desc) el.desc = friendInfo.desc;    
                             if (friendInfo.icon) el.icon = friendInfo.icon;    

@@ -151,12 +151,12 @@ body {
 
 *::-webkit-scrollbar {
   background-color: rgb(131, 131, 131);
-  width: 0.5vw;
+  width: 0.4vw;
   border-radius: 1vh;
 }
 
 *::-webkit-scrollbar-track {
-  width: 0.5vw;
+  width: 0.4vw;
   border-radius: 1vh;
   background-color: rgb(131, 131, 131);
 }
