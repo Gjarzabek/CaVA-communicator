@@ -4,7 +4,7 @@
             <div 
             v-for="chat in openedChats" v-bind:key="chat.id"
             class="chatBarItem" 
-            :class="{ 'active' : chat.id === activeChatId}"
+            :class="{ 'active' : chat._id === activeChatId}"
             >
                 <ChatBar 
                 :chatInfo="chat"
@@ -54,10 +54,10 @@ export default defineComponent({
         SendMessageForward(eventData: any): void {
             this.$emit('sendMessage', eventData);
         },
-        changeActiveChat(chatId: number): void {
+        changeActiveChat(chatId: string): void {
             this.$emit('changeActiveChat', chatId);
         },
-        forwardCloseEvent(chatId: number): void {
+        forwardCloseEvent(chatId: string): void {
             this.$emit('closeBar', chatId);
         }
     }

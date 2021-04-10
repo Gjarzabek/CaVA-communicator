@@ -1,14 +1,17 @@
 <template>
     <div @click="signalActive">
+        {{chatInfo}}
         <div v-if="isCommonChat">
             <img src="../../assets/commonChat.png" alt="..." class="chatIcon smaller">
         </div>
+        <!--
         <div v-if="isLockedChat" alt="..." class="chatIcon">
             <img src="../../assets/lockedChat.png" alt="..." class="chatIcon">
         </div>
         <div v-if="isDataTransfer" alt="..." class="chatIcon">
             <img src="../../assets/dataTransfer.png" alt="..." class="chatIcon">
         </div>
+        -->
         <div class="username">{{chatInfo.receiver}}</div>
         <div class="closeBtn" @click="Close">x</div>
     </div>
@@ -23,7 +26,7 @@ export default defineComponent({
     methods: {
         signalActive(): void {
             if (!this.closed) {
-                this.$emit('signalActive', this.chatInfo.id);
+                this.$emit('signalActive', this.chatInfo._id);
             }
         },
         showCloseBtn(): void {
@@ -35,13 +38,12 @@ export default defineComponent({
         },
         Close() :void {
             this.closed = true;
-            this.$emit('closeBar', this.chatInfo.id);
+            this.$emit('closeBar', this.chatInfo._id);
         },
         overCloseBtn(): void {
             this.overChild = true;
             this.closeBtnVisable = true;
         }
-        
     },
     computed: {
         isCommonChat: function(): boolean {

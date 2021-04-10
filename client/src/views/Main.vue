@@ -133,7 +133,7 @@ const statusOrder = (a: any, b: any): number => {
             const friendId: string = event;
             console.log("fid", friendId);
             for(const chatObj of this.chats) {
-                if (chatObj.users.find((user: string) => {return user === friendId})) {
+                if (chatObj.users[0] === friendId || chatObj.users[1] === friendId) {
                     this.openExistingChat(chatObj._id);
                     return;
                 }
@@ -249,9 +249,10 @@ const statusOrder = (a: any, b: any): number => {
             console.log(message);
         },
         openExistingChat(chatId: number): void {
-            const id: number = this.openedChatsIds.find((chat: any)=> chat._id === chatId);
+            const id: number = this.openedChatsIds.find((id: any)=> {return id === chatId});
+            console.log(id, chatId, this.openedChatsIds);
             if (id === undefined) {
-                const chat = this.chats.find((chat: any) => chat._id === chatId);
+                const chat = this.chats.find((chat: any) => {return chat._id === chatId});
                 if (chat === undefined)
                     return;
                 this.openedChatsIds.push(chatId);
