@@ -4,17 +4,17 @@
             <div 
             v-for="chat in openedChats" v-bind:key="chat.id"
             class="chatBarItem" 
-            :class="{ 'active' : chat._id === activeChatId}"
-            >
+            :class="{ 'active' : chat._id === activeChatId}">
                 <ChatBar 
                 :chatInfo="chat"
                 :friend="inChatFriend"
                 @signalActive="changeActiveChat"
-                @closeBar="forwardCloseEvent"
-                />                
+                @closeBar="forwardCloseEvent"/>                
             </div>
         </div>
-        <Messages :messages="activeChatPayload"/>
+        <div class="messages">
+            <Message v-for="message in activeChatPayload" :key="message.id" :message="message"/>
+        </div>
         <MessageInput @sendMessage="SendMessageForward" :style="{width: `${inputWidth}%`, left: `${inputLeftPos}%`}"/>
     </div>
 </template>
@@ -23,12 +23,12 @@
 import { defineComponent } from 'vue';
 import MessageInput from "@/components/ChatWindow/MessageInput.vue";
 import ChatBar from "@/components/ChatWindow/ChatBar.vue";
-import Messages from "@/components/ChatWindow/Messages.vue";
+import Message from "@/components/ChatWindow/Message.vue";
 import NodeRSA from 'node-rsa';
 
 export default defineComponent({
-    props: ["openedChats", "activeChatId", "inChatFriend"],
-    components: {MessageInput, ChatBar, Messages},
+    props: ["openedChats", "activeChatId", "inChatFriend", "user"],
+    components: {MessageInput, ChatBar, Message},
     computed: {
         activeChatPayload: function(): any {
             if (this.openedChats.length > 0) {
@@ -38,7 +38,9 @@ export default defineComponent({
 
                 const el = this.openedChats.find(idmatch);
                 
-                return el.messages;
+                const returnValue = el.users[0].userId === this.user.id ? el.users[0].messages : el.users[1].messages;
+                console.log('returnValue', returnValue)
+                return returnValue;
             }
             else return undefined;
         },
@@ -57,9 +59,15 @@ export default defineComponent({
             const rsaCrypto = new NodeRSA();
             // TODO: encrypt message with own public key also to further history read
             rsaCrypto.importKey(this.inChatFriend.public, 'public');
+            console.log('SendMessageForward', messageData);
             this.$emit('sendMessage', {
-                data: rsaCrypto.encrypt(messageData, 'base64'),
-                chatId: this.activeChatId
+                friendData: rsaCrypto.encrypt(messageData, 'base64'),
+                data: messageData,
+                chatId: this.activeChatId,
+                timestamp: (new Date()).getTime(),
+                id: undefined,
+                inProgress: true,
+                userId: this.user.id
             });
         },
         changeActiveChat(chatId: string): void {
@@ -116,6 +124,15 @@ export default defineComponent({
 
 .openedChats .active {
     background-color: #ddd;
+}
+
+.messages {
+    position: absolute;
+    top: 5%;
+    left: 0;
+    height: 85%;
+    width: 100%;
+    overflow-y: auto;
 }
 
 </style>

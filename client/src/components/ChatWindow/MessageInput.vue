@@ -1,5 +1,5 @@
 <template>
-    <input type="text" id="messageInput" placeholder="Napisz Wiadomość" v-model="inputData" @keypress="inputKeyPressed">
+    <input type="text" id="messageInput" placeholder="Napisz Wiadomość" v-model="inputData" @keypress="inputKeyPressed" autocomplete="off">
 </template>
 
 <script lang="ts">

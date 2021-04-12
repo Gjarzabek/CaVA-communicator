@@ -20,6 +20,7 @@
         :openedChats="openedChats"
         :activeChatId="activeChatId"
         :inChatFriend="userSelected"
+        :user="user"
         @sendMessage="sendMessage"
         @changeActiveChat="changeActive"
         @closeBar="closeBar"
@@ -75,10 +76,10 @@ const statusOrder = (a: any, b: any): number => {
       return {
             chatUsers: [].sort(statusOrder),
             newChatRequest: undefined,
-            user: {id:"", name:"", status:"", desc:"", icon:"", joinTime: ""},
+            user: {id:"", name:"", status:"", desc:"", icon:"", joinTime: "", publicKey: ""},
             search: "",
             friends: [],
-            openedChatsIds: [], // TODO change this array to only contain chat ids and filter chats array in computed 
+            openedChatsIds: [],
             chats: [],
             chatSelect: false,
             userSelected: undefined,
@@ -130,11 +131,40 @@ const statusOrder = (a: any, b: any): number => {
     }
   },
   methods: {
+        addChatMessage(chatId: any, message: any, who: string) {
+            const chat = this.chats.find((chat: any) => {return chat._id === chatId});
+            if (chat.users[0].userId === who) {
+                chat.users[0].messages.push(message);
+            }
+            else {
+                chat.users[1].messages.push(message);
+            }
+        },
+        addTempMessage(messInfo: any): number | null {
+            const chat = this.chats.find((chat: any) => {return chat._id === messInfo.chatId});
+            if (!chat) {
+                console.error("WRONG messInfo", messInfo);
+                return null;
+            }
+            if (chat.inProccessMessages ===  undefined) {
+                chat.inProccessMessages = [messInfo];
+                this.addChatMessage(messInfo.chatId, messInfo, this.userCredits.id);
+                return 0;
+            }
+            else {
+                chat.inProccessMessages.push(messInfo);
+                const id = -1 * (chat.inProccessMessages.length - 1);
+                messInfo.id = id;
+                this.addChatMessage(messInfo.chatId, messInfo, this.userCredits.id);
+                return id;
+            }
+        },
         openChatWithFriend(event: any) {
             this.userSelected = event;
+            this.FriendMenuPayload.show = false;
             const friendId: string = event.id ? event.id : event._id;
             for(const chatObj of this.chats) {
-                if (chatObj.users[0] === friendId || chatObj.users[1] === friendId) {
+                if (chatObj.users[0].userId === friendId || chatObj.users[1].userId === friendId) {
                     this.openExistingChat(chatObj._id);
                     return;
                 }
@@ -246,20 +276,24 @@ const statusOrder = (a: any, b: any): number => {
             this.user.icon = newIconName;
         },
         sendMessage(messInfo: any): void {
-            //websocket message send
-            this.connection({
+            console.log('sendMessage');
+            const rsaCrypto = new NodeRSA();
+            rsaCrypto.importKey(this.user.publicKey, 'public');
+            messInfo.id = this.addTempMessage(messInfo);
+            if (messInfo.id === null) return;
+            console.log(messInfo);
+            this.connection.send({
                 method: 'message',
                 userId: this.userCredits.id,
                 chatId: messInfo.chatId,
-                payload: messInfo.data,
-                day: (new Date()).toISOString().substring(0, 10),
-                hour: (new Date()).toISOString().substring(11, 19)
+                friendData: messInfo.friendData,
+                authorData: rsaCrypto.encrypt(messInfo.data, 'base64'),
+                timestamp: messInfo.timestamp,
+                tempMessageId: messInfo.id 
             });
-            console.log(messInfo);
         },
         openExistingChat(chatId: number): void {
             const id: number = this.openedChatsIds.find((id: any)=> {return id === chatId});
-            console.log(id, chatId, this.openedChatsIds);
             if (id === undefined) {
                 const chat = this.chats.find((chat: any) => {return chat._id === chatId});
                 if (chat === undefined)
@@ -328,6 +362,8 @@ const statusOrder = (a: any, b: any): number => {
             this.user.joinTime = userPayload.joinTime;
             this.user.name = userPayload.name;
             this.user.status = userPayload.status;
+            this.user.publicKey = userPayload.public;
+            this.user.id = this.userCredits.id;
         }
   },
   created: function() {
@@ -349,7 +385,6 @@ const statusOrder = (a: any, b: any): number => {
                         }
                         return el;
                     });
-                    console.log("after change:", this.friends);
                 },
                 friendInfoUpdate: (friendInfo: any) => {
                     this.friends = this.friends.map((el: any) => {

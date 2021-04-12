@@ -4,7 +4,7 @@
             <div v-for="message in messages" v-bind:key="message.timestamp" class="MessageBody">
                 <div class="bgEllipse"></div>
                 <div class="userName">{{message.who}}</div>
-                <div class="messageData">{{message.data}}</div>
+                <div class="messageData" :class="{inProccess : message.isNotSend}">{{message.data}}</div>
                 <div class="time">{{message.timestamp}}</div>
             </div>
         </div>
@@ -82,6 +82,10 @@ export default defineComponent({
     position: absolute;
     top: 1.2vh;
     left: 12vw;
+}
+
+.inProccess {
+    color: rgb(92, 146, 151);
 }
 
 </style>
