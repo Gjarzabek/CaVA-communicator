@@ -33,7 +33,7 @@ export default  class WsClient {
 
         this.ws.onmessage = (message: any) => {
             const msgData: ServerEvent = JSON.parse(message.data);
-            console.log("msg", msgData);
+            console.log(msgData);
             switch(msgData.method) {
                 case 'loginPayload':
                     Callbacks.setupUser(msgData.payload);
@@ -64,6 +64,13 @@ export default  class WsClient {
                     Callbacks.newChat(msgData.payload);
                     break;
 
+                case 'messageConfirm':
+                    Callbacks.messageConfirm(msgData.payload);
+                    break;
+
+                case 'newMessage':
+                    Callbacks.newMessage(msgData.payload);
+                    break;
                 default:
                     console.log('got some message', msgData);
                     break;

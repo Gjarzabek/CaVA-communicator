@@ -131,14 +131,9 @@ const statusOrder = (a: any, b: any): number => {
     }
   },
   methods: {
-        addChatMessage(chatId: any, message: any, who: string) {
+        addChatMessage(chatId: any, message: any) {
             const chat = this.chats.find((chat: any) => {return chat._id === chatId});
-            if (chat.users[0].userId === who) {
-                chat.users[0].messages.push(message);
-            }
-            else {
-                chat.users[1].messages.push(message);
-            }
+            chat.messages.push(message);
         },
         addTempMessage(messInfo: any): number | null {
             const chat = this.chats.find((chat: any) => {return chat._id === messInfo.chatId});
@@ -147,15 +142,16 @@ const statusOrder = (a: any, b: any): number => {
                 return null;
             }
             if (chat.inProccessMessages ===  undefined) {
+                messInfo.id = 0;
                 chat.inProccessMessages = [messInfo];
-                this.addChatMessage(messInfo.chatId, messInfo, this.userCredits.id);
+                this.addChatMessage(messInfo.chatId, messInfo);
                 return 0;
             }
             else {
                 chat.inProccessMessages.push(messInfo);
                 const id = -1 * (chat.inProccessMessages.length - 1);
                 messInfo.id = id;
-                this.addChatMessage(messInfo.chatId, messInfo, this.userCredits.id);
+                this.addChatMessage(messInfo.chatId, messInfo);
                 return id;
             }
         },
@@ -164,7 +160,7 @@ const statusOrder = (a: any, b: any): number => {
             this.FriendMenuPayload.show = false;
             const friendId: string = event.id ? event.id : event._id;
             for(const chatObj of this.chats) {
-                if (chatObj.users[0].userId === friendId || chatObj.users[1].userId === friendId) {
+                if (chatObj.users[0] === friendId || chatObj.users[1] === friendId) {
                     this.openExistingChat(chatObj._id);
                     return;
                 }
@@ -287,10 +283,11 @@ const statusOrder = (a: any, b: any): number => {
                 userId: this.userCredits.id,
                 chatId: messInfo.chatId,
                 friendData: messInfo.friendData,
-                authorData: rsaCrypto.encrypt(messInfo.data, 'base64'),
+                authorData: rsaCrypto.encrypt(messInfo.content, 'base64'),
                 timestamp: messInfo.timestamp,
                 tempMessageId: messInfo.id 
             });
+            document.getElementById('messages').scrollIntoView(false);
         },
         openExistingChat(chatId: number): void {
             const id: number = this.openedChatsIds.find((id: any)=> {return id === chatId});
@@ -364,6 +361,14 @@ const statusOrder = (a: any, b: any): number => {
             this.user.status = userPayload.status;
             this.user.publicKey = userPayload.public;
             this.user.id = this.userCredits.id;
+            this.readMessages();
+        },
+        async readMessages(): Promise<void> {
+            for (const chat of this.chats) {
+                for (const message of chat.messages) {
+                    message.content = this.secretReader.decrypt(message.content, 'utf8');
+                }
+            }
         }
   },
   created: function() {
@@ -405,6 +410,25 @@ const statusOrder = (a: any, b: any): number => {
 
                     this.chats.push(chatDoc);
                     this.openExistingChat(chatDoc._id);
+                },
+                messageConfirm: (payload: any) => {
+                    const chat = this.chats.find((chat: any) => {return chat._id === payload.chatId});     
+                    chat.inProccessMessages = chat.inProccessMessages.filter((element:any)=>{return element.id != payload.tempId});
+                    for (const message of chat.messages) {
+                        if (message.id === payload.tempId) {
+                            message.inProgress = false;
+                            message.id = payload.messageId;
+                        }
+                    }
+                },
+                newMessage: (payload: any) => {
+                    this.addChatMessage(payload.chatId, {
+                        authorId: payload.friendId,
+                        id: payload.msgId,
+                        timestamp: payload.timestamp,
+                        content: this.secretReader.decrypt(payload.friendData, 'utf8')
+                    });
+                    document.getElementById('messages').scrollIntoView(false);
                 }
             }
         );

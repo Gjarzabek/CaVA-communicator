@@ -150,20 +150,20 @@ body {
 }
 
 *::-webkit-scrollbar {
-  background-color: rgb(131, 131, 131);
-  width: 0.4vw;
+  background-color: rgba(255, 255, 255, 0.05);
+  width: 0.7vw;
   border-radius: 1vh;
 }
 
 *::-webkit-scrollbar-track {
-  width: 0.4vw;
+  width: 0.7vw;
   border-radius: 1vh;
-  background-color: rgb(24, 24, 24);
+  background-color: rgba(255, 255, 255, 0.05);
 }
 
 *::-webkit-scrollbar-thumb {
   border-radius: 1vh;
-  background-color: rgb(12, 12, 12);
+  background-color: rgb(0, 0, 0);
 }
 
 .arrow {

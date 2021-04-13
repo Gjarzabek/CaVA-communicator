@@ -12,7 +12,7 @@
                 @closeBar="forwardCloseEvent"/>                
             </div>
         </div>
-        <div class="messages">
+        <div id="messages">
             <Message v-for="message in activeChatPayload" :key="message.id" :message="message"/>
         </div>
         <MessageInput @sendMessage="SendMessageForward" :style="{width: `${inputWidth}%`, left: `${inputLeftPos}%`}"/>
@@ -36,9 +36,8 @@ export default defineComponent({
                     return chat._id === this.activeChatId;
                 };
 
-                const el = this.openedChats.find(idmatch);
+                const returnValue = this.openedChats.find(idmatch).messages;
                 
-                const returnValue = el.users[0].userId === this.user.id ? el.users[0].messages : el.users[1].messages;
                 console.log('returnValue', returnValue)
                 return returnValue;
             }
@@ -62,12 +61,12 @@ export default defineComponent({
             console.log('SendMessageForward', messageData);
             this.$emit('sendMessage', {
                 friendData: rsaCrypto.encrypt(messageData, 'base64'),
-                data: messageData,
+                content: messageData,
                 chatId: this.activeChatId,
                 timestamp: (new Date()).getTime(),
                 id: undefined,
                 inProgress: true,
-                userId: this.user.id
+                authorId: this.user.id
             });
         },
         changeActiveChat(chatId: string): void {
@@ -107,7 +106,7 @@ export default defineComponent({
 }
 
 .openedChats .chatBarItem:hover {
-    border-bottom: 2px solid #ddd;
+    background-color: #6b6b6b;
 }
 
 .openedChats::-webkit-scrollbar {
@@ -123,10 +122,11 @@ export default defineComponent({
 }
 
 .openedChats .active {
-    background-color: #ddd;
+    border-bottom-color: rgb(94, 216, 216);
+    border-width: 1px;
 }
 
-.messages {
+#messages {
     position: absolute;
     top: 5%;
     left: 0;

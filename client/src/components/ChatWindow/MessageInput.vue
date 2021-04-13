@@ -45,14 +45,26 @@ export default defineComponent({
     left: 2.5%;
     width: 95%;
     height: 5%;
-    background-color: rgba(189, 189, 189, 0.219);
+    background-color: rgba(189, 189, 189, 0.06);
     border: none;
-    border-radius: 0.8vh;
+    border-radius: 0.2vh;
     outline: none;
     font: 2.2vh NovaFlat;
     color: #ffffffde;
     text-indent: 1vw;
-    transition: 0.5s;
+    transition: 0.3s;
+}
+
+#messageInput::placeholder {
+    color: #ffffff38;
+}
+
+#messageInput:focus {
+    background-color: rgba(189, 189, 189, 0.07);
+}
+
+#messageInput:focus::placeholder {
+    color: #ffffff50;
 }
 
 </style>

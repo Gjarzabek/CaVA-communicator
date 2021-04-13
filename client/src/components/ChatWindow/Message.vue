@@ -1,8 +1,8 @@
 <template>
     <div class="MessageBody">
         <div class="bgEllipse"></div>
-        <div class="userName">{{message.userId}}</div>
-        <div class="messageData" :class="{inProgress : message.inProgress}">{{message.data}}</div>
+        <div class="userName">{{message.authorId}}</div>
+        <div class="messageData" :class="{inProgress : message.inProgress}">{{message.content}}</div>
         <div class="time">{{getDateString}}</div>
     </div>
 </template>
@@ -75,7 +75,7 @@ export default defineComponent({
 }
 
 .messageData {
-    font: 2vh NovaSquare;
+    font: 2vh NovaFlat;
     color: whitesmoke;
     text-align: left;
     width: 60vw;
@@ -88,7 +88,7 @@ export default defineComponent({
     font: 1.5vh NovaSquare;
     color: #595757;
     position: absolute;
-    top: 1.2vh;
+    top: 1.3vh;
     left: 12vw;
 }
 
