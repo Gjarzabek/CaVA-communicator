@@ -1,27 +1,15 @@
 <template>
     <div class="chat" @click=mainClicked>
-        <div v-if="isCommonChat">
-            <img src="../../assets/commonChat.png" alt="..." class="chatIcon smaller">
-        </div>
-        <div v-if="isLockedChat" alt="..." class="chatIcon">
-            <img src="../../assets/lockedChat.png" alt="..." class="chatIcon">
-        </div>
-        <div v-if="isDataTransfer" alt="..." class="chatIcon">
-            <img src="../../assets/dataTransfer.png" alt="..." class="chatIcon">
-        </div>
+        <img src="../../assets/commonChat.png" alt="..." class="chatIcon smaller">
         <div class="name">
-            {{chat.receiver}}
+            {{chat.users}}
         </div>
         <div class="time">
-            {{chat.payload[0].timestamp}} godz temu
+            {{timeAgo}}
         </div>
-        <div v-if="!isLockedChat" class="messData">
+        <div class="messData">
             {{demoMess}}
         </div>
-        <div v-else class="messData">
-            zaszyfrowane
-        </div>
-
     </div>
 </template>
 
@@ -32,22 +20,22 @@ export default defineComponent({
     props: ["chat"],
     components: {},
     computed: {
-        isCommonChat: function(): boolean {
-                return this.chat.chatType === 'Zwykły';
-        },
-        isLockedChat: function(): boolean {
-                return this.chat.chatType === 'SzyfrowanyHasłem';
-        },
-        isDataTransfer: function(): boolean {
-                return this.chat.chatType === 'Szyfrowany';
-        },
         demoMess: function(): string {
-            return this.chat.payload[0].data.substring(0, 20);
+            return this.chat.messages[this.chat.messages.length-1].content.substring(0, 20);
+        },
+        timeAgo: function(): string {
+            const now = (new Date).getTime();
+            const messTime = this.chat.messages[this.chat.messages.length-1].timestamp;
+            const hourAgo = Math.floor((now - messTime) / 1000 / 60 / 60);
+            if (hourAgo > 0)
+                return `${hourAgo} h temu`;
+            const minutesAgo = Math.floor((now - messTime) / 1000 / 60);
+            return `${minutesAgo} min temu`;
         }
     },
     methods: {
         mainClicked(): void {
-            this.$emit('openChat', this.chat.id);
+            this.$emit('openChat', this.chat._id);
         }
     }
 })

@@ -1,7 +1,9 @@
 <template>
     <div class="MessageBody">
-        <div class="bgEllipse"></div>
-        <div class="userName">{{message.authorId}}</div>
+        <img v-if="author.icon === 'fsociety'" class="bgEllipse" src="../../assets/fsociety.png">
+        <img v-else-if="author.icon === 'bird'" class="bgEllipse" src="../../assets/freedomBird.png">
+        <div v-else class="bgEllipse"></div>
+        <div class="userName">{{author.name}}</div>
         <div class="messageData" :class="{inProgress : message.inProgress}">{{message.content}}</div>
         <div class="time">{{getDateString}}</div>
     </div>
@@ -11,7 +13,7 @@
 import { defineComponent } from 'vue';
 
 export default defineComponent({
-    props: ["message"],
+    props: ["message", "friend", "user"],
     components: {},
     computed: {
         getDateString: function(): string {
@@ -19,6 +21,10 @@ export default defineComponent({
             const currentDate = (new Date()).getTime();
             const msDiff = currentDate - this.message.timestamp;
             return `${this.datePrefix(msDiff)} o ${date.toLocaleString().substring(12)}`;
+        },
+        author: function(): any {
+            if (this.message.authorId === this.user.id) return this.user;
+            return this.friend;
         }
     },
     methods: {
@@ -61,13 +67,15 @@ export default defineComponent({
     width: 5vh;
     height: 5vh;
     left: 2vh;
-    background-color: rgba(84, 100, 53, 0.329);
+    background-color: rgba(82, 82, 82, 0.329);
     border-radius: 100%;
+    margin: 0;
+    padding: 0;
 }
 
 .userName {
     text-align: left;
-    color: yellowgreen;
+    color: rgb(121, 176, 190);
     position: absolute;
     top: 1vh;
     left: 9.5vh;

@@ -163,7 +163,11 @@ body {
 
 *::-webkit-scrollbar-thumb {
   border-radius: 1vh;
-  background-color: rgb(0, 0, 0);
+  background-color: rgb(32, 32, 32);
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background-color: rgb(82, 130, 134);
 }
 
 .arrow {

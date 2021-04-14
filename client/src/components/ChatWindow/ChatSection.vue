@@ -13,7 +13,7 @@
             </div>
         </div>
         <div id="messages">
-            <Message v-for="message in activeChatPayload" :key="message.id" :message="message"/>
+            <Message v-for="message in activeChatPayload" :key="message.id" :message="message" :friend="inChatFriend" :user="user"/>
         </div>
         <MessageInput @sendMessage="SendMessageForward" :style="{width: `${inputWidth}%`, left: `${inputLeftPos}%`}"/>
     </div>

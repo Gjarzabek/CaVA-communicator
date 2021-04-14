@@ -55,6 +55,7 @@ export default defineComponent({
       },
       ForwardChatOpen(event: any): void {
         this.$emit('openChat', event);
+        console.log(event);
       },
       joinRequest(publicroom: any): void {
           this.$emit('joinPublic', publicroom);

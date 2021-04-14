@@ -2,11 +2,9 @@
     <div class="notification" :class="{new: data.new === true}">
         <div class="alertInfo" :data-tool-tip="data.fromId">{{data.info}}</div>
         <div class="exitBtn" @click="$emit('deleteAlert')">X</div>
-        <div v-if="()=>{data.topic === 'Zaprosznie do znajomych'}">
-            <div class="btns">
-                <button class="accept" @click="accept">akceptuj</button>
-                <button class="reject" @click="reject">odrzuć</button>
-            </div>
+        <div v-if="isInvite" class="btns">
+            <button class="accept" @click="accept">akceptuj</button>
+            <button class="reject" @click="reject">odrzuć</button>
         </div>
     </div>
 </template>
@@ -24,6 +22,11 @@ export default defineComponent({
         reject(): void {
             this.$emit('rejectFriend', {fromId: this.data.fromId, alertId: this.data.id});
         }
+  },
+  computed: {
+      isInvite: function(): boolean {
+          return this.data.topic === 'Zaprosznie do znajomych';
+      }
   }
 })
 </script>

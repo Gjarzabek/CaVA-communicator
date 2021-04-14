@@ -1,15 +1,7 @@
 <template>
     <div @click="signalActive">
         <img src="../../assets/commonChat.png" alt="..." class="chatIcon smaller">
-        <!--
-        <div v-if="isLockedChat" alt="..." class="chatIcon">
-            <img src="../../assets/lockedChat.png" alt="..." class="chatIcon">
-        </div>
-        <div v-if="isDataTransfer" alt="..." class="chatIcon">
-            <img src="../../assets/dataTransfer.png" alt="..." class="chatIcon">
-        </div>
-        -->
-        <div class="username">{{inChatFriend.name}}</div>
+        <div class="username">{{friendsName}}</div>
         <div class="closeBtn" @click="Close">x</div>
     </div>
 </template>
@@ -51,6 +43,11 @@ export default defineComponent({
         },
         isDataTransfer: function(): boolean {
                 return this.chatInfo.chatType === 'Szyfrowany';
+        },
+        friendsName: function(): string | undefined {
+            if (this.inChatFriend)
+                return this.inChatFriend!.name;
+            else return undefined;
         }
     },
     data() {
@@ -58,7 +55,7 @@ export default defineComponent({
             closeBtnVisable: false,
             closed: false,
             overChild: true,
-            inChatFriend: undefined
+            inChatFriend: {name: ""}
         };
     },
     created() {

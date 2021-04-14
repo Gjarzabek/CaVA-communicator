@@ -33,6 +33,7 @@
         @userClick="userClickHandler"
         @joinPublic="joinPublicRoom"
         @openPrivateTalk="openPrivateTalk"
+        @openChat="openExistingChat"
         />
         <FriendMenu :isShown="FriendMenuPayload.show" :position="FriendMenuPayload.position" :friend="FriendMenuPayload.user" @openChat="openChatWithFriend" @noteChange="updateNote"/>
     </div>
@@ -287,14 +288,17 @@ const statusOrder = (a: any, b: any): number => {
                 timestamp: messInfo.timestamp,
                 tempMessageId: messInfo.id 
             });
-            document.getElementById('messages').scrollIntoView(false);
         },
         openExistingChat(chatId: number): void {
             const id: number = this.openedChatsIds.find((id: any)=> {return id === chatId});
+
+            const chat = this.chats.find((chat: any) => {return chat._id === chatId});
+            if (chat === undefined)
+                return;
+            const friendId = chat.users[0] === this.user.id ? chat.users[1] : chat.users[0];
+            this.userSelected = this.friends.find((friend: any) => {return friend._id === friendId});
+            
             if (id === undefined) {
-                const chat = this.chats.find((chat: any) => {return chat._id === chatId});
-                if (chat === undefined)
-                    return;
                 this.openedChatsIds.push(chatId);
             }
             this.changeActive(chatId);
@@ -428,7 +432,6 @@ const statusOrder = (a: any, b: any): number => {
                         timestamp: payload.timestamp,
                         content: this.secretReader.decrypt(payload.friendData, 'utf8')
                     });
-                    document.getElementById('messages').scrollIntoView(false);
                 }
             }
         );
