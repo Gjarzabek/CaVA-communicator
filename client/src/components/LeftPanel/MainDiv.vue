@@ -5,6 +5,8 @@
           :header="params.header"
           :ItemList="params.payload"
           :type="params.type"
+          :friends="friends"
+          :user="user"
           @newChat="ForwardNewChat"
           @openChat="ForwardChatOpen"
           @joinPublic="Forwardjoin"
@@ -20,7 +22,7 @@ import { defineComponent } from 'vue';
 import HiddenList from "@/components/LeftPanel/HiddenList.vue";
 
 export default defineComponent({
-  props: ["friends", "chats", "publicRooms", "privateGroups"],
+  props: ["friends", "chats", "publicRooms", "privateGroups", "user"],
   components: {HiddenList},
   computed: {
     ListParams: function(): any { 

@@ -29,7 +29,8 @@ export default defineComponent({
             }
         },
         sendMessage(): void {
-            this.$emit("sendMessage", this.inputData);
+            if (this.inputData.length > 0)
+                this.$emit("sendMessage", this.inputData);
             this.inputData = "";
         }
     }

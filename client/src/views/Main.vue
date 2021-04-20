@@ -8,12 +8,14 @@
         @iconChange="changeUserIcon"
         />
         <TopPanel
-        :notifications="reversedNotifications"
+        :notifications="sortedNotifications"
+        :friends="friends"
         @checkedAlerts="markAlertsOld"
         @addFriend="inviteFriend"
         @acceptFriend="acceptFriend"
         @rejectFriend="rejectFriend"
         @deleteAlert="deleteAlert"
+        @openChat="openExistingChat"
         />
         <UsersOnline v-bind:Users="filteredUsers" @search="changeSearch"/>
         <ChatSection 
@@ -30,6 +32,7 @@
         :chats="chats"
         :publicRooms="publicRooms"
         :privateGroups="privateGroups"
+        :user="user"
         @userClick="userClickHandler"
         @joinPublic="joinPublicRoom"
         @openPrivateTalk="openPrivateTalk"
@@ -66,11 +69,6 @@ const statusOrder = (a: any, b: any): number => {
 @Options({
   props: ["userCredits"],
   beforeUnmount() {
-    this.connection.send({
-        method: 'notesChange',
-        id: this.userCredits.id,
-        newNotes: Array.from(this.newNotes.entries()),
-    });
     this.connection.close("appClosed", this.userCredits.id);
   },
   data() {
@@ -129,6 +127,14 @@ const statusOrder = (a: any, b: any): number => {
             }
         }
         return resultList;
+    },
+    sortedNotifications: function(): any {
+        return this.notifications.sort((a: any, b: any) => {
+                    if (a.timestamp < b.timestamp)
+                        return 1;
+                    else
+                        return -1;
+        });
     }
   },
   methods: {
@@ -138,7 +144,7 @@ const statusOrder = (a: any, b: any): number => {
             setTimeout( ()=>{
                 const objDiv: any = document.getElementById("messages");
                 objDiv.scrollTop = objDiv.scrollHeight - objDiv.clientHeight;
-            }, 300);
+            }, 30);
         },
         addTempMessage(messInfo: any): number | null {
             const chat = this.chats.find((chat: any) => {return chat._id === messInfo.chatId});
@@ -162,15 +168,25 @@ const statusOrder = (a: any, b: any): number => {
         },
         openChatWithFriend(event: any) {
             this.userSelected = event;
-            this.FriendMenuPayload.show = false;
-            const friendId: string = event.id ? event.id : event._id;
+            this.hideFriendMenu();
+            const friendId: string = event;
             for(const chatObj of this.chats) {
                 if (chatObj.users[0] === friendId || chatObj.users[1] === friendId) {
                     this.openExistingChat(chatObj._id);
                     return;
                 }
             }
+            console.log("event", event);
             this.createNewChat(friendId);
+        },
+        hideFriendMenu(): void {
+            this.FriendMenuPayload.show = false;
+            if (this.newNotes.size > 0)
+                this.connection.send({
+                    method: 'notesChange',
+                    id: this.userCredits.id,
+                    newNotes: Array.from(this.newNotes.entries()),
+                });
         },
         createNewChat(fId: string): void {
             this.connection.send({
@@ -301,7 +317,8 @@ const statusOrder = (a: any, b: any): number => {
                 return;
             const friendId = chat.users[0] === this.user.id ? chat.users[1] : chat.users[0];
             this.userSelected = this.friends.find((friend: any) => {return friend._id === friendId});
-            
+            if (!this.userSelected) this.userSelected = this.friends.find((friend: any) => {return friend.id === friendId});
+
             if (id === undefined) {
                 this.openedChatsIds.push(chatId);
             }
@@ -332,7 +349,7 @@ const statusOrder = (a: any, b: any): number => {
         },
         userClickHandler(event: any): void {
             if (this.FriendMenuPayload.show && this.FriendMenuPayload.user && this.FriendMenuPayload.user._id === event[1]._id) {
-                this.FriendMenuPayload.show = false;
+                this.hideFriendMenu();
             }
             else if (this.FriendMenuPayload.show) {
                 this.FriendMenuPayload.position = event[0].y;
@@ -435,7 +452,7 @@ const statusOrder = (a: any, b: any): number => {
                     setTimeout( ()=>{
                         const objDiv: any = document.getElementById("messages");
                         objDiv.scrollTop = objDiv.scrollHeight - objDiv.clientHeight;
-                    }, 300);
+                    }, 10);
                 },
                 newMessage: (payload: any) => {
                     this.addChatMessage(payload.chatId, {

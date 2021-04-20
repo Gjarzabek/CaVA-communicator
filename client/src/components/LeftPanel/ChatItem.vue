@@ -2,7 +2,7 @@
     <div class="chat" @click=mainClicked>
         <img src="../../assets/commonChat.png" alt="..." class="chatIcon smaller">
         <div class="name">
-            {{chat.users}}
+            {{friend.name}}
         </div>
         <div class="time">
             {{timeAgo}}
@@ -17,11 +17,13 @@
 import { defineComponent } from 'vue';
 
 export default defineComponent({
-    props: ["chat"],
+    props: ["chat", "friend"],
     components: {},
     computed: {
         demoMess: function(): string {
-            return this.chat.messages[this.chat.messages.length-1].content.substring(0, 20);
+            const lastMess = this.chat.messages[this.chat.messages.length-1];
+            const prefix = lastMess.authorId === this.friend._id ? `${this.friend.name}: ` : "Ty: ";
+            return prefix + lastMess.content.substring(0, 20);
         },
         timeAgo: function(): string {
             const now = (new Date).getTime();

@@ -13,11 +13,13 @@
       <div v-if="showNotifications" class="notificationMain">
         <h3>Powiadomienia</h3>
         <Notification v-for="notify in notifications"
-        v-bind:key="notify.id"
+        v-bind:key="notify.timestamp"
         :data="notify"
+        :friend="inChatFriend(notify.fromId)"
         @acceptFriend="(event)=>{$emit('acceptFriend', event)}"
         @rejectFriend="(event)=>{$emit('rejectFriend', event)}"
         @deleteAlert="$emit('deleteAlert', notify.id)"
+        @openChat="$emit('openChat', notify.chatId)"
         />
         <p v-if="notificationsEmpty">Pusto!</p>
       </div>
@@ -29,7 +31,7 @@ import { defineComponent } from 'vue'
 import Notification from '@/components/TopPanel/Notification.vue';
 
 export default defineComponent({
-  props: ["notifications"],
+  props: ["notifications", "friends"],
   components: {Notification},
   data() {
     return {
@@ -48,57 +50,60 @@ export default defineComponent({
     }
   },
   methods: {
-    toogleNotifications() {
-      if (!this.showNotifications && this.isAnyNewAlert)
-        this.checkNewAlerts();
-      this.showNotifications = !this.showNotifications;
-    },
-    checkNewAlerts(): void {
-      const checkedAlerts = [];
-      for (const alert of this.notifications) {
-        if (alert.new)
-          checkedAlerts.push(alert.id);
+      toogleNotifications() {
+        if (!this.showNotifications && this.isAnyNewAlert)
+          this.checkNewAlerts();
+        this.showNotifications = !this.showNotifications;
+      },
+      inChatFriend(friendId: string): void {
+        return this.friends.find((friend: any) => {return friend._id === friendId})
+      },
+      checkNewAlerts(): void {
+        const checkedAlerts = [];
+        for (const alert of this.notifications) {
+          if (alert.new)
+            checkedAlerts.push(alert.id);
+        }
+        if (checkedAlerts.length === 0)
+          return;
+        this.$emit('checkedAlerts', checkedAlerts);
+      },
+      addFriend(): void {
+        this.addFriendActive = true;
+      },
+      closeAddDiv(): void {
+        this.addFriendActive = false;
+        this.inputData = "";
+      },
+      submitFriendCode(): void {
+        if (this.inputData.length === this.maxIDLength) {
+          this.$emit('addFriend', this.inputData);
+          this.inputData = "Wysłano";
+        }
+        else {
+          this.inputData = "Błąd";
+        }
+        setTimeout(()=>{this.closeAddDiv();}, 200);
       }
-      if (checkedAlerts.length === 0)
-        return;
-      this.$emit('checkedAlerts', checkedAlerts);
     },
-    addFriend(): void {
-      this.addFriendActive = true;
-    },
-    closeAddDiv(): void {
-      this.addFriendActive = false;
-      this.inputData = "";
-    },
-    submitFriendCode(): void {
-      if (this.inputData.length === this.maxIDLength) {
-        this.$emit('addFriend', this.inputData);
-        this.inputData = "Wysłano";
+    computed: {
+      addDivWidth: function(): number {
+        return this.addFriendActive ? 20 : 0;
+      },
+      addDivHeight: function(): number {
+        return this.addFriendActive ? 6 : 0;
+      },
+      isAnyNewAlert: function(): boolean {
+        for (const alert of this.notifications) {
+          if (!alert) continue;
+          else if (alert.new) return true;
+        }
+        return false;
+      },
+      notificationsEmpty: function(): boolean {
+        return this.notifications.length === 0;
       }
-      else {
-        this.inputData = "Błąd";
-      }
-      setTimeout(()=>{this.closeAddDiv();}, 200);
     }
-  },
-  computed: {
-    addDivWidth: function(): number {
-      return this.addFriendActive ? 20 : 0;
-    },
-    addDivHeight: function(): number {
-      return this.addFriendActive ? 6 : 0;
-    },
-    isAnyNewAlert: function(): boolean {
-      for (const alert of this.notifications) {
-        if (!alert) continue;
-        else if (alert.new) return true;
-      }
-      return false;
-    },
-    notificationsEmpty: function(): boolean {
-      return this.notifications.length === 0;
-    }
-  }
 })
 </script>
 
@@ -112,7 +117,20 @@ export default defineComponent({
   height: 0.8vw;
   border-radius: 50%;
   background-color: rgb(212, 24, 24);
-  color: whitesmoke;
+  animation: pulse 1.2s;
+  animation-iteration-count: infinite;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(0.5);
+  }
+  50% {
+    transform: scale(1);
+  }
+  100% {
+    transform: scale(0.5);
+  }
 }
 
 .submitFriend {

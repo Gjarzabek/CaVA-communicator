@@ -12,7 +12,7 @@
         </div>
         <div v-if="!hidden" class="list">
             <div v-for="item in ItemList" v-bind:key="item.id" :class="{ item : !isChat}">
-                <ChatItem v-if="isChat" :chat="item" @openChat="ForwardChatOpen"/>
+                <ChatItem v-if="isChat" :chat="item" :friend="inChatFriend(item.users)" @openChat="ForwardChatOpen"/>
                 <FriendItem v-else-if="isFriend" :friend="item" @click="userClicked($event, item)"/>
                 <PublicItem v-else-if="isPublicTalk" :room="item" @click="joinRequest(item)"/>
                 <PrivateItem v-else-if="isPrivateRoom" :group="item" @click="openPrivate(item)"/>
@@ -29,7 +29,7 @@ import PublicItem from '@/components/LeftPanel/PublicItem.vue';
 import PrivateItem from '@/components/LeftPanel/PrivateItem.vue';
 
 export default defineComponent({
-  props: ["header", "ItemList", "type"],
+  props: ["header", "ItemList", "type", "friends", "user"],
   components: {FriendItem, ChatItem, PublicItem, PrivateItem},
   data() {
       return {
@@ -37,32 +37,36 @@ export default defineComponent({
       }
   },
   methods: {
-      toogleMenu() {
-          const headerEl = document!.getElementById(this.header);
-          if (this.hidden) {
-              headerEl!.classList!.add("down");
-              headerEl!.classList!.remove("right");
-          }
-          else {
-              headerEl!.classList!.add("right");
-              headerEl!.classList!.remove("down");
+        toogleMenu() {
+            const headerEl = document!.getElementById(this.header);
+            if (this.hidden) {
+                headerEl!.classList!.add("down");
+                headerEl!.classList!.remove("right");
+            }
+            else {
+                headerEl!.classList!.add("right");
+                headerEl!.classList!.remove("down");
 
-          }
-          this.hidden = !this.hidden;
-      },
-      userClicked(event: any, item: any) {
-        this.$emit('userClicked', [event, item]);
-      },
-      ForwardChatOpen(event: any): void {
-        this.$emit('openChat', event);
-        console.log(event);
-      },
-      joinRequest(publicroom: any): void {
-          this.$emit('joinPublic', publicroom);
-      },
-      openPrivate(privatetalk: any): void {
-          this.$emit('openPrivateTalk', privatetalk);
-      }
+            }
+            this.hidden = !this.hidden;
+        },
+        userClicked(event: any, item: any) {
+            this.$emit('userClicked', [event, item]);
+        },
+        ForwardChatOpen(event: any): void {
+            this.$emit('openChat', event);
+            console.log(event);
+        },
+        joinRequest(publicroom: any): void {
+            this.$emit('joinPublic', publicroom);
+        },
+        inChatFriend(chatUsers: Array<string>): void {
+            const friendId = chatUsers[0] === this.user.id ? chatUsers[1] : chatUsers[0];
+            return this.friends.find((friend: any) => {return friend._id === friendId})
+        },
+        openPrivate(privatetalk: any): void {
+            this.$emit('openPrivateTalk', privatetalk);
+        }
   },
   computed: {
         isChat: function(): boolean {

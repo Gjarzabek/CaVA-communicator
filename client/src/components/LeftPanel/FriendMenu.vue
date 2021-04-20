@@ -9,7 +9,7 @@
         <div v-if="isShown" class="dot" :class="friend.status"></div>
         <div v-if="isShown" class="info desc">{{Desc}}</div>
         <p v-if="isShown" class="info notePara">Notatka</p>
-        <textarea v-if="isShown" placeholder="..." class="info notePayload" maxlength="40" spellcheck="false" v-model="note"></textarea>
+        <textarea v-if="isShown" :placeholder="currentNote" class="info notePayload" maxlength="40" spellcheck="false" v-model="note"></textarea>
         <button v-if="isShown" class="chatBtn" @click="writeMessage">Napisz Wiadomość</button>
     </div>
 </template>
@@ -33,7 +33,7 @@ export default defineComponent({
   components: {},
   data() {
         return {
-            note: this.friend != undefined ? this.friend.note : '',
+            note: '',
             width: '0vw'
         }
   },
@@ -51,7 +51,7 @@ export default defineComponent({
       },
       Desc(): string {
             if (this.friend.desc === "")
-                return "...";
+                return "---";
             else
                 return this.friend.desc;
       },
@@ -63,12 +63,18 @@ export default defineComponent({
       },
       currentBorder(): string {
             return this.isShown ? '0.1vh solid rgb(65, 65, 65)' : 'transparent';
+      },
+      currentNote(): string {
+          return this.friend != undefined ? this.friend.note : '' ;
       }
   },
   methods: {
       writeMessage: function(): void {
-          console.log('openchatEmit', this.friend);
-          this.$emit('openChat', this.friend);
+            console.log('openchatEmit', this.friend);
+            if (this.friend.id)
+                this.$emit('openChat', this.friend.id);
+            else
+                this.$emit('openChat', this.friend._id);
       }
   }
 })
