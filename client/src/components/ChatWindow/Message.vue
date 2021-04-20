@@ -1,9 +1,9 @@
 <template>
     <div class="MessageBody">
-        <img v-if="author.icon === 'fsociety'" class="bgEllipse" src="../../assets/fsociety.png">
-        <img v-else-if="author.icon === 'bird'" class="bgEllipse" src="../../assets/freedomBird.png">
+        <img v-if="author.icon === 'fsociety'" class="icon" src="../../assets/fsociety.png">
+        <img v-else-if="author.icon === 'bird'" class="icon" src="../../assets/freedomBird.png">
         <div v-else class="bgEllipse"></div>
-        <div class="userName">{{author.name}}</div>
+        <b class="userName">{{author.name}}</b>
         <div class="messageData" :class="{inProgress : message.inProgress}">{{message.content}}</div>
         <div class="time">{{getDateString}}</div>
     </div>
@@ -52,22 +52,21 @@ export default defineComponent({
     border-top: solid 1px #3b393978;
     border-bottom: solid 1px #3b393978;
     word-wrap: break-word;
-    margin-bottom: 1vh;
     padding: 1.5vh;
     transition: 0.5s;
 }
 
 .MessageBody:hover {
-    border-top: solid 1px #3B3939;
-    border-bottom: solid 1px #3B3939;
+    border-top: solid 1px #414040;
+    border-bottom: solid 1px #414040;
 }
 
-.bgEllipse {
-    position: relative;
-    width: 5vh;
-    height: 5vh;
-    left: 2vh;
-    background-color: rgba(82, 82, 82, 0.329);
+.icon {
+    position: absolute;
+    top: 1.2vh;
+    width: 3vh;
+    height: 3vh;
+    left: 4.8vh;
     border-radius: 100%;
     margin: 0;
     padding: 0;
@@ -75,33 +74,34 @@ export default defineComponent({
 
 .userName {
     text-align: left;
-    color: rgb(121, 176, 190);
+    color: rgb(65, 147, 155);
     position: absolute;
-    top: 1vh;
+    top: 0.9vh;
     left: 9.5vh;
-    font: 2vh NovaSquare;
+    font-size: 1.6vh;
 }
 
 .messageData {
-    font: 2vh NovaFlat;
+    font: 1.6vh NovaFlat;
     color: whitesmoke;
     text-align: left;
     width: 60vw;
     position: relative;
     bottom: 1.4vh;
     left: 8vh;
+    margin-top: 3.5vh;
 }
 
 .time {
-    font: 1.5vh NovaSquare;
+    font: 1.2vh NovaSquare;
     color: #595757;
     position: absolute;
-    top: 1.3vh;
+    top: 1.1vh;
     left: 12vw;
 }
 
 .inProgress {
-    color: rgb(92, 146, 151);
+    color: rgba(170, 170, 170, 0.253);
 }
 
 </style>

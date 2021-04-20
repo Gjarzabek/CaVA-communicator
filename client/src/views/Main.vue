@@ -135,6 +135,10 @@ const statusOrder = (a: any, b: any): number => {
         addChatMessage(chatId: any, message: any) {
             const chat = this.chats.find((chat: any) => {return chat._id === chatId});
             chat.messages.push(message);
+            setTimeout( ()=>{
+                const objDiv: any = document.getElementById("messages");
+                objDiv.scrollTop = objDiv.scrollHeight - objDiv.clientHeight;
+            }, 300);
         },
         addTempMessage(messInfo: any): number | null {
             const chat = this.chats.find((chat: any) => {return chat._id === messInfo.chatId});
@@ -305,6 +309,10 @@ const statusOrder = (a: any, b: any): number => {
         },
         changeActive(chatId: number): void {
             this.activeChatId = chatId;
+            setTimeout( ()=>{
+                const objDiv: any = document.getElementById("messages");
+                objDiv.scrollTop = objDiv.scrollHeight - objDiv.clientHeight;
+            }, 300);
         },
         closeBar(chatId: any): void {
             this.openedChatsIds = this.openedChatsIds.filter((el:any) => {
@@ -424,6 +432,10 @@ const statusOrder = (a: any, b: any): number => {
                             message.id = payload.messageId;
                         }
                     }
+                    setTimeout( ()=>{
+                        const objDiv: any = document.getElementById("messages");
+                        objDiv.scrollTop = objDiv.scrollHeight - objDiv.clientHeight;
+                    }, 300);
                 },
                 newMessage: (payload: any) => {
                     this.addChatMessage(payload.chatId, {

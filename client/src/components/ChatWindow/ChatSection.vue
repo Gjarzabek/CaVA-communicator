@@ -39,6 +39,7 @@ export default defineComponent({
                 const returnValue = this.openedChats.find(idmatch).messages;
                 
                 console.log('returnValue', returnValue)
+
                 return returnValue;
             }
             else return undefined;
