@@ -2,10 +2,10 @@
     <div class="MessageBody">
         <img v-if="author.icon === 'fsociety'" class="icon" src="../../assets/fsociety.png">
         <img v-else-if="author.icon === 'bird'" class="icon" src="../../assets/freedomBird.png">
-        <div v-else class="bgEllipse"></div>
+        <div v-else class="bgEllipse" :style="{background: author.color}"></div>
         <div class='flexLine'>
-            <b class="userName">{{author.name}}</b>
-            <div class="time">{{getDateString}}</div>
+            <b class="userName" :style="{color: author.color}">{{author.name}}</b>
+            <div class="time" :style="{color: darkerColor}">{{getDateString}}</div>
         </div>
         <div class="messageData" :class="{inProgress : message.inProgress}">{{message.content}}</div>
     </div>
@@ -13,6 +13,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
+import colorManipulate from '@/ts_classes/colorManipulate';
 
 export default defineComponent({
     props: ["message", "friend", "user"],
@@ -22,11 +23,15 @@ export default defineComponent({
             const date = new Date(this.message.timestamp)
             const currentDate = (new Date()).getTime();
             const msDiff = currentDate - this.message.timestamp;
-            return `${this.datePrefix(msDiff)} o ${date.toLocaleString().substring(12)}`;
+            return `${this.datePrefix(msDiff)} o ${date.toLocaleString().slice(-9)}`;
         },
         author: function(): any {
             if (this.message.authorId === this.user.id) return this.user;
             return this.friend;
+        },
+        darkerColor: function(): string {
+            if (!this.author) return "#ffffff";
+            return colorManipulate(this.author.color, -30);
         }
     },
     methods: {
@@ -84,6 +89,14 @@ export default defineComponent({
     border-radius: 100%;
     margin: 0;
     padding: 0;
+}
+
+.bgEllipse {
+    position: absolute;
+    top: 1.9vh;
+    width: 3vh;
+    height: 3vh;
+    left: 2.5vw;
 }
 
 .userName {

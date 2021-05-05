@@ -15,7 +15,7 @@ export default defineComponent({
     methods: {
         signalActive(): void {
             if (!this.closed) {
-                this.$emit('signalActive', this.chatInfo._id);
+                this.$emit('signalActive', this.chatInfo);
             }
         },
         showCloseBtn(): void {

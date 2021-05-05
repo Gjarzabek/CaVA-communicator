@@ -1,21 +1,22 @@
 <template>
     <div id="FriendMenu" :style="{top: `${position}px`, width: `${currentSize.w}`, height: `${currentSize.h}`, border: `${currentBorder}`}">
-        <div v-if="isShown" class="iconBg">
+        <div class="iconBg">
             <img v-if="isBird" src="../../assets/freedomBird.png" alt=".." class='profileIcon'>
             <img v-else src="../../assets/fsociety.png" alt=".." class='profileIcon'>
         </div>
-        <b v-if="isShown" class="info nick">{{friend.name}}</b>
-        <div v-if="isShown" class="info date">dołączył {{friend.joinTime}}</div>
-        <div v-if="isShown" class="dot" :class="friend.status"></div>
-        <div v-if="isShown" class="info desc">{{Desc}}</div>
-        <p v-if="isShown" class="info notePara">Notatka</p>
-        <textarea v-if="isShown" :placeholder="currentNote" class="info notePayload" maxlength="40" spellcheck="false" v-model="note"></textarea>
-        <button v-if="isShown" class="chatBtn" @click="writeMessage">Napisz Wiadomość</button>
+        <b class="info nick" :style="{color: friend.color}">{{friend.name}}</b>
+        <div class="info date" :style="{color: darker}">dołączył {{friend.joinTime}}</div>
+        <div class="dot" :class="friend.status"></div>
+        <div class="info desc" :style="{color: ligher}">{{Desc}}</div>
+        <p class="info notePara">Notatka</p>
+        <textarea :placeholder="currentNote" class="info notePayload" maxlength="40" spellcheck="false" v-model="note"></textarea>
+        <button class="chatBtn" @click="writeMessage">Napisz Wiadomość</button>
     </div>
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue' 
+import { defineComponent } from 'vue';
+import colorManipulate from '@/ts_classes/colorManipulate';
 /*
 <button class="cypherChatBtn">Czat podwójnie szyfrowany hasłem</button>
 Friend Menu:
@@ -37,12 +38,15 @@ export default defineComponent({
             width: '0vw'
         }
   },
+  mounted() {
+      this.note = this.friend.note;
+  },
   watch: {
         note: function(): void {
             if (this.note.includes('\n'))
                 this.note = this.note.replace('\n', '');
             console.log(this.note);
-            this.$emit('noteChange', this.note)
+            this.$emit('noteChange', this.note);
         }
   },
   computed: {
@@ -56,25 +60,29 @@ export default defineComponent({
                 return this.friend.desc;
       },
       currentSize(): {h: string, w: string} {
-          if (this.isShown) {
-              return {h: '35vh', w: '14vw'};
-          }
-          else return {h: '35vh', w: '0vw'};
+            if (this.isShown) {
+                return {h: '35vh', w: '14vw'};
+            }
+            else {
+                return {h: '35vh', w: '0vw'};
+            }
       },
       currentBorder(): string {
             return this.isShown ? '0.1vh solid rgb(65, 65, 65)' : 'transparent';
       },
       currentNote(): string {
           return this.friend != undefined ? this.friend.note : '' ;
-      }
+      },
+      darker(): string {
+        return colorManipulate(this.friend.color, -20);
+      },
+      ligher(): string {
+        return colorManipulate(this.friend.color, 70);
+      }      
   },
   methods: {
       writeMessage: function(): void {
-            console.log('openchatEmit', this.friend);
-            if (this.friend.id)
-                this.$emit('openChat', this.friend.id);
-            else
-                this.$emit('openChat', this.friend._id);
+            this.$emit('openChat', this.friend);
       }
   }
 })

@@ -6,7 +6,7 @@
         </div>
         <div id="userInfo">
             <div id="statusDot" :class="user.status"></div>
-            <div id="nick" @click="toogleStatusMenu">{{userCredits.name}}</div>
+            <div id="nick" @click="toogleStatusMenu" :style="{color: user.color}">{{userCredits.name}}</div>
             <div id="id">id: {{userCredits.id}}</div>
             <div id="desc" @click="changeDesc">{{descDemo}}</div>
         </div>
@@ -21,6 +21,7 @@
             </div>
         </div>
         <div v-if="iconChoiceShow" id="IconChoice">
+            <input type="color" class="colorChoice" v-model="color">
             <img src="../assets/fsociety.png" alt=".." class="iconToChose" @click="signalIconChange('fsociety')">
             <img src="../assets/freedomBird.png" alt=".." class="iconToChose" @click="signalIconChange('bird')">
         </div>
@@ -30,6 +31,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
+import colorManipulate from '@/ts_classes/colorManipulate';
 
 export default defineComponent({
     props: ["userCredits", "user"],
@@ -43,8 +45,12 @@ export default defineComponent({
             maxDescLen: 50,
             maxDescShowLen: 11,
             possibleStatusList: [{name: "dostępny"}, {name:"zaraz-wracam"}, {name:"zajęty"}],
-            currentIcon: this.user.icon
+            currentIcon: this.user.icon,
+            color: undefined
         }
+    },
+    created() {
+        this.color = this.user.color;
     },
     computed: {
         descDemo: function(): string {
@@ -95,12 +101,27 @@ export default defineComponent({
             if (this.descInputData.length > this.maxDescLen) {
                 this.descInputData = this.descInputData.substring(0, this.maxDescLen);
             }
+        },
+        iconChoiceShow: function(): void {
+            if (!this.iconChoiceShow && this.user.color != this.color) {
+                this.$emit('colorChange', this.color);
+            }
+            else {
+                this.color = this.user.color;
+            }
         }
     },
 })
 </script>
 
 <style scoped>
+
+.colorChoice {
+    outline: none;
+    border: none;
+    height: 5vh;
+    width: 3vw;
+}
 
 .descInput {
     position: absolute;
@@ -249,18 +270,22 @@ export default defineComponent({
 }
 
 #IconChoice {
-    position: absolute;
+    position: relative;
+    max-width: 10vw;
     top: 2vh;
     left: 5vw;
-    padding: 1vh;
+    padding: 2vh;
     background-color: rgb(93, 93, 93);
     z-index: 2;
     border-radius: 2vh;
+    display: flex;
+    align-items: center;
+    justify-items: center;
 }
 
 .iconToChose {
     margin: 1vh;
-    height: 6vh;
+    height: 4vh;
 }
 
 </style>

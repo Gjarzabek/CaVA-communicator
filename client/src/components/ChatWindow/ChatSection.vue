@@ -36,11 +36,11 @@ export default defineComponent({
                     return chat._id === this.activeChatId;
                 };
 
-                const returnValue = this.openedChats.find(idmatch).messages;
-                
-                console.log('returnValue', returnValue)
+                const activeChat = this.openedChats.find(idmatch);
+                if (!activeChat)
+                    return [];
 
-                return returnValue;
+                return activeChat.messages;
             }
             else return undefined;
         },
@@ -57,7 +57,6 @@ export default defineComponent({
     methods: {
         SendMessageForward(messageData: any): void {
             const rsaCrypto = new NodeRSA();
-            // TODO: encrypt message with own public key also to further history read
             rsaCrypto.importKey(this.inChatFriend.public, 'public');
             console.log('SendMessageForward', messageData);
             this.$emit('sendMessage', {
@@ -70,8 +69,8 @@ export default defineComponent({
                 authorId: this.user.id
             });
         },
-        changeActiveChat(chatId: string): void {
-            this.$emit('changeActiveChat', chatId);
+        changeActiveChat(chatObj: any): void {
+            this.$emit('changeActiveChat', chatObj);
         },
         forwardCloseEvent(chatId: string): void {
             this.$emit('closeBar', chatId);

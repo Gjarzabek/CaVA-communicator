@@ -6,6 +6,7 @@ export default  class WsClient {
     constructor(userCredits: any, Callbacks: any) {
 
         WsClient.port = 8999;
+        
         interface ServerEvent {
             method: string,
             payload: any,

@@ -6,6 +6,7 @@
         @statusChange="changeUserStatus"
         @descChange="changeUserDesc"
         @iconChange="changeUserIcon"
+        @colorChange="changeUserColor"
         />
         <TopPanel
         :notifications="sortedNotifications"
@@ -38,7 +39,7 @@
         @openPrivateTalk="openPrivateTalk"
         @openChat="openExistingChat"
         />
-        <FriendMenu :isShown="FriendMenuPayload.show" :position="FriendMenuPayload.position" :friend="FriendMenuPayload.user" @openChat="openChatWithFriend" @noteChange="updateNote"/>
+        <FriendMenu v-if="FriendMenuPayload.show" :isShown="FriendMenuPayload.show" :position="FriendMenuPayload.position" :friend="FriendMenuPayload.user" @openChat="openChatWithFriend" @noteChange="updateNote"/>
     </div>
 </template>
 
@@ -169,7 +170,7 @@ const statusOrder = (a: any, b: any): number => {
         openChatWithFriend(event: any) {
             this.userSelected = event;
             this.hideFriendMenu();
-            const friendId: string = event;
+            const friendId: string = event.id ? event.id : event._id;
             for(const chatObj of this.chats) {
                 if (chatObj.users[0] === friendId || chatObj.users[1] === friendId) {
                     this.openExistingChat(chatObj._id);
@@ -181,12 +182,14 @@ const statusOrder = (a: any, b: any): number => {
         },
         hideFriendMenu(): void {
             this.FriendMenuPayload.show = false;
-            if (this.newNotes.size > 0)
+            if (this.newNotes.size > 0) {
                 this.connection.send({
                     method: 'notesChange',
                     id: this.userCredits.id,
                     newNotes: Array.from(this.newNotes.entries()),
                 });
+                this.newNotes.clear();
+            }
         },
         createNewChat(fId: string): void {
             this.connection.send({
@@ -207,6 +210,7 @@ const statusOrder = (a: any, b: any): number => {
         updateNote(note: string) {
             for (const friend of this.friends) {
                 if (friend._id === this.FriendMenuPayload.user._id) {
+                    if (friend.note === note) return;
                     friend.note = note;
                 }
             }
@@ -292,6 +296,15 @@ const statusOrder = (a: any, b: any): number => {
                 });
             this.user.icon = newIconName;
         },
+        changeUserColor(newColorHex: string): void {
+            if (!newColorHex || this.user.color === newColorHex) return;
+            this.connection.send({
+                method: 'userChange',
+                id: this.userCredits.id,
+                color: newColorHex
+            });
+            this.user.color = newColorHex; 
+        },
         sendMessage(messInfo: any): void {
             console.log('sendMessage');
             const rsaCrypto = new NodeRSA();
@@ -311,21 +324,22 @@ const statusOrder = (a: any, b: any): number => {
         },
         openExistingChat(chatId: number): void {
             const id: number = this.openedChatsIds.find((id: any)=> {return id === chatId});
-
             const chat = this.chats.find((chat: any) => {return chat._id === chatId});
             if (chat === undefined)
                 return;
-            const friendId = chat.users[0] === this.user.id ? chat.users[1] : chat.users[0];
-            this.userSelected = this.friends.find((friend: any) => {return friend._id === friendId});
-            if (!this.userSelected) this.userSelected = this.friends.find((friend: any) => {return friend.id === friendId});
-
+            this.changeActive(chat);
             if (id === undefined) {
                 this.openedChatsIds.push(chatId);
             }
-            this.changeActive(chatId);
         },
-        changeActive(chatId: number): void {
-            this.activeChatId = chatId;
+        changeActive(chat: any): void {
+            if (!chat) {
+                return;
+            }
+            this.activeChatId = chat._id;
+            const friendId = chat.users[0] === this.user.id ? chat.users[1] : chat.users[0];
+            this.userSelected = this.friends.find((friend: any) => {return friend._id === friendId});
+            if (!this.userSelected) this.userSelected = this.friends.find((friend: any) => {return friend.id === friendId});
             setTimeout( ()=>{
                 const objDiv: any = document.getElementById("messages");
                 objDiv.scrollTop = objDiv.scrollHeight - objDiv.clientHeight;
@@ -352,8 +366,7 @@ const statusOrder = (a: any, b: any): number => {
                 this.hideFriendMenu();
             }
             else if (this.FriendMenuPayload.show) {
-                this.FriendMenuPayload.position = event[0].y;
-                this.FriendMenuPayload.user = event[1];
+                this.hideFriendMenu();
             }
             else {
                 console.log("userClick:", event);
@@ -386,6 +399,7 @@ const statusOrder = (a: any, b: any): number => {
             this.notifications = userPayload.notifications;
             this.user.icon = userPayload.icon;
             this.user.joinTime = userPayload.joinTime;
+            this.user.color = userPayload.color;
             this.user.name = userPayload.name;
             this.user.status = userPayload.status;
             this.user.publicKey = userPayload.public;
@@ -425,7 +439,8 @@ const statusOrder = (a: any, b: any): number => {
                         if (el._id === friendInfo.id || el.id === friendInfo.id) {
                             if (friendInfo.status) el.status = friendInfo.status;    
                             if (friendInfo.desc) el.desc = friendInfo.desc;    
-                            if (friendInfo.icon) el.icon = friendInfo.icon;    
+                            if (friendInfo.icon) el.icon = friendInfo.icon;
+                            if (friendInfo.color) el.color = friendInfo.color;
                         }
                         return el;
                     });
