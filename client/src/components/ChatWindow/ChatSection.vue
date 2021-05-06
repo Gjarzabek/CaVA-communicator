@@ -2,7 +2,7 @@
     <div class="ChatSection">
         <div class="openedChats">
             <div 
-            v-for="chat in openedChats" v-bind:key="chat.id"
+            v-for="chat in openedChats" v-bind:key="chat._id"
             class="chatBarItem" 
             :class="{ 'active' : chat._id === activeChatId}">
                 <ChatBar 
@@ -15,7 +15,7 @@
         <div id="messages">
             <Message v-for="message in activeChatPayload" :key="message.id" :message="message" :friend="inChatFriend" :user="user"/>
         </div>
-        <MessageInput @sendMessage="SendMessageForward" :style="{width: `${inputWidth}%`, left: `${inputLeftPos}%`}"/>
+        <MessageInput @displayed="$emit('displayed')" @sendMessage="SendMessageForward" :style="{width: `${inputWidth}%`, left: `${inputLeftPos}%`}"/>
     </div>
 </template>
 

@@ -1,5 +1,5 @@
 <template>
-    <input type="text" id="messageInput" placeholder="Napisz Wiadomość" v-model="inputData" @keypress="inputKeyPressed" autocomplete="off">
+    <input @click="$emit('displayed')" type="text" id="messageInput" placeholder="Napisz Wiadomość" v-model="inputData" @keypress="inputKeyPressed" autocomplete="off">
 </template>
 
 <script lang="ts">
@@ -32,6 +32,7 @@ export default defineComponent({
             if (this.inputData.length > 0)
                 this.$emit("sendMessage", this.inputData);
             this.inputData = "";
+            this.$emit('displayed');
         }
     }
 })
@@ -46,7 +47,7 @@ export default defineComponent({
     left: 2.5%;
     width: 95%;
     height: 5%;
-    background-color: rgba(189, 189, 189, 0.06);
+    background-color: rgba(189, 189, 189, 0.2);
     border: none;
     border-radius: 0.2vh;
     outline: none;
@@ -61,7 +62,7 @@ export default defineComponent({
 }
 
 #messageInput:focus {
-    background-color: rgba(189, 189, 189, 0.07);
+    background-color: rgba(189, 189, 189, 0.18);
 }
 
 #messageInput:focus::placeholder {

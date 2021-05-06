@@ -1,13 +1,14 @@
 <template>
-    <div class="MessageBody">
+    <div class="MessageBody" :class="{fresh: message.new}">
         <img v-if="author.icon === 'fsociety'" class="icon" src="../../assets/fsociety.png">
         <img v-else-if="author.icon === 'bird'" class="icon" src="../../assets/freedomBird.png">
         <div v-else class="bgEllipse" :style="{background: author.color}"></div>
         <div class='flexLine'>
             <b class="userName" :style="{color: author.color}">{{author.name}}</b>
-            <div class="time" :style="{color: darkerColor}">{{getDateString}}</div>
+            <div class="time">{{getDateString}}</div>
         </div>
         <div class="messageData" :class="{inProgress : message.inProgress}">{{message.content}}</div>
+        <div v-if="message.new" class="freshHint">Nowa</div>
     </div>
 </template>
 
@@ -102,11 +103,11 @@ export default defineComponent({
 .userName {
     text-align: left;
     color: rgba(255, 255, 255, 0.555);
-    font-size: 1.6vh;
+    font-size: 14px;
 }
 
 .messageData {
-    font: 1.6vh NovaSquare;
+    font: 15px NovaSquare;
     color: whitesmoke;
     text-align: left;
     width: 60vw;
@@ -117,13 +118,26 @@ export default defineComponent({
 }
 
 .time {
-    font: 1.2vh NovaSquare;
-    color: #595757;
+    font: 10px NovaSquare;
+    color: #696969;
     margin-left: 1vw;
 }
 
 .inProgress {
     color: rgba(170, 170, 170, 0.253);
+}
+
+.fresh {
+    background: #4d4d4d52;
+}
+
+.freshHint {
+    position: absolute;
+    background-color: rgba(99, 12, 12, 0);
+    top: 1vh;
+    right: 1vw;
+    font: 14px Sen;
+    color: white;
 }
 
 </style>

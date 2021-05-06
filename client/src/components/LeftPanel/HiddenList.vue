@@ -9,6 +9,7 @@
             <div v-if="isPrivateRoom">
                 <img src="../../assets/addIcon.png" alt="..." id="addIcon">
             </div>
+            <div v-if="hasNewMessage" class="unreadMessageAlert"></div>
         </div>
         <div v-if="!hidden" class="list">
             <div v-for="item in ItemList" v-bind:key="item.id" :class="{ item : !isChat}">
@@ -29,11 +30,12 @@ import PublicItem from '@/components/LeftPanel/PublicItem.vue';
 import PrivateItem from '@/components/LeftPanel/PrivateItem.vue';
 
 export default defineComponent({
-  props: ["header", "ItemList", "type", "friends", "user"],
+  props: ["header", "ItemList", "type", "friends", "user", "newMessagesChats"],
   components: {FriendItem, ChatItem, PublicItem, PrivateItem},
   data() {
       return {
-          hidden: true
+          hidden: true,
+          newAlertsSum: 0 // if gt than 0 there is something new
       }
   },
   methods: {
@@ -88,6 +90,9 @@ export default defineComponent({
                     counter++;
             }   
             return counter; 
+        },
+        hasNewMessage: function(): boolean {
+            return this.isChat && this.newMessagesChats > 0;
         }
   }
 })
@@ -121,7 +126,7 @@ export default defineComponent({
 }
 
 .item:hover {
-    background-color: #262525;
+    background-color: #2b2b2b;
 }
 
 .infoIcon {
@@ -154,6 +159,29 @@ export default defineComponent({
 
 .menuItem {
     position: relative;
+}
+
+.unreadMessageAlert {
+    position: absolute;
+    top: 0.5vh;
+    right: 0vh;
+    width: 2vh;
+    height: 2vh;
+    border-radius: 50%;
+    background-color: rgb(177, 25, 25);
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(0.5);
+    }
+    50% {
+        transform: scale(0.85);
+    }
+    100% {
+        transform: scale(0.5);
+    }
 }
 
 </style>

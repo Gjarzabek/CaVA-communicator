@@ -58,7 +58,7 @@ export default defineComponent({
             inChatFriend: {name: ""}
         };
     },
-    created() {
+    beforeMount() {
         this.inChatFriend = this.friend;
     }
 })

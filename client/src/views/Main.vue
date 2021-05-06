@@ -24,16 +24,18 @@
         :activeChatId="activeChatId"
         :inChatFriend="userSelected"
         :user="user"
+        @displayed="unmarkNewMessages"
         @sendMessage="sendMessage"
         @changeActiveChat="changeActive"
         @closeBar="closeBar"
         />
         <FriendsNRooms
         :friends="sortedFriends"
-        :chats="chats"
+        :chats="chatHistory"
         :publicRooms="publicRooms"
         :privateGroups="privateGroups"
         :user="user"
+        :newMessagesChats="newMessagesChats.size"
         @userClick="userClickHandler"
         @joinPublic="joinPublicRoom"
         @openPrivateTalk="openPrivateTalk"
@@ -75,7 +77,6 @@ const statusOrder = (a: any, b: any): number => {
   data() {
       return {
             chatUsers: [].sort(statusOrder),
-            newChatRequest: undefined,
             user: {id:"", name:"", status:"", desc:"", icon:"", joinTime: "", publicKey: ""},
             search: "",
             friends: [],
@@ -94,7 +95,8 @@ const statusOrder = (a: any, b: any): number => {
             publicRooms: [],
             connection: undefined,
             newNotes: new Map(),
-            secretReader: new NodeRSA()
+            secretReader: new NodeRSA(),
+            newMessagesChats: new Set()
       }
   },
   components: {
@@ -136,9 +138,27 @@ const statusOrder = (a: any, b: any): number => {
                     else
                         return -1;
         });
+    },
+    chatHistory: function(): any {
+        return this.chats.filter((chat: any) => {
+            return chat.messages.length > 0;
+        });
     }
   },
   methods: {
+        unmarkNewMessages() {
+            this.newMessagesChats.delete(this.activeChatId);
+            const activeChat = this.chats.find((chat: any)=>{
+                return chat._id === this.activeChatId;
+            });
+            for(let i: number = activeChat.messages.length - 1; i >= 0; --i) {
+                if (activeChat.messages[i].authorId === this.user.id) continue;
+                if (activeChat.messages[i].new) {
+                    activeChat.messages[i].new = false;
+                }
+                else break;
+            }
+        },
         addChatMessage(chatId: any, message: any) {
             const chat = this.chats.find((chat: any) => {return chat._id === chatId});
             chat.messages.push(message);
@@ -343,7 +363,7 @@ const statusOrder = (a: any, b: any): number => {
             setTimeout( ()=>{
                 const objDiv: any = document.getElementById("messages");
                 objDiv.scrollTop = objDiv.scrollHeight - objDiv.clientHeight;
-            }, 300);
+            }, 30);
         },
         closeBar(chatId: any): void {
             this.openedChatsIds = this.openedChatsIds.filter((el:any) => {
@@ -354,9 +374,11 @@ const statusOrder = (a: any, b: any): number => {
                     this.activeChatId = undefined;
                 }
                 else {
-                    this.activeChatId = this.openedChatsIds[0];
+                    const newActiveChat = this.chats.find((chat: any) => {return chat._id === this.openedChatsIds[0]});
+                    this.changeActive(newActiveChat);
                 }
             }
+            console.log('openedChats, activeChat', this.openedChatsIds, this.activeChatId);
         },
         addChatBar(): void {
             return; // TODO refactor - add public/private rooms conversations to openChats
@@ -470,11 +492,13 @@ const statusOrder = (a: any, b: any): number => {
                     }, 10);
                 },
                 newMessage: (payload: any) => {
+                    this.newMessagesChats.add(payload.chatId);
                     this.addChatMessage(payload.chatId, {
                         authorId: payload.friendId,
                         id: payload.msgId,
                         timestamp: payload.timestamp,
-                        content: this.secretReader.decrypt(payload.friendData, 'utf8')
+                        content: this.secretReader.decrypt(payload.friendData, 'utf8'),
+                        new: true
                     });
                 }
             }
