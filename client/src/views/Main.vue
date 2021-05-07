@@ -107,6 +107,20 @@ const statusOrder = (a: any, b: any): number => {
     FriendMenu,
     UserInfo
   },
+  watch: {
+        newMessagesChats: {
+            deep: true,
+            handler() {
+                console.log('fsd');
+                if (this.newMessagesChats.size > 0) {
+                    document.title = `(${this.newMessagesChats.size}) Nowa Wiadomość`;
+                }
+                else {
+                    document.title = 'Niezależny Chat';
+                }
+            }
+        },
+  },
   computed: {
     filteredUsers: function(): any {
         return this.chatUsers.filter((user: any) => {

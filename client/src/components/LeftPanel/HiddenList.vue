@@ -35,7 +35,6 @@ export default defineComponent({
   data() {
       return {
           hidden: true,
-          newAlertsSum: 0 // if gt than 0 there is something new
       }
   },
   methods: {
@@ -92,7 +91,7 @@ export default defineComponent({
             return counter; 
         },
         hasNewMessage: function(): boolean {
-            return this.isChat && this.newMessagesChats > 0;
+            return this.isChat && this.newMessagesChats > 0 && this.hidden;
         }
   }
 })
