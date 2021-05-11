@@ -1,9 +1,8 @@
 <template>
     <div id="members">        
-        <p id="titlePara">Uczestnicy Chatu</p>
         <div id="searchDiv">
             <img src="../../assets/search_icon.png" alt=".." class='searchIcon'>
-            <input type="search" placeholder="Szukaj" id="usersSearch" @input="$emit('search', $event.target.value)">
+            <input spellcheck="false" type="search" placeholder="Szukaj" id="usersSearch" @input="$emit('search', $event.target.value)">
         </div>
         <div id="usersScroll">
             <div v-for="user in Users" v-bind:key="user.id">
@@ -31,20 +30,7 @@ export default defineComponent({
 
 <style scoped>
 #members {
-    box-sizing: border-box;
-    position: absolute;
-    right: 0;
-    top: 6%;
-    width: 15%;
-    height: 94%;
     background-color: #3B3939;
-}
-
-#titlePara {
-    margin-left: 12px;
-    text-align: left;
-    font: 2vh NovaScript;
-    color: #C6BDBD;
 }
 
 #usersScroll {
@@ -85,7 +71,7 @@ export default defineComponent({
 .searchIcon {
     position: absolute;
     left: 10%;
-    margin-top: 2%;
+    margin-top: 2.5%;
     width: 7%;
 }
 </style>

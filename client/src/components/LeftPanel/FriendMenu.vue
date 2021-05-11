@@ -10,7 +10,7 @@
         <div class="info desc" :style="{color: ligher}">{{Desc}}</div>
         <p class="info notePara">Notatka</p>
         <textarea :placeholder="currentNote" class="info notePayload" maxlength="40" spellcheck="false" v-model="note"></textarea>
-        <button class="chatBtn" @click="writeMessage">Napisz Wiadomość</button>
+        <button class="chatBtn" @click="writeMessage">Napisz</button>
     </div>
 </template>
 

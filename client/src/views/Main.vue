@@ -18,7 +18,7 @@
         @deleteAlert="deleteAlert"
         @openChat="openExistingChat"
         />
-        <UsersOnline v-bind:Users="filteredUsers" @search="changeSearch"/>
+        <RightBar :chatName="chatName" :activeChat="activeChatId" :Users="filteredUsers" @search="changeSearch"/>
         <ChatSection 
         :openedChats="openedChats"
         :activeChatId="activeChatId"
@@ -48,7 +48,7 @@
 <script lang="ts">  
 import { Options, Vue } from "vue-class-component";
 import UserInfo from '@/components/UserInfo.vue';
-import UsersOnline from "@/components/RightBar/UsersOnline.vue";
+import RightBar from "@/components/RightBar/RightBar.vue";
 import TopPanel from "@/components/TopPanel/Panel.vue";
 import FriendsNRooms from "@/components/LeftPanel/MainDiv.vue";
 import FriendMenu from "@/components/LeftPanel/FriendMenu.vue";
@@ -100,7 +100,7 @@ const statusOrder = (a: any, b: any): number => {
       }
   },
   components: {
-    UsersOnline,
+    RightBar,
     TopPanel,
     FriendsNRooms,
     ChatSection,
@@ -157,6 +157,11 @@ const statusOrder = (a: any, b: any): number => {
         return this.chats.filter((chat: any) => {
             return chat.messages.length > 0;
         });
+    },
+    chatName: function(): any {
+        if (this.userSelected)
+            return this.userSelected.name;
+        else return undefined;
     }
   },
   methods: {
